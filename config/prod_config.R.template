@@ -17,9 +17,9 @@ DB_CONFIG_PROD <- list(
   # Configuración del Túnel SSH Local
   local_port = 3307,                      # Puerto local del túnel SSH
   
-  # Configuración SSH (para referencia en documentación)
-  ssh_host = "mola.gbif.es",              # Servidor SSH de GBIF.ES
-  ssh_port = 22002,                       # Puerto SSH específico
+  # Configuración SSH (para referencia en documentación - puede variar por usuario)
+  ssh_host = "mola.gbif.es",              # Servidor SSH de GBIF.ES (puede cambiar)
+  ssh_port = 22002,                       # Puerto SSH específico (puede cambiar)
   ssh_user = "tu_usuario_ssh",            # Tu usuario SSH
   ssh_keyfile = "~/.ssh/id_rsa",          # Ruta a tu clave privada SSH
   

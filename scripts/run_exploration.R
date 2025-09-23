@@ -1,53 +1,53 @@
-# Database Exploration Script
-# This script performs comprehensive exploration of the GBIF Spain Collections Registry database
+# Script de Exploración de Base de Datos
+# Este script realiza exploración comprensiva de la base de datos del Registro de Colecciones de GBIF España
 
-# Load required modules
+# Cargar módulos requeridos
 source("src/connection/db_connection.R")
 source("src/exploration/data_exploration.R")
 
-# Parse command line arguments
+# Analizar argumentos de línea de comandos
 args <- commandArgs(trailingOnly = TRUE)
 
-# Default parameters
+# Parámetros predeterminados
 environment <- if (length(args) >= 1) args[1] else "TEST"
 output_dir <- if (length(args) >= 2) args[2] else "output"
 generate_report <- if (length(args) >= 3) as.logical(args[3]) else TRUE
 
-# Validate environment parameter
+# Validar parámetro de entorno
 if (!environment %in% c("PROD", "TEST")) {
-  stop("Environment must be either 'PROD' or 'TEST'")
+  stop("El entorno debe ser 'PROD' o 'TEST'")
 }
 
-# Create output directory
+# Crear directorio de salida
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
 
-# Main execution
+# Ejecución principal
 main <- function() {
-  cat("=== GBIF Spain Collections Registry - Database Exploration ===\n")
-  cat(paste("Environment:", environment, "\n"))
-  cat(paste("Output directory:", output_dir, "\n"))
+  cat("=== Registro de Colecciones de GBIF España - Exploración de Base de Datos ===\n")
+  cat(paste("Entorno:", environment, "\n"))
+  cat(paste("Directorio de salida:", output_dir, "\n"))
   cat("\n")
   
-  # Establish database connection
-  cat("Connecting to database...\n")
+  # Establecer conexión a base de datos
+  cat("Conectando a base de datos...\n")
   tryCatch({
     conn <- setup_database_connection(environment)
-    cat("✓ Database connection established\n\n")
+    cat("✓ Conexión a base de datos establecida\n\n")
     
-    # Test connection
+    # Probar conexión
     if (test_connection(conn)) {
-      cat("✓ Database connection test passed\n\n")
+      cat("✓ Prueba de conexión a base de datos exitosa\n\n")
     } else {
-      stop("Database connection test failed")
+      stop("Prueba de conexión a base de datos falló")
     }
     
-    # Get connection information
+    # Obtener información de conexión
     conn_info <- get_connection_info(conn)
-    cat("Database Information:\n")
-    cat(paste("- Server version:", conn_info$server_version, "\n"))
-    cat(paste("- Current database:", conn_info$current_database, "\n"))
+    cat("Información de Base de Datos:\n")
+    cat(paste("- Versión del servidor:", conn_info$server_version, "\n"))
+    cat(paste("- Base de datos actual:", conn_info$current_database, "\n"))
     cat(paste("- Connection valid:", conn_info$connection_valid, "\n\n"))
     
     # Explore database schema
