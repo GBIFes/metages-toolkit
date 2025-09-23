@@ -1,24 +1,26 @@
-# Contribuir al Toolkit del Registro de Colecciones de GBIF
+# Guía de Contribución al Toolkit del Registro de Colecciones de GBIF España
 
 ## Descripción General
 
-Este repositorio es para uso interno de GBIF.ES para gestionar la base de datos del Registro de Colecciones. Las contribuciones deben seguir las directrices establecidas para mantener la calidad del código, la seguridad y la seguridad operacional.
+Este repositorio es para uso interno exclusivo de GBIF.ES para gestionar la base de datos del Registro de Colecciones de GBIF España. Las contribuciones deben seguir las directrices establecidas para mantener la calidad del código, la seguridad y la estabilidad operacional.
 
 ## Antes de Contribuir
 
 ### Requisitos Previos
 
-- Acceso a los sistemas internos de GBIF.ES
-- Experiencia en programación R (versión 4.0+)
+- Acceso autorizado a los sistemas internos de GBIF.ES
+- Experiencia en programación R (versión 4.0 o superior)
 - Comprensión de operaciones de base de datos MySQL
-- Familiaridad con la estructura de datos del Registro de Colecciones de GBIF
+- Familiaridad con la estructura de datos del Registro de Colecciones de GBIF España
+- Conocimiento del protocolo de túneles SSH para conexiones seguras
 
 ### Configuración Requerida
 
 1. Completar entrenamiento de seguridad y revisar `SECURITY.md`
-2. Obtener credenciales de base de datos apropiadas
+2. Obtener credenciales de base de datos apropiadas para entornos PROD y TEST
 3. Configurar entorno de desarrollo siguiendo `docs/setup.md`
-4. Probar funcionalidad del toolkit en entorno TEST
+4. Configurar túneles SSH según las instrucciones del equipo técnico
+5. Probar funcionalidad del toolkit en entorno TEST antes de cualquier desarrollo
 
 ## Flujo de Trabajo de Desarrollo
 
@@ -29,130 +31,130 @@ Este repositorio es para uso interno de GBIF.ES para gestionar la base de datos 
 git clone https://github.com/GBIFes/metages-toolkit.git
 cd metages-toolkit
 
-# Set up R environment
-# R will automatically activate renv if .Rprofile is present
+# Configurar entorno R
+# R activará automáticamente renv si .Rprofile está presente
 
-# Configure database connections
+# Configurar conexiones de base de datos
 cp config/test_config.R.template config/test_config.R
-# Edit with your TEST credentials (never commit actual credentials)
+# Editar con tus credenciales de TEST (nunca comprometer credenciales reales)
 
-# Test setup
+# Probar configuración
 Rscript scripts/run_exploration.R TEST
 ```
 
-### 2. Branch Strategy
+### 2. Estrategia de Ramas
 
-- `main` - Production-ready code
-- `develop` - Integration branch for new features
-- `feature/*` - Individual feature development
-- `hotfix/*` - Critical fixes for production
+- `main` - Código listo para producción
+- `develop` - Rama de integración para nuevas características
+- `feature/*` - Desarrollo de características individuales
+- `hotfix/*` - Correcciones críticas para producción
 
-### 3. Making Changes
+### 3. Realizar Cambios
 
-1. **Create Feature Branch**
+1. **Crear Rama de Característica**
    ```bash
-   git checkout -b feature/your-feature-name
+   git checkout -b feature/nombre-de-tu-caracteristica
    ```
 
-2. **Follow Coding Standards**
-   - Use meaningful variable and function names
-   - Include comprehensive documentation
-   - Follow R style guidelines (tidyverse style preferred)
-   - Add error handling for all database operations
+2. **Seguir Estándares de Código**
+   - Usar nombres de variables y funciones significativos en español
+   - Incluir documentación comprensiva en español
+   - Seguir guías de estilo R (preferencia por estilo tidyverse)
+   - Añadir manejo de errores para todas las operaciones de base de datos
 
-3. **Test Changes**
+3. **Probar Cambios**
    ```bash
-   # Always test on TEST environment first
+   # Siempre probar en entorno TEST primero
    Rscript scripts/run_exploration.R TEST
    Rscript scripts/run_qc_checks.R TEST
    ```
 
-4. **Document Changes**
-   - Update relevant README files
-   - Add examples for new functionality
-   - Update `docs/usage.md` if user-facing changes
+4. **Documentar Cambios**
+   - Actualizar archivos README relevantes
+   - Añadir ejemplos para nueva funcionalidad
+   - Actualizar `docs/usage.md` si hay cambios visibles al usuario
 
-## Code Standards
+## Estándares de Código
 
-### R Code Style
+### Estilo de Código R
 
 ```r
-# Function naming: snake_case
-analyze_collection_trends <- function(connection, time_period = "month") {
-  # Function body
+# Nombres de función: snake_case (en español descriptivo)
+analizar_tendencias_colecciones <- function(conexion, periodo_tiempo = "mes") {
+  # Cuerpo de la función
 }
 
-# Variable naming: snake_case
-database_connection <- setup_database_connection("TEST")
+# Nombres de variables: snake_case (en español)
+conexion_base_datos <- setup_database_connection("TEST")
 
-# Constants: UPPER_CASE
-DEFAULT_BATCH_SIZE <- 100
+# Constantes: MAYÚSCULAS (en español)
+TAMAÑO_LOTE_PREDETERMINADO <- 100
 
-# Use explicit library calls
+# Usar llamadas explícitas de librería
 library(DBI)
 library(dplyr)
 
-# Document functions with roxygen2
-#' Analyze Collection Trends
+# Documentar funciones con roxygen2 en español
+#' Analizar Tendencias de Colecciones
 #' 
-#' @param connection Database connection object
-#' @param time_period Character. Time period for analysis
-#' @return List with trend analysis results
+#' @param conexion Objeto de conexión a base de datos
+#' @param periodo_tiempo Character. Período de tiempo para análisis
+#' @return Lista con resultados de análisis de tendencias
 #' @export
 ```
 
-### Error Handling
+### Manejo de Errores
 
 ```r
-# Always use tryCatch for database operations
-result <- tryCatch({
-  # Database operation
-  dbGetQuery(connection, query)
+# Siempre usar tryCatch para operaciones de base de datos
+resultado <- tryCatch({
+  # Operación de base de datos
+  dbGetQuery(conexion, consulta)
 }, error = function(e) {
-  logerror(paste("Operation failed:", e$message))
+  logerror(paste("Operación falló:", e$message))
   return(NULL)
 })
 ```
 
-### Logging
+### Registro de Logs
 
 ```r
-# Use appropriate log levels
-loginfo("Starting operation")
-logwarn("Potential issue detected")
-logerror("Operation failed")
-logdebug("Detailed debugging information")
+# Usar niveles de log apropiados
+loginfo("Iniciando operación")
+logwarn("Problema potencial detectado")
+logerror("Operación falló")
+logdebug("Información detallada de depuración")
 ```
 
-## Testing Requirements
+## Requisitos de Pruebas
 
-### Unit Testing
+### Pruebas Unitarias
 
 ```r
-# Test database connections
-test_connection(connection)
+# Probar conexiones de base de datos
+test_connection(conexion)
 
-# Test data validation
-validation_result <- validate_update_data(connection, table_name, test_data)
-stopifnot(validation_result$validation_passed)
+# Probar validación de datos
+resultado_validacion <- validate_update_data(conexion, nombre_tabla, datos_prueba)
+stopifnot(resultado_validacion$validation_passed)
 
-# Test functionality with sample data
+# Probar funcionalidad con datos de muestra
 ```
 
-### Integration Testing
+### Pruebas de Integración
 
 ```bash
-# Test complete workflows
+# Probar flujos de trabajo completos
 Rscript scripts/run_exploration.R TEST output FALSE
 Rscript scripts/run_qc_checks.R TEST output completeness FALSE
 ```
 
-### Safety Testing
+### Pruebas de Seguridad
 
-- Always test updates on TEST environment
-- Verify backup and rollback functionality
-- Test error handling scenarios
-- Validate data integrity after operations
+- Siempre probar actualizaciones en entorno TEST
+- Verificar funcionalidad de respaldo y rollback
+- Probar escenarios de manejo de errores
+- Validar integridad de datos después de operaciones
 
 ## Security Requirements
 
