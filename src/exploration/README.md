@@ -1,37 +1,37 @@
-# Data Exploration Module
+# Módulo de Exploración de Datos
 
-This module provides functions for exploring the GBIF Collections Registry database.
+Este módulo proporciona funciones para explorar la base de datos del Registro de Colecciones GBIF España.
 
-## Files:
-- `data_exploration.R`: Functions for database exploration and data profiling
+## Archivos:
+- `data_exploration.R`: Funciones para exploración de base de datos y perfilado de datos
 
-## Functions:
-- `explore_database_schema()`: Get overview of database structure
-- `explore_table_structure()`: Analyze specific table structure
-- `get_data_summary()`: Generate data summaries and statistics
-- `explore_data_quality()`: Basic data quality assessment
-- `generate_exploration_report()`: Create comprehensive exploration report
+## Funciones:
+- `explorar_esquema_base_datos()`: Obtener visión general de estructura de base de datos
+- `explorar_estructura_tabla()`: Analizar estructura de tabla específica
+- `obtener_resumen_datos()`: Generar resúmenes de datos y estadísticas
+- `explorar_calidad_datos()`: Evaluación básica de calidad de datos
+- `generar_reporte_exploracion()`: Crear reporte comprehensivo de exploración
 
-## Usage:
+## Uso:
 ```r
-# Load the exploration module
+# Cargar el módulo de exploración
 source("src/exploration/data_exploration.R")
 
-# Load connection module
+# Cargar módulo de conexión
 source("src/connection/db_connection.R")
 
-# Connect to database
+# Conectar a base de datos
 conn <- setup_database_connection("TEST")
 
-# Explore database schema
-schema_info <- explore_database_schema(conn)
+# Explorar esquema de base de datos
+info_esquema <- explorar_esquema_base_datos(conn)
 
-# Explore specific table
-table_info <- explore_table_structure(conn, "collections")
+# Explorar tabla específica
+info_tabla <- explorar_estructura_tabla(conn, "colecciones")
 
-# Generate summary statistics
-summary_stats <- get_data_summary(conn, "collections")
+# Generar estadísticas de resumen
+estadisticas_resumen <- obtener_resumen_datos(conn, "colecciones")
 
-# Generate full exploration report
-report <- generate_exploration_report(conn)
+# Generar reporte completo de exploración
+reporte <- generar_reporte_exploracion(conn)
 ```

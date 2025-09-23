@@ -1,36 +1,36 @@
-# Data Analysis Module
+# Módulo de Análisis de Datos
 
-This module provides functions for analyzing data in the GBIF Collections Registry database.
+Este módulo proporciona funciones para analizar datos en la base de datos del Registro de Colecciones GBIF España.
 
-## Files:
-- `data_analysis.R`: Analysis functions for collections and institutions data
+## Archivos:
+- `data_analysis.R`: Funciones de análisis para datos de colecciones e instituciones
 
-## Functions:
-- `analyze_collection_trends()`: Analyze trends in collection data over time
-- `analyze_institutional_coverage()`: Analyze geographic and taxonomic coverage
-- `analyze_data_patterns()`: Identify patterns and anomalies in the data
-- `analyze_completeness_trends()`: Track data completeness over time
-- `generate_analytics_dashboard()`: Create summary analytics
-- `export_analysis_results()`: Export analysis results to various formats
+## Funciones:
+- `analizar_tendencias_colecciones()`: Analizar tendencias en datos de colecciones a lo largo del tiempo
+- `analizar_cobertura_institucional()`: Analizar cobertura geográfica y taxonómica
+- `analizar_patrones_datos()`: Identificar patrones y anomalías en los datos
+- `analizar_tendencias_completitud()`: Seguir completitud de datos a lo largo del tiempo
+- `generar_dashboard_analiticas()`: Crear analíticas de resumen
+- `exportar_resultados_analisis()`: Exportar resultados de análisis a varios formatos
 
-## Usage:
+## Uso:
 ```r
-# Load the analysis module
+# Cargar el módulo de análisis
 source("src/analysis/data_analysis.R")
 
-# Load connection module
+# Cargar módulo de conexión
 source("src/connection/db_connection.R")
 
-# Connect to database
+# Conectar a base de datos
 conn <- setup_database_connection("PROD")
 
-# Run specific analyses
-trends <- analyze_collection_trends(conn)
-coverage <- analyze_institutional_coverage(conn)
+# Ejecutar análisis específicos
+tendencias <- analizar_tendencias_colecciones(conn)
+cobertura <- analizar_cobertura_institucional(conn)
 
-# Generate comprehensive analytics
-dashboard <- generate_analytics_dashboard(conn)
+# Generar analíticas comprehensivas
+dashboard <- generar_dashboard_analiticas(conn)
 
-# Export results
-export_analysis_results(dashboard, "analytics_report")
+# Exportar resultados
+exportar_resultados_analisis(dashboard, "reporte_analiticas")
 ```

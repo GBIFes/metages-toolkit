@@ -31,22 +31,22 @@ if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
 
-# Main execution
+# Ejecución principal
 main <- function() {
-  cat("=== GBIF Collections Registry - Data Analysis ===\n")
-  cat(paste("Environment:", environment, "\n"))
-  cat(paste("Output directory:", output_dir, "\n"))
-  cat(paste("Analysis types:", paste(analysis_types, collapse = ", "), "\n"))
-  cat(paste("Export formats:", paste(export_formats, collapse = ", "), "\n"))
+  cat("=== Registro de Colecciones GBIF España - Análisis de Datos ===\n")
+  cat(paste("Entorno:", environment, "\n"))
+  cat(paste("Directorio de salida:", output_dir, "\n"))
+  cat(paste("Tipos de análisis:", paste(analysis_types, collapse = ", "), "\n"))
+  cat(paste("Formatos de exportación:", paste(export_formats, collapse = ", "), "\n"))
   cat("\n")
   
-  # Establish database connection
-  cat("Connecting to database...\n")
+  # Establecer conexión a base de datos
+  cat("Conectando a base de datos...\n")
   tryCatch({
     conn <- setup_database_connection(environment)
-    cat("✓ Database connection established\n\n")
+    cat("✓ Conexión a base de datos establecida\n\n")
     
-    # Test connection
+    # Probar conexión
     if (test_connection(conn)) {
       cat("✓ Database connection test passed\n\n")
     } else {

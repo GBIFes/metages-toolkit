@@ -1,5 +1,5 @@
-# .Rprofile for GBIF Collections Registry Toolkit
-# This file is automatically loaded when R starts in this project directory
+# .Rprofile para el Toolkit del Registro de Colecciones GBIF España
+# Este archivo se carga automáticamente cuando R se inicia en este directorio de proyecto
 
 # Mostrar mensaje de bienvenida
 cat("========================================\n")
@@ -8,36 +8,36 @@ cat("GBIF.ES - Registro de Colecciones\n")
 cat("https://gbif.es/registro-colecciones/\n")
 cat("========================================\n")
 
-# Set R options for better development experience
+# Configurar opciones de R para mejor experiencia de desarrollo
 options(
-  # General options
+  # Opciones generales
   width = 120,
   max.print = 1000,
-  scipen = 999,  # Avoid scientific notation
+  scipen = 999,  # Evitar notación científica
   digits = 4,
   
-  # Development options
+  # Opciones de desarrollo
   error = traceback,
-  warn = 1,  # Show warnings as they occur
+  warn = 1,  # Mostrar advertencias según ocurren
   
-  # Database options
-  timeout = 60,  # Default timeout for operations
+  # Opciones de base de datos
+  timeout = 60,  # Tiempo límite por defecto para operaciones
   encoding = "UTF-8",
   
-  # Output options
-  stringsAsFactors = FALSE  # Default for older R versions
+  # Opciones de salida
+  stringsAsFactors = FALSE  # Por defecto para versiones antiguas de R
 )
 
-# Set timezone (adjust based on organizational needs)
+# Establecer zona horaria (ajustar según necesidades organizacionales)
 Sys.setenv(TZ = "Europe/Madrid")
 
-# Check for and activate renv if available
+# Verificar y activar renv si está disponible
 if (file.exists("renv.lock") && requireNamespace("renv", quietly = TRUE)) {
-  cat("Activating renv environment...\n")
+  cat("Activando entorno renv...\n")
   renv::activate()
 }
 
-# Function to check required packages
+# Función para verificar paquetes requeridos
 check_required_packages <- function() {
   required_packages <- c(
     "DBI",
@@ -62,26 +62,26 @@ check_required_packages <- function() {
   missing_packages <- required_packages[!sapply(required_packages, requireNamespace, quietly = TRUE)]
   
   if (length(missing_packages) > 0) {
-    cat("⚠ WARNING: Missing required packages:\n")
+    cat("⚠ ADVERTENCIA: Faltan paquetes requeridos:\n")
     cat(paste("  -", missing_packages, collapse = "\n"), "\n")
-    cat("\nInstall missing packages with:\n")
+    cat("\nInstalar paquetes faltantes con:\n")
     cat(paste("install.packages(c(", paste(paste0('"', missing_packages, '"'), collapse = ", "), "))\n"))
     return(FALSE)
   } else {
-    cat("✓ All required packages are available\n")
+    cat("✓ Todos los paquetes requeridos están disponibles\n")
     return(TRUE)
   }
 }
 
-# Function to check configuration files
+# Función para verificar archivos de configuración
 check_configuration <- function() {
   config_files <- c("config/test_config.R", "config/prod_config.R")
   missing_configs <- config_files[!file.exists(config_files)]
   
   if (length(missing_configs) > 0) {
-    cat("⚠ WARNING: Missing configuration files:\n")
+    cat("⚠ ADVERTENCIA: Faltan archivos de configuración:\n")
     cat(paste("  -", missing_configs, collapse = "\n"), "\n")
-    cat("\nCopy templates and configure:\n")
+    cat("\nCopiar plantillas y configurar:\n")
     for (config in missing_configs) {
       template <- paste0(config, ".template")
       if (file.exists(template)) {
@@ -90,137 +90,138 @@ check_configuration <- function() {
     }
     return(FALSE)
   } else {
-    cat("✓ Configuration files found\n")
+    cat("✓ Archivos de configuración encontrados\n")
     return(TRUE)
   }
 }
 
-# Function to create required directories
+# Función para crear directorios requeridos
 create_required_directories <- function() {
   required_dirs <- c("logs", "output", "plots")
   
   for (dir in required_dirs) {
     if (!dir.exists(dir)) {
       dir.create(dir, recursive = TRUE)
-      cat(paste("Created directory:", dir, "\n"))
+      cat(paste("Directorio creado:", dir, "\n"))
     }
   }
 }
 
-# Helper function to load toolkit modules
+# Función auxiliar para cargar módulos del toolkit
 load_toolkit <- function() {
-  cat("Loading GBIF Collections Registry Toolkit modules...\n")
+  cat("Cargando módulos del Toolkit del Registro de Colecciones GBIF España...\n")
   
   modules <- c(
     "src/connection/db_connection.R",
     "src/exploration/data_exploration.R",
     "src/quality_control/qc_checks.R",
-    "src/analysis/data_analysis.R",
-    "src/updates/db_updates.R"
+    "src/analysis/data_analysis.R"
   )
   
   for (module in modules) {
     if (file.exists(module)) {
       tryCatch({
         source(module)
-        cat(paste("✓ Loaded:", basename(module), "\n"))
+        cat(paste("✓ Cargado:", basename(module), "\n"))
       }, error = function(e) {
-        cat(paste("✗ Error loading", basename(module), ":", e$message, "\n"))
+        cat(paste("✗ Error cargando", basename(module), ":", e$message, "\n"))
       })
     } else {
-      cat(paste("✗ Module not found:", module, "\n"))
+      cat(paste("✗ Módulo no encontrado:", module, "\n"))
     }
   }
 }
 
-# Helper function for quick database connection
+# Función auxiliar para conexión rápida a base de datos
 quick_connect <- function(env = "TEST") {
   if (exists("setup_database_connection")) {
     tryCatch({
       conn <- setup_database_connection(env)
-      cat(paste("✓ Connected to", env, "environment\n"))
+      cat(paste("✓ Conectado al entorno", env, "\n"))
       return(conn)
     }, error = function(e) {
-      cat(paste("✗ Connection failed:", e$message, "\n"))
+      cat(paste("✗ Falló la conexión:", e$message, "\n"))
       return(NULL)
     })
   } else {
-    cat("✗ Connection module not loaded. Run load_toolkit() first.\n")
+    cat("✗ Módulo de conexión no cargado. Ejecuta load_toolkit() primero.\n")
     return(NULL)
   }
 }
 
-# Helper function to show available scripts
+# Función auxiliar para mostrar scripts disponibles
 show_scripts <- function() {
-  cat("Available scripts:\n")
+  cat("Scripts disponibles:\n")
   scripts <- list.files("scripts", pattern = "\\.R$", full.names = FALSE)
+  # Filtrar scripts de actualización
+  scripts <- scripts[!grepl("update", scripts)]
   for (script in scripts) {
-    cat(paste("  Rscript scripts/", script, " [arguments]\n", sep = ""))
+    cat(paste("  Rscript scripts/", script, " [argumentos]\n", sep = ""))
   }
-  cat("\nExample usage:\n")
+  cat("\nEjemplos de uso:\n")
   cat("  Rscript scripts/run_exploration.R TEST\n")
   cat("  Rscript scripts/run_qc_checks.R TEST\n")
   cat("  Rscript scripts/run_analysis.R TEST\n")
 }
 
-# Startup checks and setup
+# Verificaciones de inicio y configuración
 startup_checks <- function() {
-  cat("\nRunning startup checks...\n")
+  cat("\nEjecutando verificaciones de inicio...\n")
   
-  # Create required directories
+  # Crear directorios requeridos
   create_required_directories()
   
-  # Check packages
+  # Verificar paquetes
   packages_ok <- check_required_packages()
   
-  # Check configuration
+  # Verificar configuración
   config_ok <- check_configuration()
   
   if (packages_ok && config_ok) {
-    cat("✓ Environment setup complete\n")
-    cat("\nQuick start:\n")
-    cat("  load_toolkit()                     # Load all modules\n")
-    cat("  conn <- quick_connect('TEST')      # Connect to TEST DB\n")
-    cat("  show_scripts()                     # Show available scripts\n")
-    cat("  ?setup_database_connection         # Get help on functions\n")
+    cat("✓ Configuración del entorno completa\n")
+    cat("\nInicio rápido:\n")
+    cat("  load_toolkit()                     # Cargar todos los módulos\n")
+    cat("  conn <- quick_connect('TEST')      # Conectar a BD TEST\n")
+    cat("  show_scripts()                     # Mostrar scripts disponibles\n")
+    cat("  ?setup_database_connection         # Obtener ayuda sobre funciones\n")
   } else {
-    cat("⚠ Please resolve the issues above before proceeding\n")
+    cat("⚠ Por favor resuelve los problemas anteriores antes de continuar\n")
   }
   
-  cat("\nSecurity reminder: Never commit database credentials to Git!\n")
+  cat("\nRecordatorio de seguridad: ¡Nunca confirmes credenciales de BD en Git!\n")
   cat("========================================\n")
 }
 
-# Safety check - warn if in production environment
+# Verificación de seguridad - advertir si está en entorno de producción
 if (Sys.getenv("R_ENV") == "production") {
-  cat("🚨 WARNING: Running in PRODUCTION environment!\n")
-  cat("🚨 Double-check all operations before execution!\n")
+  cat("🚨 ADVERTENCIA: ¡Ejecutándose en entorno de PRODUCCIÓN!\n")
+  cat("🚨 ¡Verifica todas las operaciones antes de ejecutar!\n")
 }
 
-# Run startup checks
+# Ejecutar verificaciones de inicio
 startup_checks()
 
-# Clean up startup function from global environment
+# Limpiar función de inicio del entorno global
 rm(startup_checks)
 
-# Set up auto-completion (if available)
+# Configurar autocompletado (si está disponible)
 if (interactive() && requireNamespace("rstudioapi", quietly = TRUE)) {
-  # RStudio-specific settings
+  # Configuraciones específicas de RStudio
   if (rstudioapi::isAvailable()) {
-    cat("RStudio detected - enhanced features available\n")
+    cat("RStudio detectado - funciones mejoradas disponibles\n")
   }
 }
 
-# Set default CRAN mirror
+# Establecer espejo CRAN por defecto
 local({
   r <- getOption("repos")
   r["CRAN"] <- "https://cloud.r-project.org/"
   options(repos = r)
 })
 
-# Suppress package startup messages for cleaner output
+# Suprimir mensajes de inicio de paquetes para salida más limpia
 suppressPackageStartupMessages({
-  # Pre-load essential packages silently
+  # Pre-cargar paquetes esenciales silenciosamente
   library(utils)
   library(stats)
 })

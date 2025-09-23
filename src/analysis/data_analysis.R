@@ -1,7 +1,7 @@
-# Data Analysis Module for GBIF Spain Collections Registry
-# This module provides comprehensive analysis functions for collections and institutions data
+# Módulo de Análisis de Datos para Registro de Colecciones GBIF España
+# Este módulo proporciona funciones de análisis comprehensivo para datos de colecciones e instituciones
 
-# Load required libraries
+# Cargar librerías requeridas
 library(DBI)
 library(dplyr)
 library(ggplot2)
@@ -11,16 +11,16 @@ library(tidyr)
 library(scales)
 library(logging)
 
-#' Analyze Collection Trends
+#' Analizar Tendencias de Colecciones
 #' 
-#' Analyzes trends in collection data over time
+#' Analiza tendencias en datos de colecciones a lo largo del tiempo
 #' 
-#' @param connection Database connection object
-#' @param time_period Character. Time period for analysis ("month", "quarter", "year")
-#' @return List with trend analysis results
+#' @param connection Objeto de conexión a base de datos
+#' @param time_period Character. Período de tiempo para análisis ("month", "quarter", "year")
+#' @return Lista con resultados de análisis de tendencias
 #' @export
 analyze_collection_trends <- function(connection, time_period = "month") {
-  loginfo("Starting collection trends analysis")
+  loginfo("Iniciando análisis de tendencias de colecciones")
   
   tryCatch({
     trends_results <- list()
@@ -28,13 +28,13 @@ analyze_collection_trends <- function(connection, time_period = "month") {
     trends_results$analysis_type <- "collection_trends"
     trends_results$time_period <- time_period
     
-    # Check if collections table exists
+    # Verificar si tabla collections existe
     if (!"collections" %in% dbListTables(connection)) {
-      logwarn("Collections table not found")
+      logwarn("Tabla collections no encontrada")
       return(NULL)
     }
     
-    # Get date format based on time period
+    # Obtener formato de fecha basado en período de tiempo
     date_format <- switch(time_period,
       "month" = "%Y-%m",
       "quarter" = "%Y-Q%q",
@@ -42,7 +42,7 @@ analyze_collection_trends <- function(connection, time_period = "month") {
       "%Y-%m"
     )
     
-    # Collection creation trends
+    # Tendencias de creación de colecciones
     creation_trends_query <- paste(
       "SELECT DATE_FORMAT(created, '", date_format, "') as time_period,",
       "COUNT(*) as collections_created",

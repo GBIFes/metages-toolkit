@@ -1,30 +1,30 @@
-# Database Connection Module
+# Módulo de Conexión a Base de Datos
 
-This module handles database connections for both PROD and TEST environments.
+Este módulo maneja conexiones de base de datos para entornos PROD y TEST.
 
-## Files:
-- `db_connection.R`: Main database connection functions
+## Archivos:
+- `db_connection.R`: Funciones principales de conexión a base de datos
 
-## Functions:
-- `setup_database_connection()`: Establishes connection based on environment
-- `close_database_connection()`: Safely closes database connections
-- `test_connection()`: Tests database connectivity
-- `get_connection_info()`: Returns connection status information
+## Funciones:
+- `setup_database_connection()`: Establece conexión basada en entorno
+- `close_database_connection()`: Cierra conexiones de base de datos de forma segura
+- `test_connection()`: Prueba conectividad de base de datos
+- `get_connection_info()`: Devuelve información de estado de conexión
 
-## Usage:
+## Uso:
 ```r
-# Load the connection module
+# Cargar el módulo de conexión
 source("src/connection/db_connection.R")
 
-# Connect to production database
+# Conectar a base de datos de producción
 prod_conn <- setup_database_connection("PROD")
 
-# Connect to test database  
+# Conectar a base de datos de pruebas
 test_conn <- setup_database_connection("TEST")
 
-# Test connection
+# Probar conexión
 test_connection(prod_conn)
 
-# Close connection when done
+# Cerrar conexión cuando termine
 close_database_connection(prod_conn)
 ```

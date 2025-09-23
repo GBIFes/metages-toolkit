@@ -1,61 +1,61 @@
-# Configuration Templates
+# Plantillas de Configuración
 
-This directory contains configuration templates for database connections via SSH tunnels.
+Este directorio contiene plantillas de configuración para conexiones de base de datos a través de túneles SSH.
 
-## Files:
-- `prod_config.R.template`: Template for production database configuration
-- `test_config.R.template`: Template for test database configuration
+## Archivos:
+- `prod_config.R.template`: Plantilla para configuración de base de datos de producción
+- `test_config.R.template`: Plantilla para configuración de base de datos de pruebas
 
-## Setup Instructions:
+## Instrucciones de Configuración:
 
-1. Copy the template files and remove the `.template` extension:
+1. Copia los archivos de plantilla y elimina la extensión `.template`:
    ```bash
    cp prod_config.R.template prod_config.R
    cp test_config.R.template test_config.R
    ```
 
-2. Edit the configuration files with your actual SSH and database credentials.
+2. Edita los archivos de configuración con tus credenciales SSH y de base de datos reales.
 
-3. **IMPORTANT**: Never commit the actual config files (`prod_config.R` and `test_config.R`) to version control as they contain sensitive credentials. These files are already listed in `.gitignore`.
+3. **IMPORTANTE**: Nunca confirmes los archivos de configuración reales (`prod_config.R` y `test_config.R`) en control de versiones ya que contienen credenciales sensibles. Estos archivos ya están listados en `.gitignore`.
 
-## SSH Tunnel Configuration
+## Configuración de Túnel SSH
 
-This toolkit uses SSH tunnels to securely connect to the MySQL database. The connection flow is:
+Este toolkit utiliza túneles SSH para conectarse de forma segura a la base de datos MySQL. El flujo de conexión es:
 
 ```
-R Script -> Local ODBC (port 3307) -> SSH Tunnel -> Remote MySQL (port 3306)
+Script R -> ODBC Local (puerto 3307) -> Túnel SSH -> MySQL Remoto (puerto 3306)
 ```
 
-### Required SSH Setup:
+### Configuración SSH Requerida:
 
-1. **SSH Key**: Ensure you have SSH private key access to `mola.gbif.es:22002`
-2. **ODBC Driver**: Install MySQL ODBC driver on your system
-   - Check available drivers: `odbc::odbcListDrivers()`
-3. **Network Access**: Ensure you can reach the SSH server from your location
+1. **Clave SSH**: Asegúrate de tener acceso con clave privada SSH a `mola.gbif.es:22002`
+2. **Driver ODBC**: Instala el driver ODBC de MySQL en tu sistema
+   - Verificar drivers disponibles: `odbc::odbcListDrivers()`
+3. **Acceso de Red**: Asegúrate de poder alcanzar el servidor SSH desde tu ubicación
 
-### Configuration Parameters:
+### Parámetros de Configuración:
 
-| Parameter | Description | Example |
+| Parámetro | Descripción | Ejemplo |
 |-----------|-------------|---------|
-| `ssh_host` | SSH server hostname | `"mola.gbif.es"` |
-| `ssh_port` | SSH server port | `22002` |
-| `ssh_user` | Your SSH username | `"your_username"` |
-| `ssh_keyfile` | Path to SSH private key | `"~/.ssh/id_rsa"` |
-| `local_port` | Local tunnel port | `3307` |
-| `remote_host` | Database server behind tunnel | `"localhost"` |
-| `remote_port` | Remote database port | `3306` |
-| `odbc_driver` | ODBC driver name | `"MySQL ODBC 9.4 ANSI Driver"` |
+| `ssh_host` | Nombre del servidor SSH | `"mola.gbif.es"` |
+| `ssh_port` | Puerto del servidor SSH | `22002` |
+| `ssh_user` | Tu nombre de usuario SSH | `"tu_usuario"` |
+| `ssh_keyfile` | Ruta a la clave privada SSH | `"~/.ssh/id_rsa"` |
+| `local_port` | Puerto del túnel local | `3307` |
+| `remote_host` | Servidor de BD detrás del túnel | `"localhost"` |
+| `remote_port` | Puerto de BD remota | `3306` |
+| `odbc_driver` | Nombre del driver ODBC | `"MySQL ODBC 9.4 ANSI Driver"` |
 
-## External Credentials (Optional)
+## Credenciales Externas (Opcional)
 
-You can use external credential files for additional security:
+Puedes usar archivos de credenciales externos para seguridad adicional:
 
-1. Create external config file (outside git repository)
-2. Uncomment and configure the `EXTERNAL_CONFIG_FILE` section in templates
-3. Store sensitive data (`UID`, `gbif_wp_pass`) in external file
+1. Crea archivo de configuración externo (fuera del repositorio git)
+2. Descomenta y configura la sección `EXTERNAL_CONFIG_FILE` en las plantillas
+3. Almacena datos sensibles (`UID`, `gbif_wp_pass`) en archivo externo
 
-## Security Notes:
-- Configuration files containing actual credentials are excluded from git via `.gitignore`
-- SSH private keys should be properly secured with appropriate file permissions
-- Only users with proper SSH and database credentials should have access
-- Consider using SSH agent for key management in production environments
+## Notas de Seguridad:
+- Los archivos de configuración que contienen credenciales reales están excluidos de git via `.gitignore`
+- Las claves privadas SSH deben estar debidamente aseguradas con permisos de archivo apropiados
+- Solo usuarios con credenciales SSH y de base de datos apropiadas deben tener acceso
+- Considera usar SSH agent para manejo de claves en entornos de producción

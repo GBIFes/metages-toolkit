@@ -1,36 +1,36 @@
-# R files
+# Archivos de R
 .Rhistory
 .Rapp.history
 .RData
 .Ruserdata
 *.Rproj
 
-# Database configuration files with credentials
+# Archivos de configuración de base de datos con credenciales
 config/prod_config.R
 config/test_config.R
 
-# Temporary files
+# Archivos temporales
 *.tmp
 *.temp
 
-# Log files
+# Archivos de log
 *.log
 
-# Data files (if any sensitive data is stored locally)
+# Archivos de datos (si se almacenan datos sensibles localmente)
 data/
 *.csv
 *.xlsx
 *.xls
 
-# IDE files
+# Archivos de IDE
 .vscode/
 .idea/
 
-# OS files
+# Archivos del sistema operativo
 .DS_Store
 Thumbs.db
 
-# R package development
+# Desarrollo de paquetes R
 *.tar.gz
 *.tgz
 packrat/lib*/

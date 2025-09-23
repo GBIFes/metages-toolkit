@@ -1,51 +1,52 @@
-# GBIF Spain Collections Registry Toolkit - Usage Guide
+# Toolkit del Registro de Colecciones GBIF España - Guía de Uso
 
-This guide provides comprehensive instructions for using the GBIF Spain Collections Registry Toolkit to access, explore, analyze, and update the collections database.
+Esta guía proporciona instrucciones comprehensivas para usar el Toolkit del Registro de Colecciones GBIF España para acceder, explorar, analizar el registro de colecciones.
 
-## Overview
+## Descripción General
 
-The GBIF Spain Collections Registry (https://gbif.es/registro-colecciones/) is a private metadata database that catalogs Spanish natural history collections. This toolkit provides authorized access to the underlying database for data management operations.
+El Registro de Colecciones GBIF España (https://gbif.es/registro-colecciones/) es una base de datos privada de metadatos que cataloga las colecciones españolas de historia natural. Este toolkit proporciona acceso autorizado a la base de datos subyacente para operaciones de gestión de datos.
 
-## Overview
+## Funcionalidades Principales
 
-The toolkit provides four main operations:
+El toolkit proporciona tres operaciones principales:
 
-1. **Database Exploration** - Analyze database structure and content
-2. **Quality Control Checks** - Validate data quality and integrity
-3. **Data Analysis** - Generate insights and trends from the data
-4. **Database Updates** - Safely modify database records
+1. **Exploración de Base de Datos** - Analizar estructura y contenido de base de datos
+2. **Verificaciones de Control de Calidad** - Validar calidad e integridad de datos
+3. **Análisis de Datos** - Generar perspectivas y tendencias de los datos
 
-## General Usage Patterns
+**NOTA IMPORTANTE**: Las funcionalidades de actualización están deshabilitadas en esta versión por seguridad.
 
-### Environment Selection
+## Patrones de Uso General
 
-Always specify the target environment:
-- `TEST` - For development and testing (safe for experimentation)
-- `PROD` - For production operations (requires extra caution)
+### Selección de Entorno
 
-**Best Practice**: Always test operations on `TEST` environment first.
+Siempre especifica el entorno objetivo:
+- `TEST` - Para desarrollo y pruebas (seguro para experimentación)
+- `PROD` - Para operaciones de producción (requiere precaución extra)
 
-### Output Management
+**Buena Práctica**: Siempre prueba operaciones en entorno `TEST` primero.
 
-All operations generate outputs in the `output/` directory:
-- Reports are timestamped for version control
-- Multiple formats available (RDS, CSV, JSON)
-- Logs are maintained in `logs/` directory
+### Gestión de Salidas
 
-## Database Exploration
+Todas las operaciones generan salidas en el directorio `output/`:
+- Los reportes tienen marca temporal para control de versiones
+- Múltiples formatos disponibles (RDS, CSV, JSON)
+- Los logs se mantienen en directorio `logs/`
 
-### Basic Exploration
+## Exploración de Base de Datos
 
-Explore the entire database structure and content:
+### Exploración Básica
+
+Explorar toda la estructura y contenido de base de datos:
 
 ```bash
-# Explore TEST database with full reporting
+# Explorar base de datos TEST con reporte completo
 Rscript scripts/run_exploration.R TEST
 
-# Explore PROD database, save to custom directory
-Rscript scripts/run_exploration.R PROD reports
+# Explorar base de datos PROD, guardar en directorio personalizado
+Rscript scripts/run_exploration.R PROD reportes
 
-# Quick exploration without comprehensive report
+# Exploración rápida sin reporte comprehensivo
 Rscript scripts/run_exploration.R TEST output FALSE
 ```
 
