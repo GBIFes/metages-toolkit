@@ -86,7 +86,7 @@ metages-toolkit/
 
 2. **Instalar dependencias de R:**
    ```r
-   install.packages(c("DBI", "RMySQL", "pool", "dplyr", "ggplot2", 
+   install.packages(c("DBI", "odbc", "ssh", "pool", "dplyr", "ggplot2", 
                       "logging", "uuid", "jsonlite", "lubridate"))
    ```
 
@@ -96,9 +96,15 @@ metages-toolkit/
    cp config/prod_config.R.template config/prod_config.R
    cp config/test_config.R.template config/test_config.R
    
-   # Editar con tus credenciales (¡NUNCA las subas a git!)
+   # Editar con tus credenciales SSH y BD (¡NUNCA las subas a git!)
    # Los archivos de configuración ya están en .gitignore
    ```
+
+   **Configuración SSH requerida:**
+   - Host SSH: `mola.gbif.es:22002`
+   - Clave privada SSH configurada
+   - Túnel local puerto 3307 -> remoto puerto 3306
+   - Driver ODBC MySQL instalado
 
 4. **Crear directorios de salida:**
    ```bash

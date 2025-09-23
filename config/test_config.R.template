@@ -1,22 +1,32 @@
 # Test Database Configuration Template
 # Copy this file to test_config.R and fill in your actual credentials
 
-# MySQL Database Connection Parameters
+# MySQL Database Connection Parameters via SSH Tunnel  
 DB_CONFIG_TEST <- list(
-  host = "your-test-host.com",
-  port = 3306,
+  # SSH Tunnel Configuration
+  ssh_host = "mola.gbif.es",
+  ssh_port = 22002,
+  ssh_user = "your_ssh_username",
+  ssh_keyfile = "path/to/your/ssh/private/key",  # e.g., "~/.ssh/id_rsa"
+  
+  # Local tunnel endpoint
+  local_port = 3307,
+  
+  # Remote database server (behind SSH tunnel)
+  remote_host = "localhost",  # or actual database server hostname
+  remote_port = 3306,
+  
+  # Database connection parameters
   database = "your_test_database_name",
-  username = "your_test_username",
+  username = "your_test_username", 
   password = "your_test_password",
+  
+  # ODBC Driver (check available drivers with: odbc::odbcListDrivers())
+  odbc_driver = "MySQL ODBC 9.4 ANSI Driver",  # Adjust based on your system
   
   # Additional connection parameters
   charset = "utf8mb4",
   timeout = 30,
-  
-  # SSL configuration (if required)
-  ssl_cert = NULL,
-  ssl_key = NULL,
-  ssl_ca = NULL,
   
   # Connection pool settings
   pool_size = 3,
@@ -26,8 +36,9 @@ DB_CONFIG_TEST <- list(
 )
 
 # Database specific settings
-GBIF_COLLECTIONS_SCHEMA <- "gbif_collections_test"
+GBIF_COLLECTIONS_SCHEMA <- "gbif_wp_test"  # Updated based on user's example
 TABLES <- list(
+  metages_accesocol = "metages_accesocol",  # Based on user's example query
   collections = "collections",
   institutions = "institutions",
   contacts = "contacts",
@@ -37,3 +48,13 @@ TABLES <- list(
 # Logging settings
 LOG_LEVEL <- "DEBUG"
 LOG_FILE <- "logs/test_operations.log"
+
+# Optional: External config file for sensitive data
+# Uncomment and modify if you want to use external config file like the user's approach
+# EXTERNAL_CONFIG_FILE <- "/path/to/external/config_gbif.es_dbconnect"
+# if (file.exists(EXTERNAL_CONFIG_FILE)) {
+#   source(EXTERNAL_CONFIG_FILE)
+#   # Override above settings with external config values
+#   DB_CONFIG_TEST$username <- UID
+#   DB_CONFIG_TEST$password <- gbif_wp_pass
+# }

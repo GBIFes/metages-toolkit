@@ -39,7 +39,8 @@ if (file.exists("renv.lock") && requireNamespace("renv", quietly = TRUE)) {
 check_required_packages <- function() {
   required_packages <- c(
     "DBI",
-    "RMySQL", 
+    "odbc",     # Changed from RMySQL to odbc
+    "ssh",      # Added for SSH tunneling
     "pool",
     "dplyr",
     "ggplot2",
