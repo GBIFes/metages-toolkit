@@ -1,0 +1,52 @@
+---
+title: "Introducción al Toolkit del Registro de Colecciones GBIF España"
+author: "GBIF.ES"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteIndexEntry{Introducción al Toolkit del Registro de Colecciones GBIF España}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE  # Desactivar evaluación por defecto para ejemplos
+)
+```
+
+## Introducción
+
+El **Toolkit del Registro de Colecciones GBIF España** es una colección de herramientas en R diseñadas para gestionar, analizar y actualizar la base de datos del Registro de Colecciones de GBIF.ES.
+
+### Configuración del Túnel SSH
+
+**IMPORTANTE**: El túnel SSH debe establecerse usando bash ANTES de usar R.
+
+```bash
+# Para Entorno de Pruebas
+ssh -i ~/.ssh/id_rsa -p 22002 tu_usuario@mola.gbif.es -L 3308:localhost:3306
+
+# Para Entorno de Producción  
+ssh -i ~/.ssh/id_rsa -p 22002 tu_usuario@mola.gbif.es -L 3307:localhost:3306
+```
+
+## Uso Básico
+
+### Conectar a la Base de Datos
+
+```{r connection, eval=FALSE}
+# Cargar el módulo de conexión
+source("src/connection/db_connection.R")
+
+# Conectar al entorno de pruebas
+conn <- setup_database_connection("TEST")
+
+# Probar la conexión
+test_connection(conn)
+```

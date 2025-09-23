@@ -1,0 +1,320 @@
+# Toolkit del Registro de Colecciones de GBIF España - Guía de Configuración
+
+Esta guía proporciona instrucciones paso a paso para configurar el Toolkit del Registro de Colecciones de GBIF España.
+
+## Acerca del Registro de Colecciones de GBIF España
+
+El Registro de Colecciones de GBIF España (Registro de Colecciones de GBIF.ES) es una base de datos privada de metadatos que cataloga las colecciones españolas de historia natural. El registro es accesible públicamente en https://gbif.es/registro-colecciones/ y sirve como la fuente autoritativa de información sobre colecciones alojadas en instituciones españolas.
+
+Este toolkit proporciona acceso seguro y programático a la base de datos subyacente para personal autorizado de GBIF.ES para realizar gestión de datos, control de calidad, análisis y exploración. **NOTA: Las funcionalidades de actualización están deshabilitadas en esta versión inicial por seguridad.**
+
+## Requisitos Previos
+
+### Requisitos de Software
+
+1. **R (versión 4.0.0 o superior)**
+   - Descargar desde: https://www.r-project.org/
+   - Verificar instalación: `R --version`
+
+2. **Paquetes R requeridos**
+   ```r
+   # Instalar paquetes requeridos
+   install.packages(c(
+     "DBI",
+     "odbc", 
+     "pool",
+     "dplyr",
+     "ggplot2",
+     "plotly",
+     "lubridate",
+     "tidyr",
+     "scales",
+     "stringr",
+     "logging",
+     "uuid",
+     "jsonlite",
+     "knitr",
+     "visNetwork"
+   ))
+   ```
+
+3. **Acceso a Base de Datos MySQL**
+   - Servidor MySQL con base de datos del Registro de Colecciones de GBIF España
+   - Credenciales válidas para entornos PROD y TEST
+   - Acceso SSH a `mola.gbif.es:22002` (puerto puede variar por usuario)
+   - Cliente SSH configurado con claves privadas
+   - Driver ODBC MySQL instalado
+
+### Requisitos del Sistema
+
+- **Sistema Operativo**: Linux, macOS, o Windows
+- **Memoria**: Mínimo 4GB RAM (8GB recomendado para conjuntos de datos grandes)
+- **Almacenamiento**: Al menos 1GB de espacio libre para logs y archivos temporales
+- **Red**: Conexión estable a servidores de base de datos MySQL
+- **SSH**: Cliente SSH configurado con acceso a infrastructure GBIF.ES
+
+## Instalación
+
+### 1. Clonar el Repositorio
+
+```bash
+git clone https://github.com/GBIFes/metages-toolkit.git
+cd metages-toolkit
+```
+
+### 2. Instalar Dependencias R
+
+Ejecutar R e instalar paquetes requeridos:
+
+```r
+# Ejecutar esto en consola R
+source("setup_dependencies.R")  # Si está disponible, o instalar manualmente como se muestra arriba
+```
+
+### 3. Configurar Conexiones de Base de Datos
+
+#### Entorno de Producción
+
+1. Copiar la plantilla de configuración de producción:
+   ```bash
+   cp config/prod_config.R.template config/prod_config.R
+   ```
+
+2. Editar `config/prod_config.R` con tus credenciales de base de datos de producción:
+   ```r
+   # Editar estos valores con los detalles reales de tu base de datos de producción
+   DB_CONFIG_PROD <- list(
+     # Configuración de túnel SSH (puede variar por usuario)
+     ssh_host = "mola.gbif.es",  # Puede cambiar según tu acceso
+     ssh_port = 22002,           # Puede cambiar según tu acceso
+     ssh_user = "tu_usuario_ssh",
+     ssh_keyfile = "~/.ssh/id_rsa",
+     local_port = 3307,          # Puerto local del túnel
+     
+     # Configuración de base de datos
+     remote_host = "localhost",
+     remote_port = 3306,
+     database = "gbif_wp",
+     username = "tu_usuario_prod",
+     password = "tu_password_prod",
+     # ... otras configuraciones
+   )
+   ```
+
+#### Entorno de Pruebas
+
+1. Copiar la plantilla de configuración de pruebas:
+   ```bash
+   cp config/test_config.R.template config/test_config.R
+   ```
+
+2. Editar `config/test_config.R` con tus credenciales de base de datos de pruebas:
+   ```r
+   # Editar estos valores con los detalles reales de tu base de datos de pruebas
+   DB_CONFIG_TEST <- list(
+     # Configuración de túnel SSH (puede variar por usuario)
+     ssh_host = "mola.gbif.es",  # Puede cambiar según tu acceso
+     ssh_port = 22002,           # Puede cambiar según tu acceso
+     ssh_user = "tu_usuario_ssh",
+     ssh_keyfile = "~/.ssh/id_rsa", 
+     local_port = 3308,          # Puerto local diferente para TEST
+     
+     # Configuración de base de datos
+     remote_host = "localhost",
+     remote_port = 3306,
+     database = "gbif_wp_test",
+     username = "tu_usuario_test",
+     password = "tu_password_test",
+     # ... otras configuraciones
+   )
+   ```
+
+### 4. Create Required Directories
+
+```bash
+# Create output and log directories
+mkdir -p output logs plots
+```
+
+### 5. Test Database Connections
+
+Test your configuration by running a simple connection test:
+
+```r
+# Test production connection
+source("src/connection/db_connection.R")
+prod_conn <- setup_database_connection("PROD")
+test_connection(prod_conn)
+close_database_connection(prod_conn)
+
+# Test development connection
+test_conn <- setup_database_connection("TEST")
+test_connection(test_conn)
+close_database_connection(test_conn)
+```
+
+## Configuration Details
+
+### Database Configuration Parameters
+
+| Parameter | Description | Required | Default |
+|-----------|-------------|----------|---------|
+| `host` | MySQL server hostname | Yes | - |
+| `port` | MySQL server port | Yes | 3306 |
+| `database` | Database name | Yes | - |
+| `username` | Database username | Yes | - |
+| `password` | Database password | Yes | - |
+| `charset` | Character encoding | No | utf8mb4 |
+| `timeout` | Connection timeout (seconds) | No | 30 |
+| `pool_size` | Connection pool size | No | 5 (PROD), 3 (TEST) |
+
+### SSL Configuration (Optional)
+
+If your MySQL server requires SSL connections:
+
+```r
+DB_CONFIG_PROD <- list(
+  # ... other settings ...
+  ssl_cert = "/path/to/client-cert.pem",
+  ssl_key = "/path/to/client-key.pem",
+  ssl_ca = "/path/to/ca-cert.pem"
+)
+```
+
+### Logging Configuration
+
+Adjust logging levels and file locations in the configuration files:
+
+```r
+# Logging settings
+LOG_LEVEL <- "INFO"  # Options: DEBUG, INFO, WARN, ERROR
+LOG_FILE <- "logs/prod_operations.log"
+```
+
+## Environment Variables (Alternative Configuration)
+
+For enhanced security, you can use environment variables instead of storing credentials in files:
+
+1. Set environment variables:
+   ```bash
+   export GBIF_PROD_HOST="prod-mysql.your-domain.com"
+   export GBIF_PROD_USER="your_prod_username"
+   export GBIF_PROD_PASSWORD="your_prod_password"
+   export GBIF_PROD_DATABASE="gbif_collections_prod"
+   
+   export GBIF_TEST_HOST="test-mysql.your-domain.com"
+   export GBIF_TEST_USER="your_test_username"
+   export GBIF_TEST_PASSWORD="your_test_password"
+   export GBIF_TEST_DATABASE="gbif_collections_test"
+   ```
+
+2. Modify configuration files to use environment variables:
+   ```r
+   DB_CONFIG_PROD <- list(
+     host = Sys.getenv("GBIF_PROD_HOST"),
+     port = 3306,
+     database = Sys.getenv("GBIF_PROD_DATABASE"),
+     username = Sys.getenv("GBIF_PROD_USER"),
+     password = Sys.getenv("GBIF_PROD_PASSWORD"),
+     # ... other settings
+   )
+   ```
+
+## Security Considerations
+
+### File Permissions
+
+Restrict access to configuration files containing credentials:
+
+```bash
+chmod 600 config/prod_config.R
+chmod 600 config/test_config.R
+```
+
+### Git Configuration
+
+Ensure credentials are never committed to version control:
+
+1. Configuration files are already in `.gitignore`
+2. Verify with: `git status` (should not show config files)
+3. If accidentally added: `git rm --cached config/prod_config.R`
+
+### Network Security
+
+- Use SSL/TLS connections when possible
+- Restrict database access to specific IP addresses
+- Use VPN for remote database connections
+- Regularly rotate database passwords
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Connection Refused**
+   - Check database server hostname and port
+   - Verify network connectivity: `telnet hostname port`
+   - Check firewall settings
+
+2. **Authentication Failed**
+   - Verify username and password
+   - Check user permissions in MySQL
+   - Ensure user has access from your IP address
+
+3. **SSL Certificate Errors**
+   - Verify SSL certificate paths
+   - Check certificate validity
+   - Test SSL connection manually
+
+4. **Permission Denied on Log Files**
+   - Check directory permissions: `ls -la logs/`
+   - Create directory if missing: `mkdir -p logs`
+   - Adjust permissions: `chmod 755 logs`
+
+### Testing Commands
+
+```bash
+# Test database connection
+Rscript -e "source('src/connection/db_connection.R'); conn <- setup_database_connection('TEST'); print(test_connection(conn)); close_database_connection(conn)"
+
+# Test specific script
+Rscript scripts/run_exploration.R TEST output FALSE
+
+# Check R package installation
+Rscript -e "packageVersion('DBI')"
+```
+
+### Log Analysis
+
+Check log files for detailed error information:
+
+```bash
+# View recent log entries
+tail -f logs/test_operations.log
+tail -f logs/prod_operations.log
+
+# Search for errors
+grep -i error logs/*.log
+grep -i warning logs/*.log
+```
+
+## Next Steps
+
+After successful setup:
+
+1. **Read the Usage Guide**: `docs/usage.md`
+2. **Run initial exploration**: `Rscript scripts/run_exploration.R TEST`
+3. **Perform quality checks**: `Rscript scripts/run_qc_checks.R TEST`
+4. **Review generated reports** in the `output/` directory
+
+## Support
+
+For technical support or questions:
+
+1. Check the repository documentation
+2. Review log files for error details
+3. Contact the GBIF.ES technical team
+4. Open an issue in the GitHub repository (for non-sensitive issues)
+
+---
+
+**Important**: Always test operations on the TEST environment before running on PRODUCTION data.

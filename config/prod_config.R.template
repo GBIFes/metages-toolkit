@@ -1,0 +1,64 @@
+# Plantilla de Configuración de Base de Datos de Producción para Registro de Colecciones GBIF España
+# Copia este archivo a prod_config.R y completa con tus credenciales reales
+
+# IMPORTANTE: El túnel SSH debe estar abierto previamente usando bash
+# Comando bash para abrir túnel SSH (ejecutar ANTES de usar R):
+# ssh -i ~/.ssh/id_rsa -p 22002 tu_usuario_ssh@mola.gbif.es -L 3307:localhost:3306
+
+# Configuración de Conexión a Base de Datos MySQL via Túnel SSH para GBIF.ES
+DB_CONFIG_PROD <- list(
+  # Configuración de Base de Datos Remota (puede variar por usuario)
+  remote_host = "localhost",              # Host de BD remoto (tras el túnel)
+  remote_port = 3306,                     # Puerto BD remoto estándar
+  database = "gbif_wp",                   # Base de datos del registro de colecciones
+  username = "tu_usuario_prod",           # Tu usuario de BD PROD
+  password = "tu_password_prod",          # Tu contraseña de BD PROD
+  
+  # Configuración del Túnel SSH Local
+  local_port = 3307,                      # Puerto local del túnel SSH
+  
+  # Configuración SSH (para referencia en documentación - puede variar por usuario)
+  ssh_host = "mola.gbif.es",              # Servidor SSH de GBIF.ES (puede cambiar)
+  ssh_port = 22002,                       # Puerto SSH específico (puede cambiar)
+  ssh_user = "tu_usuario_ssh",            # Tu usuario SSH
+  ssh_keyfile = "~/.ssh/id_rsa",          # Ruta a tu clave privada SSH
+  
+  # Driver ODBC (verificar disponibles con: odbc::odbcListDrivers())
+  odbc_driver = "MySQL ODBC 9.4 ANSI Driver",  # Ajustar según tu sistema
+  
+  # Parámetros adicionales de conexión
+  charset = "utf8mb4",
+  timeout = 30,
+  
+  # Configuración de pool de conexiones
+  pool_size = 5,
+  
+  # Identificador de entorno
+  environment = "PROD"
+)
+
+# Configuración específica de Base de Datos para Registro de Colecciones GBIF España
+GBIF_SPAIN_COLLECTIONS_SCHEMA <- "gbif_wp"  # Esquema de BD de GBIF España
+TABLES <- list(
+  metages_accesocol = "metages_accesocol",  # Tabla principal de acceso a colecciones
+  collections = "collections",              # Metadatos de colecciones
+  institutions = "institutions",            # Información de instituciones
+  contacts = "contacts",                    # Detalles de contacto
+  identifiers = "identifiers"               # Identificadores de colecciones
+)
+
+# Configuración de logging
+LOG_LEVEL <- "INFO"
+LOG_FILE <- "logs/prod_operations.log"
+
+# OPCIONAL: Archivo de configuración externa para datos sensibles
+# Descomenta y modifica si quieres usar archivo de configuración externa como el patrón del usuario
+# EXTERNAL_CONFIG_FILE <- "~/Documents/R/config_gbif.es_dbconnect"
+# if (file.exists(EXTERNAL_CONFIG_FILE)) {
+#   source(EXTERNAL_CONFIG_FILE)
+#   # Sobrescribir configuración con valores del archivo externo
+#   DB_CONFIG_PROD$username <- PROD_UID
+#   DB_CONFIG_PROD$password <- PROD_PASSWORD
+#   DB_CONFIG_PROD$local_port <- LOCAL_PORT_PROD
+#   DB_CONFIG_PROD$odbc_driver <- ODBC_DRIVER
+# }

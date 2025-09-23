@@ -1,2 +1,258 @@
-# metages-toolkit
+# GBIF Spain Collections Registry Toolkit
+
 Repositorio de uso interno para leer, analizar y actualizar el Registro de Colecciones de GBIF.ES
+
+## Descripción
+
+Este toolkit proporciona un conjunto completo de herramientas en R para gestionar y analizar la base de datos del Registro de Colecciones de GBIF España (GBIF.ES). El registro es una base de datos privada de metadatos de colecciones españolas, visible públicamente en https://gbif.es/registro-colecciones/. 
+
+El toolkit está diseñado para trabajar con entornos de producción (PROD) y pruebas (TEST) de forma segura y eficiente, proporcionando acceso controlado a los metadatos de las colecciones registradas en España.
+
+## Funcionalidades Principales
+
+### 🔍 Exploración de Base de Datos
+- Análisis de estructura de tablas y esquemas
+- Generación de estadísticas descriptivas
+- Evaluación de calidad de datos
+- Informes completos de exploración
+
+### ✅ Control de Calidad
+- Verificación de completitud de datos
+- Validación de consistencia e integridad referencial
+- Comprobación de formatos y restricciones
+- Aplicación de reglas de negocio específicas de GBIF
+
+### 📊 Análisis de Datos
+- Análisis de tendencias temporales
+- Cobertura geográfica e institucional
+- Identificación de patrones en los datos
+- Métricas de rendimiento y salud de datos
+
+### 📝 Actualizaciones Seguras
+- Validación previa de datos de actualización
+- Creación automática de respaldos
+- Operaciones de actualización individuales y masivas
+- Registro de auditoría de todas las operaciones
+
+## Estructura del Repositorio
+
+```
+metages-toolkit/
+├── README.md                      # Este archivo
+├── .gitignore                     # Archivos excluidos del control de versiones
+├── config/                        # Configuraciones de base de datos
+│   ├── README.md                  # Guía de configuración
+│   ├── prod_config.R.template     # Plantilla para configuración de PROD
+│   └── test_config.R.template     # Plantilla para configuración de TEST
+├── src/                           # Código fuente
+│   ├── connection/                # Módulo de conexión a BD
+│   │   ├── README.md
+│   │   └── db_connection.R
+│   ├── exploration/               # Módulo de exploración
+│   │   ├── README.md
+│   │   └── data_exploration.R
+│   ├── quality_control/           # Módulo de control de calidad
+│   │   ├── README.md
+│   │   └── qc_checks.R
+│   ├── analysis/                  # Módulo de análisis
+│   │   ├── README.md
+│   │   └── data_analysis.R
+│   └── updates/                   # Módulo de actualizaciones
+│       ├── README.md
+│       └── db_updates.R
+├── scripts/                       # Scripts de ejecución principales
+│   ├── run_exploration.R          # Exploración de BD
+│   ├── run_qc_checks.R           # Control de calidad
+│   ├── run_analysis.R            # Análisis de datos
+│   └── run_updates.R             # Actualizaciones de BD
+└── docs/                         # Documentación
+    ├── setup.md                  # Guía de instalación y configuración
+    └── usage.md                  # Guía de uso detallada
+```
+
+## Instalación Rápida
+
+## Especificaciones de Software
+
+### Lenguajes y Herramientas
+
+| Componente | Lenguaje/Software | Versión Mínima | Propósito |
+|------------|-------------------|----------------|-----------|
+| **Scripts principales** | R | 4.0.0+ | Análisis de datos y conexión a BD |
+| **Túneles SSH** | Bash | N/A | Conexiones seguras a BD |
+| **Driver de BD** | ODBC | MySQL ODBC 9.4+ | Conectividad con MySQL |
+| **Documentación** | R Markdown | 2.0+ | Generación de reportes |
+| **Visualizaciones** | R + HTML/JS | N/A | Gráficos interactivos |
+
+### Paquetes R Requeridos
+
+```r
+# LENGUAJE: R
+# Instalar dependencias principales
+install.packages(c(
+  "DBI", "odbc", "pool",           # Conexión a base de datos
+  "dplyr", "tidyr", "stringr",     # Manipulación de datos  
+  "ggplot2", "plotly", "scales",   # Visualizaciones
+  "knitr", "rmarkdown",            # Reportes y documentación
+  "logging", "uuid", "jsonlite",   # Utilidades
+  "igraph", "visNetwork"           # Análisis de dependencias
+))
+```
+
+### Configuración
+
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/GBIFes/metages-toolkit.git
+   cd metages-toolkit
+   ```
+
+### Configuración del Túnel SSH
+
+**IMPORTANTE**: El túnel SSH debe establecerse usando **bash** ANTES de ejecutar scripts R.
+
+#### Para Entorno de Pruebas (TEST)
+```bash
+# LENGUAJE: Bash
+# Ejecutar en terminal ANTES de usar R
+ssh -i ~/.ssh/id_rsa -p 22002 tu_usuario@mola.gbif.es -L 3308:localhost:3306
+```
+
+#### Para Entorno de Producción (PROD)
+```bash
+# LENGUAJE: Bash  
+# Ejecutar en terminal ANTES de usar R
+ssh -i ~/.ssh/id_rsa -p 22002 tu_usuario@mola.gbif.es -L 3307:localhost:3306
+```
+
+### Configuración de Credenciales
+
+```bash
+# LENGUAJE: Bash
+# Copiar y editar plantillas de configuración
+cp config/prod_config.R.template config/prod_config.R
+cp config/test_config.R.template config/test_config.R
+
+# Editar con tus credenciales SSH y BD (¡NUNCA las subas a git!)
+# Los archivos de configuración ya están en .gitignore
+```
+
+4. **Crear directorios de salida:**
+   ```bash
+   mkdir -p output logs plots
+   ```
+
+## Uso Básico
+
+### Exploración de la Base de Datos
+```bash
+# Explorar entorno de TEST
+Rscript scripts/run_exploration.R TEST
+
+# Explorar entorno de PROD
+Rscript scripts/run_exploration.R PROD
+```
+
+### Control de Calidad
+```bash
+# Ejecutar todas las verificaciones en TEST
+Rscript scripts/run_qc_checks.R TEST
+
+# Verificaciones específicas
+Rscript scripts/run_qc_checks.R TEST output completeness,consistency
+```
+
+### Análisis de Datos
+```bash
+# Dashboard completo de análisis
+Rscript scripts/run_analysis.R TEST
+
+# Análisis específicos
+Rscript scripts/run_analysis.R PROD output trends,coverage csv
+```
+
+### Actualizaciones de Base de Datos
+```bash
+# ¡SIEMPRE probar primero en TEST!
+Rscript scripts/run_updates.R TEST validate datos_actualizacion.csv
+Rscript scripts/run_updates.R TEST update_collection datos_actualizacion.csv
+
+# Solo después de pruebas exitosas en PROD
+Rscript scripts/run_updates.R PROD update_collection datos_actualizacion.csv
+```
+
+## Seguridad y Mejores Prácticas
+
+### 🔒 Seguridad de Credenciales
+- Las credenciales de BD **NUNCA** se suben al repositorio
+- Los archivos de configuración están en `.gitignore`
+- Se recomienda usar variables de entorno para credenciales
+- Acceso restringido solo a personal autorizado
+
+### 🧪 Flujo de Desarrollo
+1. **Siempre probar en TEST** antes que en PROD
+2. **Validar datos** antes de cualquier actualización
+3. **Crear respaldos** antes de cambios importantes
+4. **Monitorear logs** para detectar errores
+5. **Documentar cambios** significativos
+
+### 📊 Gestión de Datos
+- Evaluaciones regulares de calidad
+- Monitoreo de tendencias para detección temprana de problemas
+- Procedimientos documentados de actualización
+- Control de versiones para cambios importantes
+
+## Nuevas Funcionalidades
+
+### 📊 Generación de Reportes
+```r
+# LENGUAJE: R
+# Generar reporte estilo GBIF España
+source("src/reports/report_generation.R")
+reporte <- generate_collections_report(conn, "output", "2024", "html")
+```
+
+### 🔍 Visualización de Dependencias
+```r
+# LENGUAJE: R  
+# Analizar dependencias entre funciones
+source("src/visualization/function_dependencies.R")
+create_complete_dependency_analysis("src", "output/dependencies")
+```
+
+### 📖 Vignettes y Documentación
+```r
+# LENGUAJE: R
+# Renderizar documentación interactiva
+rmarkdown::render("vignettes/introduccion.Rmd")
+browseURL("vignettes/introduccion.html")
+```
+
+### 🗄️ Configuración Externa
+Ver `config/ejemplo_config_externa.R` para ejemplo completo de configuración de credenciales fuera del repositorio Git.
+
+## Soporte Técnico
+
+Para soporte técnico o preguntas:
+
+1. Consulta la documentación en `docs/`
+2. Revisa los archivos de log para detalles de errores
+3. Contacta al equipo técnico de GBIF.ES
+4. Abre un issue en GitHub (solo para temas no sensibles)
+
+## Contribución
+
+Este es un repositorio de uso interno de GBIF.ES. Las contribuciones deben seguir:
+
+1. Proceso de revisión interno
+2. Pruebas exhaustivas en entorno TEST
+3. Documentación actualizada
+4. Cumplimiento de estándares de seguridad
+
+## Licencia
+
+Uso interno de GBIF.ES. Consulta con el equipo técnico para detalles de licencia.
+
+---
+
+**⚠️ IMPORTANTE**: Este toolkit maneja datos sensibles del Registro de Colecciones de GBIF España. Siempre seguir los procedimientos de seguridad establecidos y probar en entorno TEST antes de ejecutar operaciones en PROD.
