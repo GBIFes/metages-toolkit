@@ -72,12 +72,32 @@ metages-toolkit/
 
 ## Instalación Rápida
 
-### Prerrequisitos
+## Especificaciones de Software
 
-- R (versión 4.0.0 o superior)
-- Acceso a las bases de datos MySQL del Registro de Colecciones de GBIF España
-- Credenciales válidas para entornos PROD y TEST
-- Acceso SSH a `mola.gbif.es:22002`
+### Lenguajes y Herramientas
+
+| Componente | Lenguaje/Software | Versión Mínima | Propósito |
+|------------|-------------------|----------------|-----------|
+| **Scripts principales** | R | 4.0.0+ | Análisis de datos y conexión a BD |
+| **Túneles SSH** | Bash | N/A | Conexiones seguras a BD |
+| **Driver de BD** | ODBC | MySQL ODBC 9.4+ | Conectividad con MySQL |
+| **Documentación** | R Markdown | 2.0+ | Generación de reportes |
+| **Visualizaciones** | R + HTML/JS | N/A | Gráficos interactivos |
+
+### Paquetes R Requeridos
+
+```r
+# LENGUAJE: R
+# Instalar dependencias principales
+install.packages(c(
+  "DBI", "odbc", "pool",           # Conexión a base de datos
+  "dplyr", "tidyr", "stringr",     # Manipulación de datos  
+  "ggplot2", "plotly", "scales",   # Visualizaciones
+  "knitr", "rmarkdown",            # Reportes y documentación
+  "logging", "uuid", "jsonlite",   # Utilidades
+  "igraph", "visNetwork"           # Análisis de dependencias
+))
+```
 
 ### Configuración
 
@@ -87,27 +107,35 @@ metages-toolkit/
    cd metages-toolkit
    ```
 
-2. **Instalar dependencias de R:**
-   ```r
-   install.packages(c("DBI", "odbc", "ssh", "pool", "dplyr", "ggplot2", 
-                      "logging", "uuid", "jsonlite", "lubridate"))
-   ```
+### Configuración del Túnel SSH
 
-3. **Configurar conexiones a BD:**
-   ```bash
-   # Copiar y editar plantillas de configuración
-   cp config/prod_config.R.template config/prod_config.R
-   cp config/test_config.R.template config/test_config.R
-   
-   # Editar con tus credenciales SSH y BD (¡NUNCA las subas a git!)
-   # Los archivos de configuración ya están en .gitignore
-   ```
+**IMPORTANTE**: El túnel SSH debe establecerse usando **bash** ANTES de ejecutar scripts R.
 
-   **Configuración SSH requerida:**
-   - Host SSH: `mola.gbif.es:22002`
-   - Clave privada SSH configurada
-   - Túnel local puerto 3307 -> remoto puerto 3306
-   - Driver ODBC MySQL instalado
+#### Para Entorno de Pruebas (TEST)
+```bash
+# LENGUAJE: Bash
+# Ejecutar en terminal ANTES de usar R
+ssh -i ~/.ssh/id_rsa -p 22002 tu_usuario@mola.gbif.es -L 3308:localhost:3306
+```
+
+#### Para Entorno de Producción (PROD)
+```bash
+# LENGUAJE: Bash  
+# Ejecutar en terminal ANTES de usar R
+ssh -i ~/.ssh/id_rsa -p 22002 tu_usuario@mola.gbif.es -L 3307:localhost:3306
+```
+
+### Configuración de Credenciales
+
+```bash
+# LENGUAJE: Bash
+# Copiar y editar plantillas de configuración
+cp config/prod_config.R.template config/prod_config.R
+cp config/test_config.R.template config/test_config.R
+
+# Editar con tus credenciales SSH y BD (¡NUNCA las subas a git!)
+# Los archivos de configuración ya están en .gitignore
+```
 
 4. **Crear directorios de salida:**
    ```bash
@@ -174,12 +202,34 @@ Rscript scripts/run_updates.R PROD update_collection datos_actualizacion.csv
 - Procedimientos documentados de actualización
 - Control de versiones para cambios importantes
 
-## Documentación Detallada
+## Nuevas Funcionalidades
 
-- **[Guía de Configuración](docs/setup.md)** - Instalación paso a paso y configuración detallada
-- **[Guía de Uso](docs/usage.md)** - Instrucciones completas de uso y ejemplos avanzados
-- **[Registro de Colecciones GBIF.ES](https://gbif.es/registro-colecciones/)** - Interfaz pública del registro
-- **Documentación de módulos** - Cada directorio `src/` contiene su propio README.md
+### 📊 Generación de Reportes
+```r
+# LENGUAJE: R
+# Generar reporte estilo GBIF España
+source("src/reports/report_generation.R")
+reporte <- generate_collections_report(conn, "output", "2024", "html")
+```
+
+### 🔍 Visualización de Dependencias
+```r
+# LENGUAJE: R  
+# Analizar dependencias entre funciones
+source("src/visualization/function_dependencies.R")
+create_complete_dependency_analysis("src", "output/dependencies")
+```
+
+### 📖 Vignettes y Documentación
+```r
+# LENGUAJE: R
+# Renderizar documentación interactiva
+rmarkdown::render("vignettes/introduccion.Rmd")
+browseURL("vignettes/introduccion.html")
+```
+
+### 🗄️ Configuración Externa
+Ver `config/ejemplo_config_externa.R` para ejemplo completo de configuración de credenciales fuera del repositorio Git.
 
 ## Soporte Técnico
 

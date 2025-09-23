@@ -1,7 +1,7 @@
 # .Rprofile for GBIF Collections Registry Toolkit
 # This file is automatically loaded when R starts in this project directory
 
-# Display welcome message
+# Mostrar mensaje de bienvenida
 cat("========================================\n")
 cat("GBIF Spain Collections Registry Toolkit\n")
 cat("GBIF.ES - Registro de Colecciones\n")
@@ -41,20 +41,22 @@ if (file.exists("renv.lock") && requireNamespace("renv", quietly = TRUE)) {
 check_required_packages <- function() {
   required_packages <- c(
     "DBI",
-    "odbc",     # Changed from RMySQL to odbc
-    "ssh",      # Added for SSH tunneling
-    "pool",
-    "dplyr",
-    "ggplot2",
-    "plotly",
-    "lubridate",
-    "tidyr",
-    "scales",
-    "stringr",
-    "logging",
-    "uuid",
-    "jsonlite",
-    "knitr"
+    "odbc",     # Para conexiones ODBC a MySQL
+    "pool",     # Para pooling de conexiones
+    "dplyr",    # Manipulación de datos
+    "ggplot2",  # Visualizaciones
+    "plotly",   # Gráficos interactivos
+    "lubridate", # Manejo de fechas
+    "tidyr",    # Reestructuración de datos
+    "scales",   # Escalas para gráficos
+    "stringr",  # Manipulación de cadenas
+    "logging",  # Sistema de logging
+    "uuid",     # Generación de IDs únicos
+    "jsonlite", # Manejo de JSON
+    "knitr",    # Generación de reportes
+    "rmarkdown", # Documentos R Markdown
+    "igraph",   # Análisis de grafos (dependencias)
+    "visNetwork" # Visualización interactiva de redes
   )
   
   missing_packages <- required_packages[!sapply(required_packages, requireNamespace, quietly = TRUE)]
@@ -223,6 +225,7 @@ suppressPackageStartupMessages({
   library(stats)
 })
 
-cat("Ready to use GBIF Spain Collections Registry Toolkit!\n")
-cat("Type show_scripts() to see available operations.\n")
-cat("Visit: https://gbif.es/registro-colecciones/\n\n")
+cat("¡Listo para usar el Toolkit del Registro de Colecciones GBIF España!\n")
+cat("Escribe show_scripts() para ver las operaciones disponibles.\n")
+cat("Visita: https://gbif.es/registro-colecciones/\n")
+cat("IMPORTANTE: Asegúrate de abrir el túnel SSH antes de conectar a la BD.\n\n")
