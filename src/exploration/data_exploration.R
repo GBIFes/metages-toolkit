@@ -1,4 +1,4 @@
-# Data Exploration Module for GBIF Collections Registry
+# Data Exploration Module for GBIF Spain Collections Registry
 # This module provides comprehensive functions for exploring and profiling database content
 
 # Load required libraries

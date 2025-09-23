@@ -1,10 +1,12 @@
-# GBIF Collections Registry Toolkit
+# GBIF Spain Collections Registry Toolkit
 
 Repositorio de uso interno para leer, analizar y actualizar el Registro de Colecciones de GBIF.ES
 
 ## Descripción
 
-Este toolkit proporciona un conjunto completo de herramientas en R para gestionar y analizar la base de datos del Registro de Colecciones de GBIF.ES. Está diseñado para trabajar con entornos de producción (PROD) y pruebas (TEST) de forma segura y eficiente.
+Este toolkit proporciona un conjunto completo de herramientas en R para gestionar y analizar la base de datos del Registro de Colecciones de GBIF España (GBIF.ES). El registro es una base de datos privada de metadatos de colecciones españolas, visible públicamente en https://gbif.es/registro-colecciones/. 
+
+El toolkit está diseñado para trabajar con entornos de producción (PROD) y pruebas (TEST) de forma segura y eficiente, proporcionando acceso controlado a los metadatos de las colecciones registradas en España.
 
 ## Funcionalidades Principales
 
@@ -73,8 +75,9 @@ metages-toolkit/
 ### Prerrequisitos
 
 - R (versión 4.0.0 o superior)
-- Acceso a las bases de datos MySQL de GBIF Collections Registry
+- Acceso a las bases de datos MySQL del Registro de Colecciones de GBIF España
 - Credenciales válidas para entornos PROD y TEST
+- Acceso SSH a `mola.gbif.es:22002`
 
 ### Configuración
 
@@ -175,6 +178,7 @@ Rscript scripts/run_updates.R PROD update_collection datos_actualizacion.csv
 
 - **[Guía de Configuración](docs/setup.md)** - Instalación paso a paso y configuración detallada
 - **[Guía de Uso](docs/usage.md)** - Instrucciones completas de uso y ejemplos avanzados
+- **[Registro de Colecciones GBIF.ES](https://gbif.es/registro-colecciones/)** - Interfaz pública del registro
 - **Documentación de módulos** - Cada directorio `src/` contiene su propio README.md
 
 ## Soporte Técnico
@@ -201,4 +205,4 @@ Uso interno de GBIF.ES. Consulta con el equipo técnico para detalles de licenci
 
 ---
 
-**⚠️ IMPORTANTE**: Este toolkit maneja datos sensibles de producción. Siempre seguir los procedimientos de seguridad establecidos y probar en entorno TEST antes de ejecutar operaciones en PROD.
+**⚠️ IMPORTANTE**: Este toolkit maneja datos sensibles del Registro de Colecciones de GBIF España. Siempre seguir los procedimientos de seguridad establecidos y probar en entorno TEST antes de ejecutar operaciones en PROD.

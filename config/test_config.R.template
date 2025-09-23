@@ -1,9 +1,9 @@
-# Test Database Configuration Template
+# Test Database Configuration Template for GBIF Spain Collections Registry
 # Copy this file to test_config.R and fill in your actual credentials
 
-# MySQL Database Connection Parameters via SSH Tunnel  
+# MySQL Database Connection Parameters via SSH Tunnel for GBIF.ES
 DB_CONFIG_TEST <- list(
-  # SSH Tunnel Configuration
+  # SSH Tunnel Configuration for GBIF.ES infrastructure
   ssh_host = "mola.gbif.es",
   ssh_port = 22002,
   ssh_user = "your_ssh_username",
@@ -35,14 +35,14 @@ DB_CONFIG_TEST <- list(
   environment = "TEST"
 )
 
-# Database specific settings
-GBIF_COLLECTIONS_SCHEMA <- "gbif_wp_test"  # Updated based on user's example
+# Database specific settings for GBIF Spain Collections Registry
+GBIF_SPAIN_COLLECTIONS_SCHEMA <- "gbif_wp_test"  # GBIF Spain test database schema
 TABLES <- list(
-  metages_accesocol = "metages_accesocol",  # Based on user's example query
-  collections = "collections",
-  institutions = "institutions",
-  contacts = "contacts",
-  identifiers = "identifiers"
+  metages_accesocol = "metages_accesocol",  # Main collections access table
+  collections = "collections",              # Collections metadata
+  institutions = "institutions",            # Institution information
+  contacts = "contacts",                    # Contact details
+  identifiers = "identifiers"               # Collection identifiers
 )
 
 # Logging settings

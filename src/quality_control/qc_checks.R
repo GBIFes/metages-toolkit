@@ -1,4 +1,4 @@
-# Quality Control Module for GBIF Collections Registry
+# Quality Control Module for GBIF Spain Collections Registry
 # This module implements comprehensive quality control checks for data validation
 
 # Load required libraries

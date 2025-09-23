@@ -1,4 +1,4 @@
-# Database Connection Module for GBIF Collections Registry
+# Database Connection Module for GBIF Spain Collections Registry
 # This module provides functions to connect to MySQL databases via SSH tunnel for PROD and TEST environments
 
 # Load required libraries

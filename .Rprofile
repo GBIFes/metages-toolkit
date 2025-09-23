@@ -3,7 +3,9 @@
 
 # Display welcome message
 cat("========================================\n")
-cat("GBIF Collections Registry Toolkit\n")
+cat("GBIF Spain Collections Registry Toolkit\n")
+cat("GBIF.ES - Registro de Colecciones\n")
+cat("https://gbif.es/registro-colecciones/\n")
 cat("========================================\n")
 
 # Set R options for better development experience
@@ -221,5 +223,6 @@ suppressPackageStartupMessages({
   library(stats)
 })
 
-cat("Ready to use GBIF Collections Registry Toolkit!\n")
-cat("Type show_scripts() to see available operations.\n\n")
+cat("Ready to use GBIF Spain Collections Registry Toolkit!\n")
+cat("Type show_scripts() to see available operations.\n")
+cat("Visit: https://gbif.es/registro-colecciones/\n\n")

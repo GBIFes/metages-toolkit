@@ -1,4 +1,4 @@
-# Database Updates Module for GBIF Collections Registry
+# Database Updates Module for GBIF Spain Collections Registry
 # This module provides safe database update operations with validation and logging
 
 # Load required libraries

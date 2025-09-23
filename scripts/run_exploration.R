@@ -1,5 +1,5 @@
 # Database Exploration Script
-# This script performs comprehensive exploration of the GBIF Collections Registry database
+# This script performs comprehensive exploration of the GBIF Spain Collections Registry database
 
 # Load required modules
 source("src/connection/db_connection.R")
@@ -25,7 +25,7 @@ if (!dir.exists(output_dir)) {
 
 # Main execution
 main <- function() {
-  cat("=== GBIF Collections Registry - Database Exploration ===\n")
+  cat("=== GBIF Spain Collections Registry - Database Exploration ===\n")
   cat(paste("Environment:", environment, "\n"))
   cat(paste("Output directory:", output_dir, "\n"))
   cat("\n")

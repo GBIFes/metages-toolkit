@@ -1,6 +1,12 @@
-# GBIF Collections Registry Toolkit - Setup Guide
+# GBIF Spain Collections Registry Toolkit - Setup Guide
 
-This guide provides step-by-step instructions for setting up and configuring the GBIF Collections Registry Toolkit.
+This guide provides step-by-step instructions for setting up and configuring the GBIF Spain Collections Registry Toolkit.
+
+## About the GBIF Spain Collections Registry
+
+The GBIF Spain Collections Registry (Registro de Colecciones de GBIF.ES) is a private metadata database that catalogs Spanish natural history collections. The registry is publicly accessible at https://gbif.es/registro-colecciones/ and serves as the authoritative source for information about collections housed in Spanish institutions.
+
+This toolkit provides secure, programmatic access to the underlying database for authorized personnel to perform data management, quality control, analysis, and updates.
 
 ## Prerequisites
 
@@ -32,8 +38,9 @@ This guide provides step-by-step instructions for setting up and configuring the
    ```
 
 3. **MySQL Database Access**
-   - MySQL server with GBIF Collections Registry database
+   - MySQL server with GBIF Spain Collections Registry database
    - Valid credentials for both PROD and TEST environments
+   - SSH access to `mola.gbif.es:22002`
    - Network access to database servers
 
 ### System Requirements

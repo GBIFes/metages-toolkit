@@ -1,4 +1,4 @@
-# Data Analysis Module for GBIF Collections Registry
+# Data Analysis Module for GBIF Spain Collections Registry
 # This module provides comprehensive analysis functions for collections and institutions data
 
 # Load required libraries

@@ -1,6 +1,10 @@
-# GBIF Collections Registry Toolkit - Usage Guide
+# GBIF Spain Collections Registry Toolkit - Usage Guide
 
-This guide provides comprehensive instructions for using the GBIF Collections Registry Toolkit to access, explore, analyze, and update the collections database.
+This guide provides comprehensive instructions for using the GBIF Spain Collections Registry Toolkit to access, explore, analyze, and update the collections database.
+
+## Overview
+
+The GBIF Spain Collections Registry (https://gbif.es/registro-colecciones/) is a private metadata database that catalogs Spanish natural history collections. This toolkit provides authorized access to the underlying database for data management operations.
 
 ## Overview
 
