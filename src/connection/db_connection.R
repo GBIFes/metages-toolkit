@@ -1,56 +1,63 @@
-# Database Connection Module for GBIF Spain Collections Registry
-# This module provides functions to connect to MySQL databases via SSH tunnel for PROD and TEST environments
+# Módulo de Conexión a Base de Datos para Registro de Colecciones GBIF España
+# Este módulo proporciona funciones para conectar a bases de datos MySQL via túnel SSH para entornos PROD y TEST
+# IMPORTANTE: El túnel SSH debe estar abierto previamente usando bash
 
-# Load required libraries
+# Cargar librerías requeridas
 library(DBI)
 library(odbc)
-library(ssh)
 library(pool)
 library(logging)
 
-#' Setup Database Connection
+#' Configurar Conexión a Base de Datos
 #' 
-#' Establishes a connection to the MySQL database via SSH tunnel based on the specified environment
+#' Establece una conexión a la base de datos MySQL via túnel SSH basado en el entorno especificado
+#' NOTA: Este función asume que el túnel SSH ya está establecido via bash
 #' 
-#' @param environment Character. Either "PROD" or "TEST"
-#' @param use_pool Logical. Whether to use connection pooling (default: TRUE)
-#' @return List containing database connection object/pool and SSH session
+#' @param environment Character. "PROD" o "TEST"
+#' @param use_pool Logical. Si usar pooling de conexiones (default: TRUE)
+#' @return Objeto de conexión a base de datos o pool
 #' @export
 setup_database_connection <- function(environment = "PROD", use_pool = TRUE) {
   
-  # Validate environment parameter
+  # Validar parámetro de entorno
   if (!environment %in% c("PROD", "TEST")) {
-    stop("Environment must be either 'PROD' or 'TEST'")
+    stop("El entorno debe ser 'PROD' o 'TEST'")
   }
   
-  # Load appropriate configuration
+  # Cargar configuración apropiada
   config_file <- paste0("config/", tolower(environment), "_config.R")
   
   if (!file.exists(config_file)) {
-    stop(paste("Configuration file not found:", config_file, 
-               "\nPlease copy the template and configure your credentials."))
+    stop(paste("Archivo de configuración no encontrado:", config_file, 
+               "\nPor favor copia la plantilla y configura tus credenciales."))
   }
   
   source(config_file)
   
-  # Get config based on environment
+  # Obtener configuración basada en el entorno
   db_config <- if (environment == "PROD") DB_CONFIG_PROD else DB_CONFIG_TEST
   
-  # Setup logging
+  # Configurar logging
   setup_logging(db_config)
   
-  loginfo(paste("Attempting to connect to", environment, "database via SSH tunnel"))
+  loginfo(paste("Intentando conectar a la base de datos", environment, "via túnel SSH externo"))
   
-  # Establish SSH tunnel
-  ssh_session <- setup_ssh_tunnel(db_config)
+  # IMPORTANTE: Verificar que el túnel SSH esté activo
+  if (!check_ssh_tunnel_active(db_config$local_port)) {
+    stop(paste("Túnel SSH no está activo en puerto", db_config$local_port, 
+               "\nPor favor ejecuta el comando bash para abrir el túnel:",
+               "\nssh -i", db_config$ssh_keyfile, "-p", db_config$ssh_port,
+               paste0(db_config$ssh_user, "@", db_config$ssh_host),
+               "-L", paste0(db_config$local_port, ":localhost:", db_config$remote_port)))
+  }
   
   tryCatch({
     if (use_pool) {
-      # Create connection pool for better performance
+      # Crear pool de conexiones para mejor rendimiento
       connection <- dbPool(
         drv = odbc::odbc(),
         driver = db_config$odbc_driver,
-        server = "127.0.0.1",  # Local endpoint of SSH tunnel
+        server = "127.0.0.1",  # Punto final local del túnel SSH
         port = db_config$local_port,
         dbname = db_config$database,
         uid = db_config$username,
@@ -60,11 +67,11 @@ setup_database_connection <- function(environment = "PROD", use_pool = TRUE) {
         maxSize = db_config$pool_size
       )
     } else {
-      # Create single connection
+      # Crear conexión individual
       connection <- dbConnect(
         odbc::odbc(),
         driver = db_config$odbc_driver,
-        server = "127.0.0.1",  # Local endpoint of SSH tunnel
+        server = "127.0.0.1",  # Punto final local del túnel SSH
         port = db_config$local_port,
         database = db_config$database,
         uid = db_config$username,
@@ -73,170 +80,99 @@ setup_database_connection <- function(environment = "PROD", use_pool = TRUE) {
       )
     }
     
-    loginfo(paste("Successfully connected to", environment, "database via SSH tunnel"))
+    loginfo(paste("Conectado exitosamente a la base de datos", environment, "via túnel SSH externo"))
     
-    # Test the connection
+    # Probar la conexión
     if (test_connection(connection)) {
-      return(list(
-        connection = connection,
-        ssh_session = ssh_session,
-        environment = environment
-      ))
+      return(connection)
     } else {
-      stop("Connection test failed")
+      stop("La prueba de conexión falló")
     }
     
   }, error = function(e) {
-    logerror(paste("Failed to connect to", environment, "database:", e$message))
-    
-    # Clean up SSH session if connection failed
-    if (!is.null(ssh_session)) {
-      tryCatch({
-        ssh::ssh_disconnect(ssh_session)
-      }, error = function(ssh_err) {
-        logwarn(paste("Error closing SSH session:", ssh_err$message))
-      })
-    }
-    
+    logerror(paste("Falló la conexión a la base de datos", environment, ":", e$message))
     stop(e)
   })
 }
 
-#' Setup SSH Tunnel
+#' Verificar si el Túnel SSH está Activo
 #' 
-#' Establishes an SSH tunnel to the database server
+#' Verifica si hay un túnel SSH activo en el puerto especificado
 #' 
-#' @param db_config List with database configuration
-#' @return SSH session object
-setup_ssh_tunnel <- function(db_config) {
-  loginfo("Setting up SSH tunnel")
-  
+#' @param port Numeric. Puerto local del túnel SSH
+#' @return Logical indicando si el túnel está activo
+check_ssh_tunnel_active <- function(port) {
   tryCatch({
-    # Create SSH connection
-    ssh_session <- ssh::ssh_connect(
-      host = paste0(db_config$ssh_user, "@", db_config$ssh_host, ":", db_config$ssh_port),
-      keyfile = db_config$ssh_keyfile
-    )
-    
-    # Create tunnel: local_port -> remote_host:remote_port
-    ssh::ssh_tunnel(
-      session = ssh_session,
-      port = db_config$local_port,
-      target = paste0(db_config$remote_host, ":", db_config$remote_port)
-    )
-    
-    loginfo(paste("SSH tunnel established:", 
-                  "localhost:", db_config$local_port, " -> ", 
-                  db_config$remote_host, ":", db_config$remote_port))
-    
-    # Give tunnel time to establish
-    Sys.sleep(2)
-    
-    return(ssh_session)
-    
+    # Intentar crear una conexión de prueba al puerto local
+    test_conn <- socketConnection(host = "127.0.0.1", port = port, 
+                                  open = "r+", blocking = FALSE, timeout = 2)
+    close(test_conn)
+    return(TRUE)
   }, error = function(e) {
-    logerror(paste("Failed to setup SSH tunnel:", e$message))
-    stop(e)
-  })
-}
-
-#' Test Database Connection
-#' 
-#' Tests if the database connection is working properly
-#' 
-#' @param connection_obj Connection object or list with connection
-#' @return Logical indicating if connection is working
-#' @export
-test_connection <- function(connection_obj) {
-  # Extract connection from object if needed
-  connection <- if (is.list(connection_obj) && "connection" %in% names(connection_obj)) {
-    connection_obj$connection
-  } else {
-    connection_obj
-  }
-  
-  tryCatch({
-    # Simple query to test connection
-    result <- dbGetQuery(connection, "SELECT 1 as test")
-    
-    if (nrow(result) == 1 && result$test == 1) {
-      loginfo("Database connection test successful")
-      return(TRUE)
-    } else {
-      logwarn("Database connection test returned unexpected result")
-      return(FALSE)
-    }
-    
-  }, error = function(e) {
-    logerror(paste("Database connection test failed:", e$message))
     return(FALSE)
   })
 }
 
-#' Close Database Connection
+
+
+#' Probar Conexión a Base de Datos
 #' 
-#' Safely closes database connection/pool and SSH tunnel
+#' Prueba si la conexión a la base de datos está funcionando correctamente
 #' 
-#' @param connection_obj Database connection object, pool, or list with connection and SSH session
+#' @param connection Objeto de conexión a base de datos
+#' @return Logical indicando si la conexión funciona
 #' @export
-close_database_connection <- function(connection_obj) {
+test_connection <- function(connection) {
   tryCatch({
-    # Handle different input types
-    if (is.list(connection_obj) && "connection" %in% names(connection_obj)) {
-      # New format with SSH session
-      connection <- connection_obj$connection
-      ssh_session <- connection_obj$ssh_session
-      
-      # Close database connection
-      if (inherits(connection, "Pool")) {
-        poolClose(connection)
-        loginfo("Database connection pool closed")
-      } else {
-        dbDisconnect(connection)
-        loginfo("Database connection closed")
-      }
-      
-      # Close SSH tunnel
-      if (!is.null(ssh_session)) {
-        ssh::ssh_disconnect(ssh_session)
-        loginfo("SSH tunnel closed")
-      }
-      
+    # Consulta simple para probar la conexión
+    result <- dbGetQuery(connection, "SELECT 1 as test")
+    
+    if (nrow(result) == 1 && result$test == 1) {
+      loginfo("Prueba de conexión a base de datos exitosa")
+      return(TRUE)
     } else {
-      # Legacy format - just connection
-      if (inherits(connection_obj, "Pool")) {
-        poolClose(connection_obj)
-        loginfo("Database connection pool closed")
-      } else {
-        dbDisconnect(connection_obj)
-        loginfo("Database connection closed")
-      }
+      logwarn("La prueba de conexión devolvió un resultado inesperado")
+      return(FALSE)
     }
     
   }, error = function(e) {
-    logwarn(paste("Error closing database connection:", e$message))
+    logerror(paste("Falló la prueba de conexión a base de datos:", e$message))
+    return(FALSE)
   })
 }
 
-#' Get Connection Information
+#' Cerrar Conexión a Base de Datos
 #' 
-#' Returns information about the current database connection
+#' Cierra de forma segura la conexión/pool a la base de datos
 #' 
-#' @param connection_obj Database connection object or list with connection
-#' @return List with connection details
+#' @param connection Objeto de conexión a base de datos o pool
 #' @export
-get_connection_info <- function(connection_obj) {
-  # Extract connection from object if needed
-  connection <- if (is.list(connection_obj) && "connection" %in% names(connection_obj)) {
-    connection_obj$connection
-  } else {
-    connection_obj
-  }
-  
+close_database_connection <- function(connection) {
+  tryCatch({
+    if (inherits(connection, "Pool")) {
+      poolClose(connection)
+      loginfo("Pool de conexión a base de datos cerrado")
+    } else {
+      dbDisconnect(connection)
+      loginfo("Conexión a base de datos cerrada")
+    }
+  }, error = function(e) {
+    logwarn(paste("Error cerrando conexión a base de datos:", e$message))
+  })
+}
+
+#' Obtener Información de Conexión
+#' 
+#' Devuelve información sobre la conexión actual a la base de datos
+#' 
+#' @param connection Objeto de conexión a base de datos
+#' @return Lista con detalles de conexión
+#' @export
+get_connection_info <- function(connection) {
   tryCatch({
     info <- dbGetInfo(connection)
     
-    # Get database version and other info
+    # Obtener versión de base de datos y otra información
     version_query <- dbGetQuery(connection, "SELECT VERSION() as version")
     current_db <- dbGetQuery(connection, "SELECT DATABASE() as current_database")
     
@@ -244,59 +180,48 @@ get_connection_info <- function(connection_obj) {
       driver = "ODBC",
       server_version = version_query$version,
       current_database = current_db$current_database,
-      connection_valid = dbIsValid(connection)
+      connection_valid = dbIsValid(connection),
+      ssh_tunnel = "Externo (bash)",
+      connection_type = "Túnel SSH + ODBC"
     )
-    
-    # Add SSH tunnel info if available
-    if (is.list(connection_obj) && "ssh_session" %in% names(connection_obj)) {
-      result$ssh_tunnel = "Active"
-      result$environment = connection_obj$environment
-    }
     
     return(result)
     
   }, error = function(e) {
-    logwarn(paste("Could not retrieve connection info:", e$message))
+    logwarn(paste("No se pudo obtener información de conexión:", e$message))
     return(NULL)
   })
 }
 
-#' Setup Logging
+#' Configurar Logging
 #' 
-#' Configures logging for database operations
+#' Configura el logging para operaciones de base de datos
 #' 
-#' @param config Database configuration list
+#' @param config Lista de configuración de base de datos
 setup_logging <- function(config) {
-  # Create logs directory if it doesn't exist
+  # Crear directorio de logs si no existe
   log_dir <- dirname(config$LOG_FILE)
   if (!dir.exists(log_dir)) {
     dir.create(log_dir, recursive = TRUE)
   }
   
-  # Setup logging configuration
+  # Configurar logging
   basicConfig(level = config$LOG_LEVEL)
   addHandler(writeToFile, file = config$LOG_FILE)
 }
 
-#' Execute Safe Query
+#' Ejecutar Consulta Segura
 #' 
-#' Executes a query with proper error handling and logging
+#' Ejecuta una consulta con manejo de errores y logging apropiado
 #' 
-#' @param connection_obj Database connection object or list with connection
-#' @param query SQL query string
-#' @param params List of parameters for parameterized queries
-#' @return Query result or NULL if error
+#' @param connection Conexión a base de datos
+#' @param query Cadena de consulta SQL
+#' @param params Lista de parámetros para consultas parametrizadas
+#' @return Resultado de consulta o NULL si hay error
 #' @export
-execute_safe_query <- function(connection_obj, query, params = NULL) {
-  # Extract connection from object if needed
-  connection <- if (is.list(connection_obj) && "connection" %in% names(connection_obj)) {
-    connection_obj$connection
-  } else {
-    connection_obj
-  }
-  
+execute_safe_query <- function(connection, query, params = NULL) {
   tryCatch({
-    logdebug(paste("Executing query:", query))
+    logdebug(paste("Ejecutando consulta:", query))
     
     if (is.null(params)) {
       result <- dbGetQuery(connection, query)
@@ -304,12 +229,12 @@ execute_safe_query <- function(connection_obj, query, params = NULL) {
       result <- dbGetQuery(connection, query, params = params)
     }
     
-    logdebug(paste("Query executed successfully, returned", nrow(result), "rows"))
+    logdebug(paste("Consulta ejecutada exitosamente, devolvió", nrow(result), "filas"))
     return(result)
     
   }, error = function(e) {
-    logerror(paste("Query execution failed:", e$message))
-    logerror(paste("Query:", query))
+    logerror(paste("Falló la ejecución de consulta:", e$message))
+    logerror(paste("Consulta:", query))
     return(NULL)
   })
 }

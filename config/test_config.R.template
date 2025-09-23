@@ -1,60 +1,64 @@
-# Test Database Configuration Template for GBIF Spain Collections Registry
-# Copy this file to test_config.R and fill in your actual credentials
+# Plantilla de Configuración de Base de Datos de Pruebas para Registro de Colecciones GBIF España
+# Copia este archivo a test_config.R y completa con tus credenciales reales
 
-# MySQL Database Connection Parameters via SSH Tunnel for GBIF.ES
+# IMPORTANTE: El túnel SSH debe estar abierto previamente usando bash
+# Comando bash para abrir túnel SSH (ejecutar ANTES de usar R):
+# ssh -i ~/.ssh/id_rsa -p 22002 tu_usuario_ssh@mola.gbif.es -L 3308:localhost:3306
+
+# Configuración de Conexión a Base de Datos MySQL via Túnel SSH para GBIF.ES
 DB_CONFIG_TEST <- list(
-  # SSH Tunnel Configuration for GBIF.ES infrastructure
-  ssh_host = "mola.gbif.es",
-  ssh_port = 22002,
-  ssh_user = "your_ssh_username",
-  ssh_keyfile = "path/to/your/ssh/private/key",  # e.g., "~/.ssh/id_rsa"
+  # Configuración de Base de Datos Remota (puede variar por usuario)
+  remote_host = "localhost",              # Host de BD remoto (tras el túnel)
+  remote_port = 3306,                     # Puerto BD remoto estándar
+  database = "gbif_wp_test",              # Base de datos de pruebas del registro
+  username = "tu_usuario_test",           # Tu usuario de BD TEST
+  password = "tu_password_test",          # Tu contraseña de BD TEST
   
-  # Local tunnel endpoint
-  local_port = 3307,
+  # Configuración del Túnel SSH Local
+  local_port = 3308,                      # Puerto local del túnel SSH (diferente de PROD)
   
-  # Remote database server (behind SSH tunnel)
-  remote_host = "localhost",  # or actual database server hostname
-  remote_port = 3306,
+  # Configuración SSH (para referencia en documentación)
+  ssh_host = "mola.gbif.es",              # Servidor SSH de GBIF.ES
+  ssh_port = 22002,                       # Puerto SSH específico
+  ssh_user = "tu_usuario_ssh",            # Tu usuario SSH
+  ssh_keyfile = "~/.ssh/id_rsa",          # Ruta a tu clave privada SSH
   
-  # Database connection parameters
-  database = "your_test_database_name",
-  username = "your_test_username", 
-  password = "your_test_password",
+  # Driver ODBC (verificar disponibles con: odbc::odbcListDrivers())
+  odbc_driver = "MySQL ODBC 9.4 ANSI Driver",  # Ajustar según tu sistema
   
-  # ODBC Driver (check available drivers with: odbc::odbcListDrivers())
-  odbc_driver = "MySQL ODBC 9.4 ANSI Driver",  # Adjust based on your system
-  
-  # Additional connection parameters
+  # Parámetros adicionales de conexión
   charset = "utf8mb4",
   timeout = 30,
   
-  # Connection pool settings
+  # Configuración de pool de conexiones
   pool_size = 3,
   
-  # Environment identifier
+  # Identificador de entorno
   environment = "TEST"
 )
 
-# Database specific settings for GBIF Spain Collections Registry
-GBIF_SPAIN_COLLECTIONS_SCHEMA <- "gbif_wp_test"  # GBIF Spain test database schema
+# Configuración específica de Base de Datos para Registro de Colecciones GBIF España
+GBIF_SPAIN_COLLECTIONS_SCHEMA <- "gbif_wp_test"  # Esquema de BD de pruebas GBIF España
 TABLES <- list(
-  metages_accesocol = "metages_accesocol",  # Main collections access table
-  collections = "collections",              # Collections metadata
-  institutions = "institutions",            # Institution information
-  contacts = "contacts",                    # Contact details
-  identifiers = "identifiers"               # Collection identifiers
+  metages_accesocol = "metages_accesocol",  # Tabla principal de acceso a colecciones
+  collections = "collections",              # Metadatos de colecciones
+  institutions = "institutions",            # Información de instituciones
+  contacts = "contacts",                    # Detalles de contacto
+  identifiers = "identifiers"               # Identificadores de colecciones
 )
 
-# Logging settings
+# Configuración de logging
 LOG_LEVEL <- "DEBUG"
 LOG_FILE <- "logs/test_operations.log"
 
-# Optional: External config file for sensitive data
-# Uncomment and modify if you want to use external config file like the user's approach
-# EXTERNAL_CONFIG_FILE <- "/path/to/external/config_gbif.es_dbconnect"
+# OPCIONAL: Archivo de configuración externa para datos sensibles
+# Descomenta y modifica si quieres usar archivo de configuración externa como el patrón del usuario
+# EXTERNAL_CONFIG_FILE <- "~/Documents/R/config_gbif.es_dbconnect"
 # if (file.exists(EXTERNAL_CONFIG_FILE)) {
 #   source(EXTERNAL_CONFIG_FILE)
-#   # Override above settings with external config values
-#   DB_CONFIG_TEST$username <- UID
-#   DB_CONFIG_TEST$password <- gbif_wp_pass
+#   # Sobrescribir configuración con valores del archivo externo
+#   DB_CONFIG_TEST$username <- TEST_UID
+#   DB_CONFIG_TEST$password <- TEST_PASSWORD
+#   DB_CONFIG_TEST$local_port <- LOCAL_PORT_TEST
+#   DB_CONFIG_TEST$odbc_driver <- ODBC_DRIVER
 # }
