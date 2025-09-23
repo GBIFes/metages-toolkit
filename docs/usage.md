@@ -1,10 +1,10 @@
-# Toolkit del Registro de Colecciones GBIF España - Guía de Uso
+# Toolkit del Registro de Colecciones de GBIF España - Guía de Uso
 
-Esta guía proporciona instrucciones comprehensivas para usar el Toolkit del Registro de Colecciones GBIF España para acceder, explorar, analizar el registro de colecciones.
+Esta guía proporciona instrucciones comprehensivas para usar el Toolkit del Registro de Colecciones de GBIF España para acceder, explorar y analizar el registro de colecciones.
 
 ## Descripción General
 
-El Registro de Colecciones GBIF España (https://gbif.es/registro-colecciones/) es una base de datos privada de metadatos que cataloga las colecciones españolas de historia natural. Este toolkit proporciona acceso autorizado a la base de datos subyacente para operaciones de gestión de datos.
+El Registro de Colecciones de GBIF España (https://gbif.es/registro-colecciones/) es una base de datos privada de metadatos que cataloga las colecciones españolas de historia natural. Este toolkit proporciona acceso autorizado a la base de datos subyacente para operaciones de gestión de datos de solo lectura.
 
 ## Funcionalidades Principales
 
@@ -14,7 +14,7 @@ El toolkit proporciona tres operaciones principales:
 2. **Verificaciones de Control de Calidad** - Validar calidad e integridad de datos
 3. **Análisis de Datos** - Generar perspectivas y tendencias de los datos
 
-**NOTA IMPORTANTE**: Las funcionalidades de actualización están deshabilitadas en esta versión por seguridad.
+**NOTA IMPORTANTE**: Las funcionalidades de actualización están deshabilitadas en esta versión por seguridad durante la fase inicial de análisis.
 
 ## Patrones de Uso General
 
@@ -25,6 +25,20 @@ Siempre especifica el entorno objetivo:
 - `PROD` - Para operaciones de producción (requiere precaución extra)
 
 **Buena Práctica**: Siempre prueba operaciones en entorno `TEST` primero.
+
+### Configuración de Túnel SSH
+
+Antes de usar cualquier script R, debes establecer el túnel SSH apropiado:
+
+```bash
+# Para entorno TEST (ejecutar ANTES de usar R)
+ssh -i ~/.ssh/id_rsa -p [TU_SSH_PORT_TEST] [TU_USUARIO]@[TU_SSH_HOST_TEST] -L 3308:localhost:3306
+
+# Para entorno PROD (ejecutar ANTES de usar R)  
+ssh -i ~/.ssh/id_rsa -p [TU_SSH_PORT_PROD] [TU_USUARIO]@[TU_SSH_HOST_PROD] -L 3307:localhost:3306
+```
+
+**Nota**: Los valores de `SSH_HOST` y `SSH_PORT` pueden variar según tu configuración de acceso específica a la infraestructura GBIF.ES.
 
 ### Gestión de Salidas
 
@@ -50,26 +64,26 @@ Rscript scripts/run_exploration.R PROD reportes
 Rscript scripts/run_exploration.R TEST output FALSE
 ```
 
-### Understanding Exploration Output
+### Comprender la Salida de Exploración
 
-The exploration generates:
+La exploración genera:
 
-1. **Schema Information**
-   - Database size and table count
-   - Table-by-table row counts and column information
-   - Index and constraint details
+1. **Información de Esquema**
+   - Tamaño de base de datos y cuenta de tablas
+   - Conteos de filas tabla por tabla e información de columnas
+   - Detalles de índices y restricciones
 
-2. **Data Summaries**
-   - Statistical summaries for each table
-   - Data type analysis
-   - Completeness assessment
+2. **Resúmenes de Datos**
+   - Resúmenes estadísticos para cada tabla
+   - Análisis de tipos de datos
+   - Evaluación de completitud
 
-3. **Quality Metrics**
-   - Empty row detection
-   - Duplicate identification
-   - Data consistency checks
+3. **Métricas de Calidad**
+   - Detección de filas vacías
+   - Identificación de duplicados
+   - Verificaciones de consistencia de datos
 
-### Example Exploration Workflow
+### Ejemplo de Flujo de Exploración
 
 ```r
 # Manual exploration using R
