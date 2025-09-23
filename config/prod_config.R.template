@@ -1,0 +1,39 @@
+# Production Database Configuration Template
+# Copy this file to prod_config.R and fill in your actual credentials
+
+# MySQL Database Connection Parameters
+DB_CONFIG_PROD <- list(
+  host = "your-prod-host.com",
+  port = 3306,
+  database = "your_prod_database_name",
+  username = "your_prod_username",
+  password = "your_prod_password",
+  
+  # Additional connection parameters
+  charset = "utf8mb4",
+  timeout = 30,
+  
+  # SSL configuration (if required)
+  ssl_cert = NULL,
+  ssl_key = NULL,
+  ssl_ca = NULL,
+  
+  # Connection pool settings
+  pool_size = 5,
+  
+  # Environment identifier
+  environment = "PROD"
+)
+
+# Database specific settings
+GBIF_COLLECTIONS_SCHEMA <- "gbif_collections"
+TABLES <- list(
+  collections = "collections",
+  institutions = "institutions",
+  contacts = "contacts",
+  identifiers = "identifiers"
+)
+
+# Logging settings
+LOG_LEVEL <- "INFO"
+LOG_FILE <- "logs/prod_operations.log"

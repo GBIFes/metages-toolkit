@@ -1,0 +1,39 @@
+# Test Database Configuration Template
+# Copy this file to test_config.R and fill in your actual credentials
+
+# MySQL Database Connection Parameters
+DB_CONFIG_TEST <- list(
+  host = "your-test-host.com",
+  port = 3306,
+  database = "your_test_database_name",
+  username = "your_test_username",
+  password = "your_test_password",
+  
+  # Additional connection parameters
+  charset = "utf8mb4",
+  timeout = 30,
+  
+  # SSL configuration (if required)
+  ssl_cert = NULL,
+  ssl_key = NULL,
+  ssl_ca = NULL,
+  
+  # Connection pool settings
+  pool_size = 3,
+  
+  # Environment identifier
+  environment = "TEST"
+)
+
+# Database specific settings
+GBIF_COLLECTIONS_SCHEMA <- "gbif_collections_test"
+TABLES <- list(
+  collections = "collections",
+  institutions = "institutions",
+  contacts = "contacts",
+  identifiers = "identifiers"
+)
+
+# Logging settings
+LOG_LEVEL <- "DEBUG"
+LOG_FILE <- "logs/test_operations.log"
