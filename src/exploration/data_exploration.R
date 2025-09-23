@@ -1,52 +1,52 @@
-# Data Exploration Module for GBIF Spain Collections Registry
-# This module provides comprehensive functions for exploring and profiling database content
+# Módulo de Exploración de Datos para el Registro de Colecciones de GBIF España
+# Este módulo proporciona funciones comprensivas para explorar y perfilar el contenido de la base de datos
 
-# Load required libraries
+# Cargar librerías requeridas
 library(DBI)
 library(dplyr)
 library(ggplot2)
 library(knitr)
 library(logging)
 
-#' Explore Database Schema
+#' Explorar Esquema de Base de Datos
 #' 
-#' Provides an overview of the database structure including tables, views, and relationships
+#' Proporciona una visión general de la estructura de la base de datos incluyendo tablas, vistas y relaciones
 #' 
-#' @param connection Database connection object
-#' @return List with schema information
+#' @param connection Objeto de conexión a base de datos
+#' @return Lista con información del esquema
 #' @export
-explore_database_schema <- function(connection) {
-  loginfo("Starting database schema exploration")
+explorar_esquema_base_datos <- function(connection) {
+  loginfo("Iniciando exploración de esquema de base de datos")
   
   tryCatch({
-    # Get list of tables
-    tables <- dbListTables(connection)
+    # Obtener lista de tablas
+    tablas <- dbListTables(connection)
     
-    schema_info <- list()
-    schema_info$tables <- tables
-    schema_info$table_count <- length(tables)
+    info_esquema <- list()
+    info_esquema$tablas <- tablas
+    info_esquema$total_tablas <- length(tablas)
     
-    # Get table sizes and row counts
-    table_stats <- data.frame(
-      table_name = character(),
-      row_count = numeric(),
-      columns = numeric(),
+    # Obtener tamaños de tabla y conteos de filas
+    estadisticas_tabla <- data.frame(
+      nombre_tabla = character(),
+      conteo_filas = numeric(),
+      columnas = numeric(),
       stringsAsFactors = FALSE
     )
     
-    for (table in tables) {
-      # Get row count
-      row_count_query <- paste("SELECT COUNT(*) as count FROM", table)
-      row_count <- execute_safe_query(connection, row_count_query)$count
+    for (tabla in tablas) {
+      # Obtener conteo de filas
+      consulta_conteo_filas <- paste("SELECT COUNT(*) as count FROM", tabla)
+      conteo_filas <- execute_safe_query(connection, consulta_conteo_filas)$count
       
-      # Get column count
-      columns <- dbListFields(connection, table)
-      col_count <- length(columns)
+      # Obtener conteo de columnas
+      columnas <- dbListFields(connection, tabla)
+      conteo_col <- length(columnas)
       
-      table_stats <- rbind(table_stats, data.frame(
-        table_name = table,
-        row_count = row_count,
-        columns = col_count,
+      estadisticas_tabla <- rbind(estadisticas_tabla, data.frame(
+        nombre_tabla = tabla,
+        conteo_filas = conteo_filas,
+        columnas = conteo_col,
         stringsAsFactors = FALSE
       ))
     }

@@ -1,31 +1,31 @@
-# Contributing to GBIF Collections Registry Toolkit
+# Contribuir al Toolkit del Registro de Colecciones de GBIF
 
-## Overview
+## Descripción General
 
-This repository is for internal use by GBIF.ES for managing the Collections Registry database. Contributions should follow established guidelines to maintain code quality, security, and operational safety.
+Este repositorio es para uso interno de GBIF.ES para gestionar la base de datos del Registro de Colecciones. Las contribuciones deben seguir las directrices establecidas para mantener la calidad del código, la seguridad y la seguridad operacional.
 
-## Before Contributing
+## Antes de Contribuir
 
-### Prerequisites
+### Requisitos Previos
 
-- Access to GBIF.ES internal systems
-- R programming experience (version 4.0+)
-- Understanding of MySQL database operations
-- Familiarity with GBIF Collections Registry data structure
+- Acceso a los sistemas internos de GBIF.ES
+- Experiencia en programación R (versión 4.0+)
+- Comprensión de operaciones de base de datos MySQL
+- Familiaridad con la estructura de datos del Registro de Colecciones de GBIF
 
-### Required Setup
+### Configuración Requerida
 
-1. Complete security training and review `SECURITY.md`
-2. Obtain appropriate database credentials
-3. Set up development environment following `docs/setup.md`
-4. Test toolkit functionality on TEST environment
+1. Completar entrenamiento de seguridad y revisar `SECURITY.md`
+2. Obtener credenciales de base de datos apropiadas
+3. Configurar entorno de desarrollo siguiendo `docs/setup.md`
+4. Probar funcionalidad del toolkit en entorno TEST
 
-## Development Workflow
+## Flujo de Trabajo de Desarrollo
 
-### 1. Environment Setup
+### 1. Configuración de Entorno
 
 ```bash
-# Clone repository
+# Clonar repositorio
 git clone https://github.com/GBIFes/metages-toolkit.git
 cd metages-toolkit
 

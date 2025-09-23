@@ -1,24 +1,24 @@
-# GBIF Spain Collections Registry Toolkit - Setup Guide
+# Toolkit del Registro de Colecciones de GBIF España - Guía de Configuración
 
-This guide provides step-by-step instructions for setting up and configuring the GBIF Spain Collections Registry Toolkit.
+Esta guía proporciona instrucciones paso a paso para configurar el Toolkit del Registro de Colecciones de GBIF España.
 
-## About the GBIF Spain Collections Registry
+## Acerca del Registro de Colecciones de GBIF España
 
-The GBIF Spain Collections Registry (Registro de Colecciones de GBIF.ES) is a private metadata database that catalogs Spanish natural history collections. The registry is publicly accessible at https://gbif.es/registro-colecciones/ and serves as the authoritative source for information about collections housed in Spanish institutions.
+El Registro de Colecciones de GBIF España (Registro de Colecciones de GBIF.ES) es una base de datos privada de metadatos que cataloga las colecciones españolas de historia natural. El registro es accesible públicamente en https://gbif.es/registro-colecciones/ y sirve como la fuente autoritativa de información sobre colecciones alojadas en instituciones españolas.
 
-This toolkit provides secure, programmatic access to the underlying database for authorized personnel to perform data management, quality control, analysis, and updates.
+Este toolkit proporciona acceso seguro y programático a la base de datos subyacente para personal autorizado para realizar gestión de datos, control de calidad, análisis y actualizaciones.
 
-## Prerequisites
+## Requisitos Previos
 
-### Software Requirements
+### Requisitos de Software
 
-1. **R (version 4.0.0 or higher)**
-   - Download from: https://www.r-project.org/
-   - Verify installation: `R --version`
+1. **R (versión 4.0.0 o superior)**
+   - Descargar desde: https://www.r-project.org/
+   - Verificar instalación: `R --version`
 
-2. **Required R packages**
+2. **Paquetes R requeridos**
    ```r
-   # Install required packages
+   # Instalar paquetes requeridos
    install.packages(c(
      "DBI",
      "RMySQL", 

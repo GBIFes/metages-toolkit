@@ -1,107 +1,107 @@
-# Security Policy
+# Política de Seguridad
 
-## Overview
+## Descripción General
 
-The GBIF Collections Registry Toolkit handles sensitive database credentials and performs operations on production data. This document outlines security policies and guidelines to ensure safe usage.
+El Toolkit del Registro de Colecciones de GBIF maneja credenciales sensibles de base de datos y realiza operaciones en datos de producción. Este documento describe las políticas y directrices de seguridad para asegurar un uso seguro.
 
-## Reporting Security Vulnerabilities
+## Reportar Vulnerabilidades de Seguridad
 
-If you discover a security vulnerability, please report it privately to the GBIF.ES technical team. Do not create public issues for security vulnerabilities.
+Si descubres una vulnerabilidad de seguridad, repórtala de forma privada al equipo técnico de GBIF.ES. No crees issues públicos para vulnerabilidades de seguridad.
 
-## Security Guidelines
+## Directrices de Seguridad
 
-### 1. Credential Management
+### 1. Gestión de Credenciales
 
-**NEVER commit database credentials to version control:**
-- Use configuration templates (`.template` files) in the repository
-- Keep actual configuration files (`prod_config.R`, `test_config.R`) local only
-- These files are automatically excluded via `.gitignore`
-- Consider using environment variables for additional security
+**NUNCA hacer commit de credenciales de base de datos al control de versiones:**
+- Usar plantillas de configuración (archivos `.template`) en el repositorio
+- Mantener archivos de configuración reales (`prod_config.R`, `test_config.R`) solo localmente
+- Estos archivos son automáticamente excluidos vía `.gitignore`
+- Considerar usar variables de entorno para seguridad adicional
 
-### 2. Environment Separation
+### 2. Separación de Entornos
 
-**Always distinguish between environments:**
-- Use `TEST` environment for development and testing
-- Require explicit confirmation for `PROD` operations
-- Test all operations on `TEST` before running on `PROD`
-- Maintain separate credentials for each environment
+**Siempre distinguir entre entornos:**
+- Usar entorno `TEST` para desarrollo y pruebas
+- Requerir confirmación explícita para operaciones `PROD`
+- Probar todas las operaciones en `TEST` antes de ejecutar en `PROD`
+- Mantener credenciales separadas para cada entorno
 
-### 3. Database Access
+### 3. Acceso a Base de Datos
 
-**Follow principle of least privilege:**
-- Only authorized personnel should have database credentials
-- Use read-only credentials when possible for exploration and analysis
-- Limit write access to specific operations and personnel
-- Regularly review and rotate database passwords
+**Seguir principio de menor privilegio:**
+- Solo personal autorizado debe tener credenciales de base de datos
+- Usar credenciales de solo lectura cuando sea posible para exploración y análisis
+- Limitar acceso de escritura a operaciones específicas y personal
+- Revisar y rotar contraseñas de base de datos regularmente
 
-### 4. Backup and Recovery
+### 4. Respaldo y Recuperación
 
-**Protect against data loss:**
-- Automatic backups are created before update operations
-- Verify backup integrity before proceeding with updates
-- Maintain rollback procedures for critical operations
-- Store backups securely with appropriate access controls
+**Proteger contra pérdida de datos:**
+- Respaldos automáticos se crean antes de operaciones de actualización
+- Verificar integridad de respaldos antes de proceder con actualizaciones
+- Mantener procedimientos de rollback para operaciones críticas
+- Almacenar respaldos de forma segura con controles de acceso apropiados
 
-### 5. Audit Trail
+### 5. Registro de Auditoría
 
-**Maintain comprehensive logging:**
-- All database operations are logged with timestamps
-- Log files contain operation details and user identification
-- Review logs regularly for unusual activity
-- Retain logs according to organizational policies
+**Mantener registro comprensivo:**
+- Todas las operaciones de base de datos se registran con marcas de tiempo
+- Archivos de registro contienen detalles de operación e identificación de usuario
+- Revisar registros regularmente para actividad inusual
+- Retener registros de acuerdo a políticas organizacionales
 
-### 6. Network Security
+### 6. Seguridad de Red
 
-**Secure database connections:**
-- Use SSL/TLS connections when available
-- Connect through VPN for remote access
-- Restrict database access to specific IP addresses
-- Monitor network traffic for anomalies
+**Conexiones seguras a base de datos:**
+- Usar conexiones SSL/TLS cuando estén disponibles
+- Conectar a través de VPN para acceso remoto
+- Restringir acceso a base de datos a direcciones IP específicas
+- Monitorear tráfico de red para anomalías
 
-### 7. Code Security
+### 7. Seguridad de Código
 
-**Follow secure coding practices:**
-- Validate all input data before database operations
-- Use parameterized queries to prevent SQL injection
-- Implement proper error handling without exposing sensitive information
-- Regular code review for security vulnerabilities
+**Seguir prácticas de codificación segura:**
+- Validar todos los datos de entrada antes de operaciones de base de datos
+- Usar consultas parametrizadas para prevenir inyección SQL
+- Implementar manejo de errores apropiado sin exponer información sensible
+- Revisión regular de código para vulnerabilidades de seguridad
 
-## Production Safeguards
+## Salvaguardas de Producción
 
-### Pre-Production Checklist
+### Lista de Verificación Pre-Producción
 
-Before running operations on production:
+Antes de ejecutar operaciones en producción:
 
-- [ ] Operation tested successfully on TEST environment
-- [ ] Data validated and backup created
-- [ ] Operation reviewed by second team member
-- [ ] Appropriate authorization obtained for production changes
-- [ ] Rollback plan prepared and tested
+- [ ] Operación probada exitosamente en entorno TEST
+- [ ] Datos validados y respaldo creado
+- [ ] Operación revisada por segundo miembro del equipo
+- [ ] Autorización apropiada obtenida para cambios de producción
+- [ ] Plan de rollback preparado y probado
 
-### Production Operation Requirements
+### Requisitos de Operación en Producción
 
-1. **Explicit Confirmation**: All production operations require user confirmation
-2. **Backup Creation**: Automatic backups before any data modifications
-3. **Logging**: All operations logged with full audit trail
-4. **Monitoring**: Real-time monitoring during critical operations
-5. **Rollback Ready**: Immediate rollback capability if issues detected
+1. **Confirmación Explícita**: Todas las operaciones de producción requieren confirmación del usuario
+2. **Creación de Respaldo**: Respaldos automáticos antes de cualquier modificación de datos
+3. **Registro**: Todas las operaciones registradas con registro de auditoría completo
+4. **Monitoreo**: Monitoreo en tiempo real durante operaciones críticas
+5. **Rollback Listo**: Capacidad de rollback inmediato si se detectan problemas
 
-## File Security
+## Seguridad de Archivos
 
-### Sensitive Files (Never commit to Git)
+### Archivos Sensibles (Nunca hacer commit a Git)
 
 ```
-config/prod_config.R       # Production database credentials
-config/test_config.R       # Test database credentials
-logs/*.log                 # Log files may contain sensitive data
-output/*sensitive*         # Output files with sensitive data
-*.csv                      # Data exports may contain sensitive information
-*.rds                      # R data files may contain sensitive information
+config/prod_config.R       # Credenciales de base de datos de producción
+config/test_config.R       # Credenciales de base de datos de prueba
+logs/*.log                 # Archivos de registro pueden contener datos sensibles
+output/*sensitive*         # Archivos de salida con datos sensibles
+*.csv                      # Exportaciones de datos pueden contener información sensible
+*.rds                      # Archivos de datos R pueden contener información sensible
 ```
 
-### File Permissions
+### Permisos de Archivos
 
-Set restrictive permissions on sensitive files:
+Configurar permisos restrictivos en archivos sensibles:
 
 ```bash
 chmod 600 config/prod_config.R
@@ -110,67 +110,67 @@ chmod 755 logs/
 chmod 644 logs/*.log
 ```
 
-## Incident Response
+## Respuesta a Incidentes
 
-### In case of security incident:
+### En caso de incidente de seguridad:
 
-1. **Immediate Response**
-   - Disconnect affected systems from network if necessary
-   - Preserve evidence (logs, system state)
-   - Notify GBIF.ES security team immediately
+1. **Respuesta Inmediata**
+   - Desconectar sistemas afectados de la red si es necesario
+   - Preservar evidencia (registros, estado del sistema)
+   - Notificar al equipo de seguridad de GBIF.ES inmediatamente
 
-2. **Assessment**
-   - Determine scope and impact of incident
-   - Identify affected data and systems
-   - Document timeline of events
+2. **Evaluación**
+   - Determinar alcance e impacto del incidente
+   - Identificar datos y sistemas afectados
+   - Documentar cronología de eventos
 
-3. **Containment**
-   - Implement immediate containment measures
-   - Change compromised credentials
-   - Apply security patches if applicable
+3. **Contención**
+   - Implementar medidas de contención inmediatas
+   - Cambiar credenciales comprometidas
+   - Aplicar parches de seguridad si es aplicable
 
-4. **Recovery**
-   - Restore from clean backups if necessary
-   - Verify system integrity before resuming operations
-   - Update security measures to prevent recurrence
+4. **Recuperación**
+   - Restaurar desde respaldos limpios si es necesario
+   - Verificar integridad del sistema antes de resumir operaciones
+   - Actualizar medidas de seguridad para prevenir recurrencia
 
-5. **Post-Incident**
-   - Conduct thorough post-incident review
-   - Update security policies and procedures
-   - Provide additional training if needed
+5. **Post-Incidente**
+   - Conducir revisión exhaustiva post-incidente
+   - Actualizar políticas y procedimientos de seguridad
+   - Proporcionar entrenamiento adicional si es necesario
 
-## Compliance
+## Cumplimiento
 
-This toolkit must comply with:
+Este toolkit debe cumplir con:
 
-- GBIF data sharing and access policies
-- Institutional data protection requirements
-- Applicable privacy regulations
-- Internal security standards
+- Políticas de compartir datos y acceso de GBIF
+- Requisitos institucionales de protección de datos
+- Regulaciones de privacidad aplicables
+- Estándares internos de seguridad
 
-## Training and Awareness
+## Entrenamiento y Concienciación
 
-All users must:
+Todos los usuarios deben:
 
-- Complete security awareness training
-- Understand and follow these security policies
-- Report security concerns promptly
-- Participate in regular security reviews
+- Completar entrenamiento de concienciación de seguridad
+- Entender y seguir estas políticas de seguridad
+- Reportar preocupaciones de seguridad prontamente
+- Participar en revisiones regulares de seguridad
 
-## Regular Security Reviews
+## Revisiones Regulares de Seguridad
 
-- Monthly review of access logs
-- Quarterly security policy updates
-- Annual penetration testing (if applicable)
-- Regular backup and recovery testing
+- Revisión mensual de registros de acceso
+- Actualizaciones trimestrales de política de seguridad
+- Pruebas de penetración anuales (si es aplicable)
+- Pruebas regulares de respaldo y recuperación
 
-## Contact
+## Contacto
 
-For security questions or concerns, contact:
-- GBIF.ES Technical Team
-- Institutional Security Officer
-- Database Administrator
+Para preguntas o preocupaciones de seguridad, contactar:
+- Equipo Técnico de GBIF.ES
+- Oficial de Seguridad Institucional
+- Administrador de Base de Datos
 
 ---
 
-**Remember: Security is everyone's responsibility. When in doubt, ask before proceeding.**
+**Recordar: La seguridad es responsabilidad de todos. En caso de duda, preguntar antes de proceder.**

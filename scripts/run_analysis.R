@@ -1,32 +1,32 @@
-# Data Analysis Script
-# This script performs comprehensive data analysis on the GBIF Collections Registry database
+# Script de Análisis de Datos
+# Este script realiza análisis comprensivo de datos en la base de datos del Registro de Colecciones de GBIF
 
-# Load required modules
+# Cargar módulos requeridos
 source("src/connection/db_connection.R")
 source("src/analysis/data_analysis.R")
 
-# Parse command line arguments
+# Analizar argumentos de línea de comandos
 args <- commandArgs(trailingOnly = TRUE)
 
-# Default parameters
+# Parámetros por defecto
 environment <- if (length(args) >= 1) args[1] else "TEST"
 output_dir <- if (length(args) >= 2) args[2] else "output"
 analysis_types <- if (length(args) >= 3) strsplit(args[3], ",")[[1]] else c("all")
 export_formats <- if (length(args) >= 4) strsplit(args[4], ",")[[1]] else c("rds", "csv")
 
-# Validate environment parameter
+# Validar parámetro de entorno
 if (!environment %in% c("PROD", "TEST")) {
-  stop("Environment must be either 'PROD' or 'TEST'")
+  stop("El entorno debe ser 'PROD' o 'TEST'")
 }
 
-# Validate analysis types
+# Validar tipos de análisis
 valid_analysis_types <- c("all", "trends", "coverage", "patterns", "completeness", "dashboard")
 invalid_types <- analysis_types[!analysis_types %in% valid_analysis_types]
 if (length(invalid_types) > 0) {
-  stop(paste("Invalid analysis types:", paste(invalid_types, collapse = ", ")))
+  stop(paste("Tipos de análisis inválidos:", paste(invalid_types, collapse = ", ")))
 }
 
-# Create output directory
+# Crear directorio de salida
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }

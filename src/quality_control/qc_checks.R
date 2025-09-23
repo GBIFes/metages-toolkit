@@ -1,53 +1,53 @@
-# Quality Control Module for GBIF Spain Collections Registry
-# This module implements comprehensive quality control checks for data validation
+# Módulo de Control de Calidad para el Registro de Colecciones de GBIF España
+# Este módulo implementa verificaciones comprensivas de control de calidad para validación de datos
 
-# Load required libraries
+# Cargar librerías requeridas
 library(DBI)
 library(dplyr)
 library(stringr)
 library(lubridate)
 library(logging)
 
-#' Run Completeness Checks
+#' Ejecutar Verificaciones de Completitud
 #' 
-#' Checks for data completeness across critical fields
+#' Verifica la completitud de datos en campos críticos
 #' 
-#' @param connection Database connection object
-#' @return List with completeness check results
+#' @param connection Objeto de conexión a base de datos
+#' @return Lista con resultados de verificaciones de completitud
 #' @export
-run_completeness_checks <- function(connection) {
-  loginfo("Starting completeness checks")
+ejecutar_verificaciones_completitud <- function(connection) {
+  loginfo("Iniciando verificaciones de completitud")
   
   tryCatch({
-    completeness_results <- list()
-    completeness_results$timestamp <- Sys.time()
-    completeness_results$check_type <- "completeness"
+    resultados_completitud <- list()
+    resultados_completitud$timestamp <- Sys.time()
+    resultados_completitud$tipo_verificacion <- "completitud"
     
-    # Define critical fields for each table (customize based on GBIF requirements)
-    critical_fields <- list(
+    # Definir campos críticos para cada tabla (personalizar basado en requisitos GBIF)
+    campos_criticos <- list(
       collections = c("key", "name", "institution_key", "created", "modified"),
       institutions = c("key", "name", "code", "created", "modified"),
       contacts = c("key", "first_name", "last_name", "type"),
       identifiers = c("key", "identifier", "type")
     )
     
-    tables <- dbListTables(connection)
-    table_results <- list()
+    tablas <- dbListTables(connection)
+    resultados_tabla <- list()
     
-    for (table in tables) {
-      if (table %in% names(critical_fields)) {
-        loginfo(paste("Checking completeness for table:", table))
+    for (tabla in tablas) {
+      if (tabla %in% names(campos_criticos)) {
+        loginfo(paste("Verificando completitud para tabla:", tabla))
         
-        table_result <- list()
-        table_result$table_name <- table
+        resultado_tabla <- list()
+        resultado_tabla$nombre_tabla <- tabla
         
-        # Get total row count
-        total_rows_query <- paste("SELECT COUNT(*) as total FROM", table)
-        total_rows <- execute_safe_query(connection, total_rows_query)$total
-        table_result$total_rows <- total_rows
+        # Obtener conteo total de filas
+        consulta_total_filas <- paste("SELECT COUNT(*) as total FROM", tabla)
+        total_filas <- execute_safe_query(connection, consulta_total_filas)$total
+        resultado_tabla$total_filas <- total_filas
         
-        # Check each critical field
-        field_results <- list()
+        # Verificar cada campo crítico
+        resultados_campo <- list()
         
         for (field in critical_fields[[table]]) {
           # Check if field exists
