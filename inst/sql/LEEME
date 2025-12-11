@@ -1,0 +1,26 @@
+ATENCIÓN:
+- No se debe modificar el contenido de "scripts" manualmente ya que proviene de 
+  la carpeta Scripts de DBeaver y la sincronización solo occurre SQL>R y no al revés,
+  por lo que actualizar "scripts" manualmente crearía discordancia entre los scripts
+  de R y Github con los de Metages SQL.
+  
+  Las consultas deben modificarse siempre desde los archivos de Scripts de DBeaver
+  y luego migrarse al repositorio de github usando "actualizar_scripts.R"
+
+Por qué:
+- DBeaver no tiene un control de versiones automatico, asi que utilizamos github 
+  para almacenar consultas y vistas relevantes. Como las vistas de DBeaver no 
+  guardan comentarios, guardamos los scripts que generan las vistas para mantenerlos.
+
+Donde:
+- carpeta "metages-toolkit/inst/sql"
+
+Contiene:
+- carpeta "scripts"
+- archivo "actualizar_scripts.R"
+- archivo "LEEME"
+
+Instrucciones de uso:
+- Correr el archivo "actualizar_scripts.R" para actualizar el contenido de la 
+  carpeta "scripts".
+
