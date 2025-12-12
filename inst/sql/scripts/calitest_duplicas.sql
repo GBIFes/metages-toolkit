@@ -4,7 +4,7 @@
 -- Última actualización: 2025-11-28
 -- 
 -- Descripción:
---   Esta vista ejemplifica duplicas en varias tablas 
+--   Este check ejemplifica duplicas en varias tablas 
 -- 
 -- Base de datos: gbif_wp
 -- calitest_duplicas

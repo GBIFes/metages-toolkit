@@ -18,7 +18,7 @@ SELECT COUNT(*), mb.body_type, mb.body_type_id
 FROM metages_bodytype mb 
 LEFT JOIN metages_body mb2 ON mb.body_type_id = mb2.body_type_fk
 WHERE private = 0
-AND mb2.disciplina_fk BETWEEN 6 AND 11
+-- AND mb2.disciplina_fk BETWEEN 6 AND 11
 GROUP BY body_type, mb.body_type_id;  
 
 
