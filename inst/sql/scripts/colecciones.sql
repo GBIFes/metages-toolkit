@@ -41,7 +41,8 @@ SELECT
     mb.condiciones_col,
     mb.acceso_col AS acceso_ejemplares,
     mb.acceso_informatizado, 
-    mb.medio_acceso 
+    mb.medio_acceso,
+    mit.Abreviatura AS software_gestion_col 
 FROM metages_body AS mb       
 LEFT JOIN metages_disciplina AS md								-- Anhadir disciplina de la coleccion (Zoologica, Botanica, etc)  
     ON mb.disciplina_fk = md.disciplina_id
@@ -51,6 +52,8 @@ LEFT JOIN metages_disciplina_subtipo mds 						-- Anhadir disciplina subtipo de 
 	ON mbds.disciplina_subtipo_fk = mds.disciplina_subtipo_id 
 LEFT JOIN metages_address AS ma 								-- Anhadir ciudades donde se gestiona cada coleccion (para mapas)
     ON mb.address_fk = ma.address_id
+LEFT JOIN metages_informati_tbl mit                             -- Anhadir software de gestion de colecciones
+	ON mb.informati_tbl_fk = mit.Informati_id 
 LEFT JOIN (														-- Anhadir numero de registros publicados por coleccion
     SELECT 
         r2.body_fk,
