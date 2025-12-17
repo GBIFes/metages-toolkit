@@ -52,7 +52,7 @@ con <- dbConnect(odbc(),
 
 
 # Desconectar de la Base de Datos
- dbDisconnect(con)
+# dbDisconnect(con)
 
 # Cerrar tunel SSH
 # En CMD correr: 

@@ -41,36 +41,63 @@ colecciones <- dbGetQuery(con, "SELECT *
 data <- colecciones %>%
   mutate(across(where(is.character),
                 ~ na_if(trimws(.), ""))) %>%
-  filter(number_of_subunits > 0,
-         !is.na(town)) %>%
-  arrange(number_of_subunits) %>%
+  filter(!is.na(town)) %>%
   mutate(town = factor(town, unique(town)),
          latitude = as.numeric(latitude),
          longitude = as.numeric(longitude),
          # el desplazamiento de longitude_adj y latitude_adj debe coincidir con el de ES_canary_shifted
          longitude_adj = if_else(longitude < -10 & latitude < 34, longitude + 5, longitude), 
-         latitude_adj  = if_else(longitude < -10 & latitude < 34, latitude + 6, latitude)
-  )
+         latitude_adj  = if_else(longitude < -10 & latitude < 34, latitude + 6, latitude))
 
 
+# Extraer breaks y limites para la leyenda
+# Combinamos las 2 columnas de valores que se usaran para tener una sola escala que no cambie con cada mapa
+data_4_legend <- tibble(records = c(data$number_of_subunits, data$numberOfRecords)) %>%
+                 filter(records > 0)
+
+summary(data_4_legend$records)
+
+mybreaks <- quantile(data_4_legend$records,
+                     c(.1, .4, .65, .90), 
+                     na.rm = TRUE) %>%
+            (\(.) round(. / 100) * 100)() %>%
+            signif(1) %>%
+            as.numeric()
+
+limits <- range(data_4_legend$records, na.rm = TRUE)
 
 
+# Mapa
 crear_mapa <- function(data = data,
                        tipo_coleccion = NULL, # "colección" | "base de datos" | NULL
-                       disciplina = NULL,     # ""
+                       disciplina = NULL,     
                        subdisciplina = NULL,
                        publican = NULL) {     # TRUE | FALSE | NULL
   
   
   
+  ################## VARIABLE ACTIVA ##################
+  # Creacion de una variable activa para usar unos valores u otros en 
+  # funcion de los argumentos de crear_mapa()
+  if (identical(tipo_coleccion, "base de datos")) {
+    value_var   <- "numberOfRecords"
+    value_label <- "Número de registros"
+  } else if (isTRUE(publican)) {
+    value_var   <- "numberOfRecords"
+    value_label <- "Número de registros"
+  } else {
+    value_var   <- "number_of_subunits"
+    value_label <- "Número de ejemplares"
+  }
   
-  ################## Preparar datos para filtros. ##################
   
+
+  ################## Filtrar datos ##################
   # Deben ser secuenciales en el orden indicado ya que algunos dependen de otros
-  
-  # Datos sin filtros
-  data_clean <- data
-  
+  # Los argumentos de la funcion definiran los filtros.
+  # Una vez se ha seleccionado la variable activa, limpiamos los datos
+  data_clean <- data %>% filter(.data[[value_var]] > 0)
+
   
   # Opcional: Filtra por tipo de colección
   if (!is.null(tipo_coleccion)) {
@@ -93,57 +120,22 @@ crear_mapa <- function(data = data,
   # Opcional: Filtra datos por publicadores
   if (!is.null(publican)) {
     data_clean <- data_clean %>% 
-      filter(publica_en_gbif == publican)   # cambia columna si es otra
+      filter(publica_en_gbif == publican)
   }
   
 
 
-  
-  ################## VARIABLE ACTIVA ##################
-  
-  if (identical(tipo_coleccion, "base de datos")) {
-    value_var   <- "numberOfRecords"
-    value_label <- "Número de registros"
-  } else if (isTRUE(publican)) {
-    value_var   <- "numberOfRecords"
-    value_label <- "Número de registros"
-  } else {
-    value_var   <- "number_of_subunits"
-    value_label <- "Número de ejemplares"
-  }
-  
-  
-  ##################  Otros ajustes ##################
-  
-  # Guardar data_clean tras los filtros para evaluar mapa y extraer tablas
+  # Guardar datos filtrados para evaluar mapa y extraer tablas
   assign("data_clean_last", data_clean, envir = .GlobalEnv)
   
   
   # Quita duplicas para geom_ que lo necesiten
   data_clean_unique <- data_clean %>%
-    select(town, longitude_adj, latitude_adj) %>%
-    distinct()
+                        select(town, longitude_adj, latitude_adj) %>%
+                        distinct()
   
   
-  # Calcular percentiles para leyenda. Calculamos los de number_of_subunits
-  # independientemente de si se miden registros o ejemplares. 
-  # Esto solo influye en el tamanho de la leyenda y permite que todas sean equiparables.
-  # La transformacion raiz cuadrada mas adelante en scale_size_continuous ayudara a equiparar los valores.
-  
-  summary(data$number_of_subunits)
-  
-  mybreaks <- data %>%
-    pull(number_of_subunits) %>%
-    quantile(c(.1, .3, .5, .85), na.rm = TRUE) %>%
-    (\(.) round(. / 100) * 100)() %>%
-    as.character() %>%
-    as.numeric()      
-  
-  
-  limits <- range(data$number_of_subunits, na.rm = TRUE)
-  
-  
-  
+
   
   ################## Build the map ##################
   
@@ -169,7 +161,7 @@ crear_mapa <- function(data = data,
                    alpha = .data[[value_var]]),
                shape = 20, stroke = FALSE
     ) +
-    # Punto pequeño fijo por ciudad en cada facet
+    # Puntito fijo por ciudad
     geom_point(
       data = data_clean_unique,
       aes(x = longitude_adj, y = latitude_adj),
@@ -192,22 +184,25 @@ crear_mapa <- function(data = data,
     # Intervalos y transformacion de la leyenda para size
     scale_size_continuous(
       name = value_label, trans = "sqrt",
-      range = c(5, 90), breaks = mybreaks, limits = limits
+      range = c(5, 70), breaks = mybreaks, limits = limits,
+      labels = function(x) format(x, scientific = FALSE)
     ) +
     
     # Intervalos y transformacion de la leyenda para alpha
     scale_alpha_continuous(
       name = value_label, trans = "log",
-      range = c(0.1, 0.4), breaks = mybreaks, limits = limits
+      range = c(0.1, 0.4), breaks = mybreaks, limits = limits,
+      labels = function(x) format(x, scientific = FALSE)
     ) +
     
     # Intervalos y transformacion de la leyenda para color
     scale_color_viridis_c(
       option = "viridis", trans = "log",
-      breaks = mybreaks, limits = limits, name = value_label
+      breaks = mybreaks, limits = limits, name = value_label,
+      labels = function(x) format(x, scientific = FALSE)
     ) +
     
-    # Intervalos y transformacion de la leyenda para size
+    # Facet
     # facet_wrap(~ disciplina_def) +
     
     # Zoom del mapa
@@ -220,10 +215,12 @@ crear_mapa <- function(data = data,
     # Tema general del grafico
     theme_void() +
     
-    # Une las leyendas en una
+    # Fuerza scale_color_viridis_c a usar guide_legend().
+    # Permitiendo que las leyendas se unan en una sola
     guides(colour = guide_legend()) +
+  
     
-    # Titulo y subtitulo  del grafico
+    # Titulo y subtitulo del grafico dinámicos
     labs(
       title = paste(
         "Distribución de ",
@@ -242,7 +239,6 @@ crear_mapa <- function(data = data,
       )
     ) +
     
-    
     # Otros cambios en el tema
     theme(
       strip.text = element_text(face = "bold", size = 10),
@@ -252,20 +248,17 @@ crear_mapa <- function(data = data,
       plot.background = element_rect(fill = "#f5f5f2", color = NA),
       plot.title = element_text(size = 14, hjust = 0.5, face= "bold", color = "#4e4d47"),
       plot.subtitle = element_text(face = "bold", color = "#4e4d47"),
-      legend.position = c(0.08, 0.7),
-      legend.title = element_text(size = 10, face = "bold"),
-      legend.text = element_text(size = 9),
-      # legend.background = element_rect(fill = "#f5f5f2",
-      #                                  color = "grey70",
-      #                                  linewidth = 0.3),
-      # legend.margin = margin(6, 6, 0, 6)
+      #legend.position = c(0.08, 0.7),
+      legend.position = c(0.02, 0.6),
+      legend.title = element_text(size = 9, face = "bold"),
+      legend.text = element_text(size = 8)
     )
   
   
   message(
     "crear_mapa(): ",
     nrow(data_clean),
-    " registros tras aplicar filtros"
+    " líneas tras aplicar filtros"
   )
   
   plot
@@ -273,7 +266,14 @@ crear_mapa <- function(data = data,
 }
 
 
-
+# Quick tests
+crear_mapa(data = data)
+crear_mapa(data = data,
+           tipo_coleccion = "base de datos",
+           disciplina = "Botánica",
+           subdisciplina = "Plantas")
+crear_mapa(data = data,
+           tipo_coleccion = "base de datos")
 
 
 
@@ -307,13 +307,9 @@ for (tc in tipos) {
   for (d in disciplinas) {
     
     # Subdisciplinas válidas según disciplina
-    sub_opts <- if (is.na(d)) {
-      NA
-    } else if (d %in% names(sub_map)) {
-      sub_map[[d]]
-    } else {
-      NA
-    }
+    sub_opts <- if (is.na(d)) { NA
+                } else if (d %in% names(sub_map)) { sub_map[[d]]
+                } else { NA }
     
     for (sd in sub_opts) {
       for (p in publican_vals) {
@@ -327,35 +323,35 @@ for (tc in tipos) {
         
         calls_expr[[length(calls_expr) + 1]] <-
           as.call(c(quote(crear_mapa), args))
-      }
-    }
-  }
-}
+      }}}}
 
 
 # Llamadas validas
-cat(
-  paste0(
-    sprintf(
-      "%03d: ",
-      seq_along(calls_expr)
-    ),
-    vapply(
-      calls_expr,
-      function(x) paste(deparse(x), collapse = ""),
-      character(1)
-    )
-  ),
-  sep = "\n"
-)
+cat(paste0(sprintf("%03d: ",
+                   seq_along(calls_expr)),
+           vapply(calls_expr,
+                  function(x) paste(deparse(x), 
+                                    collapse = ""),
+                  character(1))),
+    sep = "\n")
 
 
+
+
+# TESTING
 # Llamada basandose en indice
 eval(calls_expr[[001]])
-eval(calls_expr[[1]])
+eval(calls_expr[[102]])
 eval(calls_expr[[79]])
 
 # Llamadas basandose en funcion
 crear_mapa(data = data, tipo_coleccion = "base de datos", disciplina = "Botánica",     subdisciplina = "Plantas", publican = TRUE)
 crear_mapa(data = data, tipo_coleccion = "colección", disciplina = "Zoológica",     publican = TRUE)
 crear_mapa(data = data, tipo_coleccion = "base de datos")
+crear_mapa(data = data, tipo_coleccion = "colección", disciplina = "Zoológica",     publican = F)
+crear_mapa(data = data)
+
+
+
+
+
