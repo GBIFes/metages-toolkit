@@ -7,7 +7,6 @@ for (p in pkgs) {
 }
 
 # Descarga basemap
-
 vecinos <- gisco_get_countries(country = c("PT", "FR", "AD", "MA", "DZ"),
                                resolution = 1)
 
@@ -72,7 +71,8 @@ crear_mapa <- function(data = data,
                        tipo_coleccion = NULL, # "colección" | "base de datos" | NULL
                        disciplina = NULL,     
                        subdisciplina = NULL,
-                       publican = NULL) {     # TRUE | FALSE | NULL
+                       publican = NULL,       # TRUE | FALSE | NULL
+                       facet = NULL) {     
   
   
   
@@ -129,11 +129,21 @@ crear_mapa <- function(data = data,
   assign("data_clean_last", data_clean, envir = .GlobalEnv)
   
   
-  # Quita duplicas para geom_ que lo necesiten
-  data_clean_unique <- data_clean %>%
-                        select(town, longitude_adj, latitude_adj) %>%
-                        distinct()
-  
+  # Quita duplicas para los geom_ que lo necesiten
+  if (is.null(facet)) {
+    data_clean_unique <- data_clean %>%
+      select(town, longitude_adj, latitude_adj) %>%
+      distinct()
+  } else {
+    data_clean_unique <- data_clean %>%
+      select(
+        town,
+        longitude_adj,
+        latitude_adj,
+        !!sym(facet)
+      ) %>%
+      distinct()
+  }
   
 
   
@@ -254,6 +264,12 @@ crear_mapa <- function(data = data,
       legend.text = element_text(size = 8)
     )
   
+  # ---------------- Facet opcional ----------------
+  if (!is.null(facet)) {
+    plot <- plot +
+      facet_wrap(vars(.data[[facet]]))
+  }
+  
   
   message(
     "crear_mapa(): ",
@@ -267,7 +283,7 @@ crear_mapa <- function(data = data,
 
 
 # Quick tests
-crear_mapa(data = data)
+crear_mapa(data = data, publican= T, facet = "tipo_body")
 crear_mapa(data = data,
            tipo_coleccion = "base de datos",
            disciplina = "Botánica",
@@ -346,7 +362,7 @@ eval(calls_expr[[79]])
 
 # Llamadas basandose en funcion
 crear_mapa(data = data, tipo_coleccion = "base de datos", disciplina = "Botánica",     subdisciplina = "Plantas", publican = TRUE)
-crear_mapa(data = data, tipo_coleccion = "colección", disciplina = "Zoológica",     publican = TRUE)
+crear_mapa(data = data, tipo_coleccion = "colección", disciplina = "Zoológica")
 crear_mapa(data = data, tipo_coleccion = "base de datos")
 crear_mapa(data = data, tipo_coleccion = "colección", disciplina = "Zoológica",     publican = F)
 crear_mapa(data = data)
