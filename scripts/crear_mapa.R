@@ -123,7 +123,12 @@ crear_mapa <- function(data = data,
       filter(publica_en_gbif == publican)
   }
   
-
+  # Opcional: Eliminar NA en la variable de facetado
+  if (!is.null(facet)) {
+    data_clean <- data_clean %>%
+      filter(!is.na(.data[[facet]]))
+  }
+  
 
   # Guardar datos filtrados para evaluar mapa y extraer tablas
   assign("data_clean_last", data_clean, envir = .GlobalEnv)
@@ -283,7 +288,10 @@ crear_mapa <- function(data = data,
 
 
 # Quick tests
+names(data)
 crear_mapa(data = data, publican= T, facet = "tipo_body")
+crear_mapa(data = data, facet = "software_gestion_col")
+crear_mapa(data = data, facet = "publica_en_gbif")
 crear_mapa(data = data,
            tipo_coleccion = "base de datos",
            disciplina = "Botánica",
