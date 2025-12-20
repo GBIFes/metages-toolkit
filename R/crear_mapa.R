@@ -6,68 +6,11 @@ for (p in pkgs) {
   library(p, character.only = TRUE)
 }
 
-# Descarga basemap
-vecinos <- gisco_get_countries(country = c("PT", "FR", "AD", "MA", "DZ"),
-                               resolution = 1)
-
-ES <- gisco_get_countries(country = "ES", resolution = 1)
-
-
-ES_main <- ES %>% 
-  st_crop(xmin = -10, xmax = 5, ymin = 35, ymax = 44)  # península y baleares
-
-ES_canary <- ES %>%
-  st_crop(xmin = -19, xmax = -10, ymin = 27, ymax = 33)  # Canarias
-
-# Desplazar Canarias hacia el noreste
-ES_canary_shifted <- ES_canary %>% 
-  mutate(geometry = geometry + c(5, 6)) %>%   # (desplaza X, desplaza Y)
-  st_set_crs(st_crs(ES))
-
-# Crear basemap final y definir bounding boxes
-ES_fixed <- rbind(ES_main, ES_canary_shifted)
-
-bb_fixed <- st_bbox(ES_fixed)
-bb_can <- st_bbox(ES_canary_shifted)
-
-#Conectar R a Metages con conectar_metages.R
-
-# Extraer datos de metages
-colecciones <- dbGetQuery(con, "SELECT *
-                        FROM colecciones c")
-
-# Limpiar tabla y anhadir geometria
-data <- colecciones %>%
-  mutate(across(where(is.character),
-                ~ na_if(trimws(.), ""))) %>%
-  filter(!is.na(town)) %>%
-  mutate(town = factor(town, unique(town)),
-         latitude = as.numeric(latitude),
-         longitude = as.numeric(longitude),
-         # el desplazamiento de longitude_adj y latitude_adj debe coincidir con el de ES_canary_shifted
-         longitude_adj = if_else(longitude < -10 & latitude < 34, longitude + 5, longitude), 
-         latitude_adj  = if_else(longitude < -10 & latitude < 34, latitude + 6, latitude))
-
-
-# Extraer breaks y limites para la leyenda
-# Combinamos las 2 columnas de valores que se usaran para tener una sola escala que no cambie con cada mapa
-data_4_legend <- tibble(records = c(data$number_of_subunits, data$numberOfRecords)) %>%
-                 filter(records > 0)
-
-summary(data_4_legend$records)
-
-mybreaks <- quantile(data_4_legend$records,
-                     c(.1, .4, .65, .90), 
-                     na.rm = TRUE) %>%
-            (\(.) round(. / 100) * 100)() %>%
-            signif(1) %>%
-            as.numeric()
-
-limits <- range(data_4_legend$records, na.rm = TRUE)
-
 
 # Mapa
 crear_mapa <- function(data = data,
+                       basemap, 
+                       legend_params = NULL,
                        tipo_coleccion = NULL, # "colección" | "base de datos" | NULL
                        disciplina = NULL,     
                        subdisciplina = NULL,
@@ -75,8 +18,18 @@ crear_mapa <- function(data = data,
                        facet = NULL) {     
   
   
+  # --------------------------------------------------
+  # 1. Legend params (globales, sobre el dominio)
+  # --------------------------------------------------
+  if (is.null(legend_params)) {
+    legend_params <- compute_legend_params(data)
+  }
   
-  ################## VARIABLE ACTIVA ##################
+  
+  
+  # --------------------------------------------------
+  # 2. Variable activa
+  # --------------------------------------------------
   # Creacion de una variable activa para usar unos valores u otros en 
   # funcion de los argumentos de crear_mapa()
   if (identical(tipo_coleccion, "base de datos")) {
@@ -92,7 +45,9 @@ crear_mapa <- function(data = data,
   
   
 
-  ################## Filtrar datos ##################
+  # --------------------------------------------------
+  # 3. Filtrado
+  # --------------------------------------------------
   # Deben ser secuenciales en el orden indicado ya que algunos dependen de otros
   # Los argumentos de la funcion definiran los filtros.
   # Una vez se ha seleccionado la variable activa, limpiamos los datos
@@ -128,19 +83,16 @@ crear_mapa <- function(data = data,
     data_clean <- data_clean %>%
       filter(!is.na(.data[[facet]]))
   }
-  
 
-  # Guardar datos filtrados para evaluar mapa y extraer tablas
-  assign("data_clean_last", data_clean, envir = .GlobalEnv)
   
   
   # Quita duplicas para los geom_ que lo necesiten
   if (is.null(facet)) {
-    data_clean_unique <- data_clean %>%
+    data_labels <- data_clean %>%
       select(town, longitude_adj, latitude_adj) %>%
       distinct()
   } else {
-    data_clean_unique <- data_clean %>%
+    data_labels <- data_clean %>%
       select(
         town,
         longitude_adj,
@@ -152,18 +104,22 @@ crear_mapa <- function(data = data,
   
 
   
-  ################## Build the map ##################
+  # --------------------------------------------------
+  # 4. Construcción del mapa
+  # --------------------------------------------------
   
   plot <- data_clean %>%
     ggplot() +
-    geom_sf(data = vecinos, fill = "grey80", color = NA, alpha = 0.2) +
-    geom_sf(data = ES_fixed, fill = "grey", alpha = 0.3) +
+    geom_sf(data = basemap$vecinos, fill = "grey80", color = NA, alpha = 0.2) +
+    geom_sf(data = basemap$ES_fixed, fill = "grey", alpha = 0.3) +
     
     # Cuadradito alrededor de canarias
     annotate(
       "rect",
-      xmin = bb_can["xmin"] - 1, xmax = bb_can["xmax"] + 1,
-      ymin = bb_can["ymin"] - 0.3, ymax = bb_can["ymax"] + 0.3,
+      xmin = basemap$bb_can["xmin"] - 1, 
+      xmax = basemap$bb_can["xmax"] + 1,
+      ymin = basemap$bb_can["ymin"] - 0.3, 
+      ymax = basemap$bb_can["ymax"] + 0.3,
       fill = NA,
       color = "grey70",
       linewidth = 0.3
@@ -174,11 +130,12 @@ crear_mapa <- function(data = data,
                    size = .data[[value_var]], 
                    color = .data[[value_var]], 
                    alpha = .data[[value_var]]),
-               shape = 20, stroke = FALSE
+               shape = 20, 
+               stroke = FALSE
     ) +
     # Puntito fijo por ciudad
     geom_point(
-      data = data_clean_unique,
+      data = data_labels,
       aes(x = longitude_adj, y = latitude_adj),
       size = 0.8,
       color = "black",
@@ -187,7 +144,7 @@ crear_mapa <- function(data = data,
     
     # Nombre de las ciudades
     geom_text_repel(
-      data = data_clean_unique,
+      data = data_labels,
       aes(x = longitude_adj, y = latitude_adj, label = town), 
       alpha = 0.8,
       size = 3,
@@ -199,31 +156,30 @@ crear_mapa <- function(data = data,
     # Intervalos y transformacion de la leyenda para size
     scale_size_continuous(
       name = value_label, trans = "sqrt",
-      range = c(5, 70), breaks = mybreaks, limits = limits,
+      range = c(5, 70), breaks = legend_params$mybreaks, limits = legend_params$limits,
       labels = function(x) format(x, scientific = FALSE)
     ) +
     
     # Intervalos y transformacion de la leyenda para alpha
     scale_alpha_continuous(
       name = value_label, trans = "log",
-      range = c(0.1, 0.4), breaks = mybreaks, limits = limits,
+      range = c(0.1, 0.4), breaks = legend_params$mybreaks, limits = legend_params$limits,
       labels = function(x) format(x, scientific = FALSE)
     ) +
     
     # Intervalos y transformacion de la leyenda para color
     scale_color_viridis_c(
       option = "viridis", trans = "log",
-      breaks = mybreaks, limits = limits, name = value_label,
+      breaks = legend_params$mybreaks, limits = legend_params$limits, name = value_label,
       labels = function(x) format(x, scientific = FALSE)
     ) +
     
-    # Facet
-    # facet_wrap(~ disciplina_def) +
-    
     # Zoom del mapa
     coord_sf(
-      xlim = c(bb_fixed["xmin"] - 1, bb_fixed["xmax"] + 0.5),
-      ylim = c(bb_fixed["ymin"] - 0.5, bb_fixed["ymax"] + 0.5),
+      xlim = c(basemap$bb_fixed["xmin"] - 1, 
+               basemap$bb_fixed["xmax"] + 0.5),
+      ylim = c(basemap$bb_fixed["ymin"] - 0.5, 
+               basemap$bb_fixed["ymax"] + 0.5),
       expand = FALSE
     ) +
     
@@ -282,100 +238,9 @@ crear_mapa <- function(data = data,
     " líneas tras aplicar filtros"
   )
   
-  plot
+  return(invisible(list(
+    plot = plot,
+    data_map = data_clean)))
   
 }
-
-
-# Quick tests
-names(data)
-crear_mapa(data = data, publican= T, facet = "tipo_body")
-crear_mapa(data = data, facet = "software_gestion_col")
-crear_mapa(data = data, facet = "publica_en_gbif")
-crear_mapa(data = data,
-           tipo_coleccion = "base de datos",
-           disciplina = "Botánica",
-           subdisciplina = "Plantas")
-crear_mapa(data = data,
-           tipo_coleccion = "base de datos")
-
-
-
-
-
-################## Mapas posibles ##################
-
-# Valores permitidos
-tipos <- c(NA, "colección", "base de datos")
-publican_vals <- c(NA, TRUE, FALSE)
-
-disciplinas <- c(
-  NA,
-  "Zoológica",
-  "Botánica",
-  "Paleontológica",
-  "Mixta",
-  "Microbiológica",
-  "Micológica"
-)
-
-sub_map <- list(
-  "Zoológica" = c(NA, "Vertebrados", "Invertebrados", "Invertebrados y vertebrados"),
-  "Botánica"  = c(NA, "Plantas", "Hongos", "Algas")
-)
-
-# Lista de expresiones
-calls_expr <- list()
-
-for (tc in tipos) {
-  for (d in disciplinas) {
-    
-    # Subdisciplinas válidas según disciplina
-    sub_opts <- if (is.na(d)) { NA
-                } else if (d %in% names(sub_map)) { sub_map[[d]]
-                } else { NA }
-    
-    for (sd in sub_opts) {
-      for (p in publican_vals) {
-        
-        args <- list(data = quote(data))
-        
-        if (!is.na(tc)) args$tipo_coleccion <- tc
-        if (!is.na(d))  args$disciplina     <- d
-        if (!is.na(sd)) args$subdisciplina  <- sd
-        if (!is.na(p))  args$publican       <- p
-        
-        calls_expr[[length(calls_expr) + 1]] <-
-          as.call(c(quote(crear_mapa), args))
-      }}}}
-
-
-# Llamadas validas
-cat(paste0(sprintf("%03d: ",
-                   seq_along(calls_expr)),
-           vapply(calls_expr,
-                  function(x) paste(deparse(x), 
-                                    collapse = ""),
-                  character(1))),
-    sep = "\n")
-
-
-
-
-# TESTING
-# Llamada basandose en indice
-eval(calls_expr[[001]])
-eval(calls_expr[[102]])
-eval(calls_expr[[79]])
-
-# Llamadas basandose en funcion
-crear_mapa(data = data, tipo_coleccion = "base de datos", disciplina = "Botánica",     subdisciplina = "Plantas", publican = TRUE)
-crear_mapa(data = data, tipo_coleccion = "colección", disciplina = "Zoológica")
-crear_mapa(data = data, tipo_coleccion = "base de datos")
-crear_mapa(data = data, tipo_coleccion = "colección", disciplina = "Zoológica",     publican = F)
-crear_mapa(data = data)
-
-
-
-
 

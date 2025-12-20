@@ -15,6 +15,9 @@ for (p in pkgs) {
 }
 
 
+conectar_metages <- function() {
+
+
 # Credenciales SSH. Ajusta la ruta a tu clave privada
 session <- ssh::ssh_connect(
   # host = Sys.getenv("host_test"), #TEST
@@ -77,4 +80,12 @@ con <- dbConnect(odbc(),
 
 # Desconectar de la Base de Datos cuando hayamos acabado
 # dbDisconnect(con)
+
+# Devolver conexion y tunel (si existe)
+list(
+  con = con,
+  tunnel = tunnel
+)
+
+}
 
