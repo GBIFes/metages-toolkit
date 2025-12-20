@@ -1,0 +1,383 @@
+---
+title: "Informe de colecciones biológicas y bases de datos de biodiversidad en España"
+subtitle: "Registro de instituciones, colecciones y bases de datos · GBIF España"
+author:
+  - name: "Unidad de Coordinación GBIF España"
+date: last-modified
+lang: es
+
+
+prefer-html: true
+
+
+format:
+  docx:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    # Para imitar el estilo corporativo en Word, crea/usa una plantilla y pon aquí su ruta:
+    # reference-doc: "plantillas/plantilla_informe_gbif.docx"
+    
+execute:
+  echo: false
+  message: false
+  warning: false
+  
+# =====================================
+# MODO: DESARROLLO
+# NO actualiza los datos (Rapido para tests del informe)
+# Cambiar a PROD antes de publicar
+# =====================================
+  freeze: auto
+  cache: true
+
+# =====================================
+# MODO: PRODUCCION
+# Actualiza los datos (Lento para version final)
+# Cambiar a PROD antes de publicar
+# =====================================
+  #freeze: false
+  #cache: false
+  
+bibliography: []
+---
+
+::: {.callout-note}
+**Cómo usar este archivo**
+
+1. Coloca este `informe.qmd` en la raíz del repositorio (ya lo está).
+2. Asegúrate de tener configuradas las variables de entorno necesarias para `scripts/conectar_metages.R` (host, usuario, rutas a clave SSH, etc.).
+3. Renderiza a Word (editable): `quarto render informe.qmd`.
+4. Abre el `.docx` en Word o súbelo a Google Docs para edición colaborativa.
+
+> Este informe está pensado para **generar automáticamente mapas y tablas** a partir del Registro (Metages/WordPress) siguiendo una estructura similar a los informes institucionales de GBIF España.
+:::
+
+# Portada
+
+*(Opcional)* Inserta aquí logos o una imagen de cabecera (Word/Google Docs lo admiten bien).  
+Por ejemplo, crea una carpeta `logos/` y añade:
+
+- `inst/reports/assets/images/logos/logo-GBIF-RGB-01.png`
+- `inst/reports/assets/images/logos/Logotipo_del_CSIC.svg.png`
+- `inst/reports/assets/images/logos/MCIU.Gob.png`
+
+Luego descomenta:
+
+
+![](../reports/assets/images/logos/logo-GBIF-RGB-01.png){width=25%}
+![](../reports/assets/images/logos/logo-CSIC-big-trans.png){width=25%}
+![](../reports/assets/images/logos/MCIU.Gob.png){width=25%}
+
+
+# Resumen ejecutivo
+
+En esta sección se presenta una síntesis de los principales resultados del Registro, con especial atención a:
+
+- número de colecciones / bases de datos con registros (>0)
+- distribución espacial
+- principales focos (ciudades) según nº de ejemplares/registros
+- publicación en GBIF
+
+```{r}
+#| label: setup
+#| include: false
+
+
+# Paquete del proyecto (cuando ya sea paquete)
+# library(metagesToolkit)
+
+# Paquetes base del informe
+pkgs <- c(
+  "dplyr", "ggplot2", "sf",
+  "DBI", "odbc", "ssh", "giscoR", "ggrepel", "forcats", "processx"
+)
+
+for (p in pkgs) {
+  if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
+  library(p, character.only = TRUE)
+}
+
+######################################################################
+
+library(giscoR, quietly = TRUE, warn.conflicts = FALSE)
+
+# Evitar que knitr use métodos HTML
+options(knitr.kable.NA = "")
+options(knitr.table.format = "pandoc")
+
+# Descarga kableExtra si se carga indirectamente
+if ("kableExtra" %in% loadedNamespaces()) {
+  detach("package:kableExtra", unload = TRUE, character.only = TRUE)
+}
+
+######################################################################
+
+
+
+# Carpeta de figuras generadas
+if (!dir.exists("figures")) dir.create("figures", recursive = TRUE)
+
+
+
+
+###### TESTING ############
+# --- localizar el root del proyecto ---
+if (!requireNamespace("rprojroot", quietly = TRUE)) {
+  install.packages("rprojroot")
+}
+library(rprojroot)
+
+root <- find_root(is_rstudio_project)
+
+# --- sourcear SOLO las funciones necesarias ---
+# Cargar funciones del repo
+source(file.path(root, "R", "conectar_metages.R"))
+source(file.path(root, "R", "extraer_colecciones_mapa.R"))
+source(file.path(root, "R", "get_basemap_es.R"))
+source(file.path(root, "R", "compute_legend_params.R"))
+source(file.path(root, "R", "crear_mapa.R"))
+
+
+ 
+
+####### END TESTING #############
+
+
+
+
+# Importa conexión y funciones del repositorio
+#source("R/conectar_metages.R")   # crea `con` (DBI connection) y túnel SSH según tu configuración
+#source("R/crear_mapa.R")         # prepara base map + lee tabla `colecciones` + define `crear_mapa()`
+
+
+# --------------------------------------------------
+# 1. Dominio de datos (una sola vez)
+# --------------------------------------------------
+dom <- extraer_colecciones_mapa()
+data <- dom$data
+
+# --------------------------------------------------
+# 2. Basemap (una sola vez)
+# --------------------------------------------------
+basemap <- get_basemap_es()
+
+# --------------------------------------------------
+# 3. Escala global del informe
+# --------------------------------------------------
+legend_params <- compute_legend_params(
+  data,
+  probs = c(.1, .4, .65, .9)
+)
+
+# --------------------------------------------------
+# Utilidad tablas
+# --------------------------------------------------
+# Utilidad: tabla bonita estilo informe (sin colores fijos; el estilo lo debe dar la plantilla DOCX)
+tbl <- function(x, caption = NULL, digits = NULL) {
+  if (!is.null(digits)) {
+    x <- mutate(x, 
+                across(where(is.numeric), ~round(.x, digits)))
+  }
+  knitr::kable(x, caption = caption, format = "pandoc",
+    booktabs = FALSE, 
+    longtable = FALSE)
+}
+```
+
+
+## Indicadores principales
+
+```{r}
+#| label: tbl-indicadores
+#| results: asis
+
+# Nota: `data` se crea en scripts/crear_mapa.R (tabla `colecciones` ya limpiada)
+indicadores <- tibble::tibble(
+  `Colecciones/BBDD con registros (>0)` = sum((data$number_of_subunits > 0) | (data$numberOfRecords > 0), na.rm = TRUE),
+  `Colecciones (tipo_body == "colección")` = sum(data$tipo_body == "colección", na.rm = TRUE),
+  `Bases de datos (tipo_body == "base de datos")` = sum(data$tipo_body == "base de datos", na.rm = TRUE),
+  `Ciudades con al menos un recurso` = dplyr::n_distinct(data$town[!is.na(data$town)])
+)
+
+tbl(indicadores, caption = "Indicadores principales (a partir del Registro).")
+```
+
+# Introducción, justificación y objetivos
+
+Describe aquí (texto editable) el contexto del Registro, su uso como herramienta de diagnóstico del estado de las colecciones y bases de datos, y el objetivo del informe.
+
+- **Contexto**: Registro de instituciones, colecciones y BBDD de biodiversidad (GBIF España).
+- **Cobertura**: instituciones/colecciones/bbdd y publicación asociada.
+- **Objetivo**: síntesis y apoyo a priorización de digitalización y publicación.
+
+# Metodología y términos usados
+
+## Fuente de datos
+
+- Metadatos procedentes del Registro (base de datos asociada al sitio/WordPress).
+- Limpieza básica: eliminación de blancos, normalización de campos y filtrado de ciudades no informadas.
+
+## Cartografía
+
+Los mapas se generan automáticamente a partir de coordenadas (lat/long) y el *basemap* de `giscoR`, con tratamiento específico para Canarias (desplazamiento).
+
+# Resultados
+
+## Distribución general de recursos
+
+```{r}
+#| label: fig-mapa-general
+#| fig-cap: "Mapa 1. Distribución general de colecciones biológicas y bases de datos (tamaño proporcional al nº de ejemplares o registros según corresponda)."
+#| fig-width: 10
+#| fig-height: 7
+
+res_general <- crear_mapa(
+  data = data,
+  basemap = basemap,
+  legend_params = legend_params
+)
+
+res_general$plot
+```
+
+## Distribución por disciplina
+
+> **Nota:** si existen `NA` en la variable de facetado, se recomienda filtrarlos antes de facetar.  
+> Si ya aplicaste ese cambio en tu función, esta nota puede eliminarse.
+
+```{r}
+#| label: fig-mapa-disciplina
+#| fig-cap: "Mapa 2. Distribución por disciplina (facet)."
+#| fig-width: 12
+#| fig-height: 9
+
+res_disciplina <- crear_mapa(
+  data = data,
+  basemap = basemap,
+  legend_params = legend_params,
+  facet = "disciplina_def"
+)
+
+res_disciplina$plot
+```
+
+## Colecciones biológicas
+
+### Colecciones que publican en GBIF (solo colecciones)
+
+```{r}
+#| label: fig-mapa-colecciones-publican
+#| fig-cap: "Mapa 3. Colecciones biológicas que publican datos en GBIF."
+#| fig-width: 10
+#| fig-height: 7
+
+res_col_pub <- crear_mapa(
+  data = data,
+  basemap = basemap,
+  legend_params = legend_params,
+  tipo_coleccion = "colección",
+  publican = TRUE
+)
+
+res_col_pub$plot
+```
+
+### Tabla: top ciudades (colecciones)
+
+```{r}
+#| label: tbl-top-ciudades-colecciones
+#| results: asis
+
+# Ejecuta una llamada para fijar `data_clean_last` con el mismo filtro que el mapa anterior
+top_ciudades <- res_col_pub$data |>
+  group_by(town) |>
+  summarise(
+    ejemplares = sum(number_of_subunits, na.rm = TRUE),
+    colecciones = dplyr::n(),
+    .groups = "drop"
+  ) |>
+  arrange(dplyr::desc(ejemplares)) |>
+  slice_head(n = 15)
+
+tbl(
+  top_ciudades,
+  caption = "Tabla 1. Top 15 ciudades por número de ejemplares (colecciones que publican en GBIF)."
+)
+```
+
+## Bases de datos
+
+### Bases de datos que publican en GBIF (solo BBDD)
+
+```{r}
+#| label: fig-mapa-bbdd-publican
+#| fig-cap: "Mapa 4. Bases de datos de biodiversidad que publican registros en GBIF."
+#| fig-width: 10
+#| fig-height: 7
+
+res_bbdd_pub <- crear_mapa(
+  data = data,
+  basemap = basemap,
+  legend_params = legend_params,
+  tipo_coleccion = "base de datos",
+  publican = TRUE
+)
+
+res_bbdd_pub$plot
+```
+
+### Tabla: top ciudades (BBDD)
+
+```{r}
+#| label: tbl-top-ciudades-bbdd
+#| results: asis
+
+top_ciudades_bbdd <- res_bbdd_pub$data |>
+  group_by(town) |>
+  summarise(
+    registros = sum(numberOfRecords, na.rm = TRUE),
+    recursos = dplyr::n(),
+    .groups = "drop"
+  ) |>
+  arrange(dplyr::desc(registros)) |>
+  slice_head(n = 15)
+
+tbl(
+  top_ciudades_bbdd,
+  caption = "Tabla 2. Top 15 ciudades por número de registros (BBDD que publican en GBIF)."
+)
+```
+
+# Síntesis y conclusiones
+
+Redacta aquí conclusiones (texto editable), por ejemplo:
+
+- principales concentraciones espaciales
+- disciplinas con mayor volumen de ejemplares/registros
+- oportunidades de mejora en publicación y metadatos
+- próximos pasos recomendados
+
+# Anexos
+
+## Anexo A. Parámetros de ejecución
+
+```{r}
+#| label: anexo-sessioninfo
+#| echo: true
+
+cat(capture.output(sessionInfo()), sep = "\n")
+```
+
+## Anexo B. Exportación de figuras (opcional)
+
+Si quieres **guardar copias** de los mapas como PNG además de insertarlos en el Word, puedes usar `ggsave()`:
+
+<!-- ```{r} -->
+<!-- #| label: export-figs -->
+<!-- #| echo: true -->
+<!-- #| eval: false -->
+
+<!-- p <- crear_mapa(facet = "disciplina_def") -->
+<!-- ggplot2::ggsave("figuras/mapa_disciplina.png", plot = p, width = 30, height = 22, units = "cm", dpi = 300) -->
+<!-- ``` -->
