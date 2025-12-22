@@ -14,7 +14,7 @@ Por qué:
 
 Donde:
 - carpeta "metages-toolkit/R"
-- carpeta "metages-toolkit/inst/extdata/sql"
+- carpeta "metages-toolkit/sql"
 
 Contiene:
 - archivo "R/actualizar_SQL_scripts.R"

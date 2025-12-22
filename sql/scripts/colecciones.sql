@@ -30,7 +30,7 @@ SELECT
     mt.`LONG` AS longitude, 
     ma.region,
     CASE
-        WHEN mb.body_type_fk = 3 THEN 'colección'
+        WHEN mb.body_type_fk = 3 THEN 'coleccion'
         WHEN mb.body_type_fk = 5 THEN 'base de datos'
     END AS tipo_body,
     COALESCE(r.publica_en_gbif, 0) AS publica_en_gbif, 

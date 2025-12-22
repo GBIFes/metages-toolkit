@@ -1,19 +1,30 @@
-#######################################################################
-# Title: Script to connect to metages DB
-#
-# Created by: Ruben Perez Perez (GBIF.ES) 
-# Creation Date: Fri Sep 19 16:42:44 2025
-#######################################################################
-
-# Instalar paquetes
-pkgs <- c("DBI", "odbc", "ssh", "processx")
-
-# instala los que falten y cárgalos
-for (p in pkgs) {
-  if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
-  library(p, character.only = TRUE)
-}
-
+#' Conectar con la base de datos METAGES
+#'
+#' Establece una conexión con la base de datos METAGES mediante un
+#' túnel SSH y una conexión ODBC.
+#'
+#' La función depende de variables de entorno previamente configuradas
+#' (por ejemplo, host, claves SSH y credenciales de base de datos).
+#'
+#' @details
+#' La conexión se realiza en dos pasos:
+#' \enumerate{
+#'   \item Apertura de un túnel SSH.
+#'   \item Conexión a la base de datos vía DBI/ODBC.
+#' }
+#'
+#' @return Una lista con dos elementos:
+#' \describe{
+#'   \item{con}{Conexión DBI a la base de datos.}
+#'   \item{tunnel}{Objeto del túnel SSH.}
+#' }
+#'
+#' @import DBI
+#' @import odbc
+#' @import ssh
+#' @import processx
+#'
+#' @export
 
 conectar_metages <- function() {
 

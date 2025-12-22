@@ -1,10 +1,4 @@
-# Instalar y cargar paquetes packages
-pkgs <- c("tidygeocoder")
 
-for (p in pkgs) {
-  if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
-  library(p, character.only = TRUE)
-}
 
 #Conectar R a Metages con conectar_metages.R
 

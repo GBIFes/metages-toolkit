@@ -1,3 +1,23 @@
+#' Obtener basemap de España (con Canarias desplazadas)
+#'
+#' Descarga geometrías de países vecinos y España con `giscoR`, recorta
+#' y desplaza Canarias para crear un basemap “compacto” para mapas.
+#'
+#' @param shift Vector numérico de longitud 2 con el desplazamiento aplicado
+#'   a Canarias (x, y).
+#'
+#' @return Invisiblemente, una lista con:
+#' \describe{
+#'   \item{vecinos}{Objeto sf con países vecinos.}
+#'   \item{ES_fixed}{Objeto sf con España (Península+Canarias desplazadas).}
+#'   \item{bb_fixed}{Bounding box (`sf::st_bbox`) de `ES_fixed`.}
+#'   \item{bb_can}{Bounding box (`sf::st_bbox`) de Canarias desplazadas.}
+#'   \item{shift}{El vector `shift` usado para desplazar canarias.}
+#' }
+#'
+#' @import giscoR
+#'
+#' @export
 
 get_basemap_es <- function(shift = c(5, 6)) {
 

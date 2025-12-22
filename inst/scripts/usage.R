@@ -44,8 +44,7 @@ mapa$plot
 crear_mapa(
   data = extraer_colecciones_mapa()$data,
   basemap = get_basemap_es(),
-  legend_params = compute_legend_params(extraer_colecciones_mapa()$data),
-  facet = "publica_en_gbif"
+  legend_params = compute_legend_params(extraer_colecciones_mapa()$data)
 )$plot
 
 
@@ -75,7 +74,7 @@ crear_mapa(data = data, basemap = basemap, legend_params = legend,
 ################## Mapas posibles ##################
 
 # Valores permitidos
-tipos <- c(NA, "colección", "base de datos")
+tipos <- c(NA, "coleccion", "base de datos")
 publican_vals <- c(NA, TRUE, FALSE)
 
 disciplinas <- c(
@@ -139,9 +138,9 @@ eval(calls_expr[[79]])
 
 # Llamadas basandose en funcion
 crear_mapa(data = data, basemap = basemap, legend_params = legend, tipo_coleccion = "base de datos", disciplina = "Botánica", subdisciplina = "Plantas", publican = TRUE)$plot
-crear_mapa(data = data, basemap = basemap, legend_params = legend, tipo_coleccion = "colección", disciplina = "Zoológica")$plot
+crear_mapa(data = data, basemap = basemap, legend_params = legend, tipo_coleccion = "coleccion", disciplina = "Zoológica")$plot
 crear_mapa(data = data, basemap = basemap, legend_params = legend, tipo_coleccion = "base de datos")$plot
-crear_mapa(data = data, basemap = basemap, legend_params = legend, tipo_coleccion = "colección", disciplina = "Zoológica",     publican = F)$plot
+crear_mapa(data = data, basemap = basemap, legend_params = legend, tipo_coleccion = "coleccion", disciplina = "Zoológica",     publican = F)$plot
 crear_mapa(data = data, basemap = basemap, legend_params = legend)$plot
 
 

@@ -5,7 +5,7 @@
 # Creation Date: Thu Dec 11 16:26:05 2025
 #######################################################################
 
-sync_dbeaver_scripts <- function(src, dst = "./inst/extdata/sql/scripts") {
+sync_dbeaver_scripts <- function(src, dst = "./sql/scripts") {
   
   # Archivos en origen y destino
   src_files <- list.files(src, full.names = TRUE)

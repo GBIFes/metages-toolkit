@@ -1,25 +1,48 @@
-# Instalar y cargar paquetes packages
-pkgs <- c("ggplot2", "dplyr", "giscoR", "dplyr", "sf", "ggrepel")
-
-for (p in pkgs) {
-  if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
-  library(p, character.only = TRUE)
-}
-
+#' Crear mapa de colecciones METAGES
+#'
+#' Genera un mapa con puntos sobre un basemap, aplicando filtros opcionales y
+#' un facet opcional. Devuelve tanto el `ggplot` como los datos filtrados.
+#'
+#' La funcion asume que los datos de entrada contienen coordenadas
+#' geograficas y métricas asociadas a colecciones.
+#'
+#' @param data data.frame con las columnas necesarias para el mapa. Se  
+#'   genera automaticamente con \code{extraer_colecciones_mapa()}
+#' @param basemap Lista devuelta por \code{get_basemap_es()}.
+#' @param legend_params Lista de parametros de leyenda. Si `NULL`, se calcula con
+#'   \code{compute_legend_params(data)}.
+#' @param tipo_coleccion `coleccion`, `base de datos` o `NULL`.
+#' @param disciplina `Zoológica`, `Botánica`, `Paleontológica`, `Mixta`, `Microbiológica`, `Micológica` o `NULL`.
+#' @param subdisciplina `Vertebrados`, `Invertebrados`, `Invertebrados y vertebrados`, `Plantas`, `Hongos`, `Algas` o `NULL`.
+#' @param publican `TRUE`, `FALSE` o `NULL`.
+#' @param facet Nombre de columna (string) para facetar o `NULL`.
+#'
+#' @return Invisiblemente, una lista con:
+#' \describe{
+#'   \item{plot}{Objeto `ggplot`.}
+#'   \item{data_map}{data.frame con los datos tras filtros.}
+#' }
+#'
+#' @import ggplot2
+#' @import dplyr
+#' @import sf
+#' @import ggrepel
+#'
+#' @export
 
 # Mapa
 crear_mapa <- function(data = data,
                        basemap, 
                        legend_params = NULL,
-                       tipo_coleccion = NULL, # "colección" | "base de datos" | NULL
+                       tipo_coleccion = NULL, 
                        disciplina = NULL,     
                        subdisciplina = NULL,
-                       publican = NULL,       # TRUE | FALSE | NULL
+                       publican = NULL,       
                        facet = NULL) {     
   
   
   # --------------------------------------------------
-  # 1. Legend params (globales, sobre el dominio)
+  # 1. Llamar parametros para la leyenda
   # --------------------------------------------------
   if (is.null(legend_params)) {
     legend_params <- compute_legend_params(data)
@@ -34,13 +57,13 @@ crear_mapa <- function(data = data,
   # funcion de los argumentos de crear_mapa()
   if (identical(tipo_coleccion, "base de datos")) {
     value_var   <- "numberOfRecords"
-    value_label <- "Número de registros"
+    value_label <- "N\u00FAmero de registros"
   } else if (isTRUE(publican)) {
     value_var   <- "numberOfRecords"
-    value_label <- "Número de registros"
+    value_label <- "N\u00FAmero de registros"
   } else {
     value_var   <- "number_of_subunits"
-    value_label <- "Número de ejemplares"
+    value_label <- "N\u00FAmero de ejemplares"
   }
   
   
@@ -54,7 +77,7 @@ crear_mapa <- function(data = data,
   data_clean <- data %>% filter(.data[[value_var]] > 0)
 
   
-  # Opcional: Filtra por tipo de colección
+  # Opcional: Filtra por tipo de coleccion
   if (!is.null(tipo_coleccion)) {
     data_clean <- data_clean %>%
       filter(tipo_body == tipo_coleccion)
@@ -105,7 +128,7 @@ crear_mapa <- function(data = data,
 
   
   # --------------------------------------------------
-  # 4. Construcción del mapa
+  # 4. Construccion del mapa
   # --------------------------------------------------
   
   plot <- data_clean %>%
@@ -191,22 +214,22 @@ crear_mapa <- function(data = data,
     guides(colour = guide_legend()) +
   
     
-    # Titulo y subtitulo del grafico dinámicos
+    # Titulo y subtitulo del grafico dinamicos
     labs(
       title = paste(
-        "Distribución de ",
-        if (is.null(tipo_coleccion)) {"colecciones biológicas y bases de datos"
-            } else if (tipo_coleccion == "colección") {"colecciones biológicas"
+        "Distribuci\u00F3n de ",
+        if (is.null(tipo_coleccion)) {"colecciones biol\u00F3gicas y bases de datos"
+            } else if (tipo_coleccion == "coleccion") {"colecciones biol\u00F3gicas"
             } else if (tipo_coleccion == "base de datos") {"bases de datos"},
-        " en GBIF España"
+        " en GBIF Espa\u00F1a"
                     ),
       subtitle = paste(
         c(
           if (!is.null(disciplina)) paste0("Disciplina: ", disciplina) else NULL,
           if (!is.null(subdisciplina)) paste0("Subdisciplina: ", subdisciplina) else NULL,
-          if (!is.null(publican)) paste0("Publican en GBIF: ", ifelse(publican, "Sí", "No")) else NULL
+          if (!is.null(publican)) paste0("Publican en GBIF: ", ifelse(publican, "S\u00ED", "No")) else NULL
         ),
-        collapse = " · "
+        collapse = " \u00B7 "
       )
     ) +
     
@@ -235,7 +258,7 @@ crear_mapa <- function(data = data,
   message(
     "crear_mapa(): ",
     nrow(data_clean),
-    " líneas tras aplicar filtros"
+    " l\u00EDneas tras aplicar filtros"
   )
   
   return(invisible(list(
