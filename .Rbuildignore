@@ -1,0 +1,11 @@
+^\\.git$
+^\\.Rproj\\.user$
+^.*\\.Rproj$
+^\\.Rhistory$
+^\\.RData$
+^\\.Renviron$
+^inst/reports/informe_cache$
+^inst/reports/informe_files$
+^inst/reports/informe\\.docx$
+
+^\.Rproj\.user$
