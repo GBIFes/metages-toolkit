@@ -20,6 +20,7 @@
 #' @importFrom stats quantile
 #'
 #' @keywords internal
+#' @export
 
 compute_legend_params <- function(data,
                                   probs = c(.1, .4, .65, .9),

@@ -34,3 +34,6 @@ Imports:
     terra,
     tibble,
     tidygeocoder
+RemoteType: local
+RemotePkgRef: local::.
+RemoteUrl: C:/Users/ruben/Documents/Metages/R/metagesToolkit

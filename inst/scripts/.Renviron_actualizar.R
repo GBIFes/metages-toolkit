@@ -3,7 +3,7 @@
 
 
 # 1. Correr dentro del proyecto deseado
-usethis::edit_r_environ("project")
+usethis::edit_r_environ()
 
 # 2. Modificar documento que aparece tras la última línea
 

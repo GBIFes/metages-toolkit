@@ -85,18 +85,34 @@ En esta sección se presenta una síntesis de los principales resultados del Reg
 
 
 # Paquete del proyecto (cuando ya sea paquete)
-# library(metagesToolkit)
+#devtools::install_github("GBIFes/metages-toolkit")
+library(metagesToolkit)
+
+library(dplyr)
+library(ggplot2)
+library(sf)
+library(DBI)
+library(odbc)
+library(ssh)
+library(giscoR)
+library(ggrepel)
+library(forcats)
+library(processx)
+
 
 # Paquetes base del informe
-pkgs <- c(
-  "dplyr", "ggplot2", "sf",
-  "DBI", "odbc", "ssh", "giscoR", "ggrepel", "forcats", "processx"
-)
+# pkgs <- c(
+#   "dplyr", "ggplot2", "sf",
+#   "DBI", "odbc", "ssh", "giscoR", "ggrepel", "forcats", "processx",
+#   "devtools"
+# )
+# 
+# for (p in pkgs) {
+#   if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
+#   library(p, character.only = TRUE)
+# }
 
-for (p in pkgs) {
-  if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
-  library(p, character.only = TRUE)
-}
+
 
 ######################################################################
 
@@ -121,27 +137,27 @@ if (!dir.exists("figures")) dir.create("figures", recursive = TRUE)
 
 
 
-###### TESTING ############
-# --- localizar el root del proyecto ---
-if (!requireNamespace("rprojroot", quietly = TRUE)) {
-  install.packages("rprojroot")
-}
-library(rprojroot)
-
-root <- find_root(is_rstudio_project)
-
-# --- sourcear SOLO las funciones necesarias ---
-# Cargar funciones del repo
-source(file.path(root, "R", "conectar_metages.R"))
-source(file.path(root, "R", "extraer_colecciones_mapa.R"))
-source(file.path(root, "R", "get_basemap_es.R"))
-source(file.path(root, "R", "compute_legend_params.R"))
-source(file.path(root, "R", "crear_mapa.R"))
-
-
- 
-
-####### END TESTING #############
+# ###### TESTING ############
+# # --- localizar el root del proyecto ---
+# if (!requireNamespace("rprojroot", quietly = TRUE)) {
+#   install.packages("rprojroot")
+# }
+# library(rprojroot)
+# 
+# root <- find_root(is_rstudio_project)
+# 
+# # --- sourcear SOLO las funciones necesarias ---
+# # Cargar funciones del repo
+# source(file.path(root, "R", "conectar_metages.R"))
+# source(file.path(root, "R", "extraer_colecciones_mapa.R"))
+# source(file.path(root, "R", "get_basemap_es.R"))
+# source(file.path(root, "R", "compute_legend_params.R"))
+# source(file.path(root, "R", "crear_mapa.R"))
+# 
+# 
+# 
+# 
+# ####### END TESTING #############
 
 
 

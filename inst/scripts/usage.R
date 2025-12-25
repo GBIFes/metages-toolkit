@@ -48,6 +48,8 @@ crear_mapa(
 )$plot
 
 
+crear_mapa_simple(facet = "disciplina_def")$plot
+
 
 
 #---------------------------------------------------------------------------
