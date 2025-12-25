@@ -8,13 +8,27 @@
 #' 
 #' @export
 
-render_informe <- function() {
-    quarto_render(
-        #input = normalizePath("inst/reports/informe.qmd"),   # para DEV
-        input = system.file("reports", "informe.qmd", package = "metagesToolkit"),
-        output_format = "docx"
-        ) |> 
-    invisible()
+render_informe <- function(output_file = "informe.docx",
+                           overwrite = TRUE) {
+  
+  
+  qmd <- system.file("reports", "informe.qmd", package = "metagesToolkit")
+  out_dir <- dirname(qmd)
+  out_src <- file.path(out_dir, output_file)
+  out_dst <- file.path(getwd(), output_file)
+  
+  quarto_render(
+    input = qmd,
+    output_format = "docx"
+  )
+  
+  if (file.exists(out_dst) && overwrite) {
+    unlink(out_dst)
+  }
+  
+  file.rename(out_src, out_dst)
+  
+  invisible(normalizePath(out_dst, mustWork = FALSE))
 }
 
 
