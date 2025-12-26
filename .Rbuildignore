@@ -9,3 +9,4 @@
 ^inst/reports/informe\\.docx$
 
 ^\.Rproj\.user$
+^\.github$
