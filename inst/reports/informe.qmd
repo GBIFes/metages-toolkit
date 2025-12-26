@@ -211,7 +211,7 @@ tbl <- function(x, caption = NULL, digits = NULL) {
 # Nota: `data` se crea en scripts/crear_mapa.R (tabla `colecciones` ya limpiada)
 indicadores <- tibble::tibble(
   `Colecciones/BBDD con registros (>0)` = sum((data$number_of_subunits > 0) | (data$numberOfRecords > 0), na.rm = TRUE),
-  `Colecciones (tipo_body == "colección")` = sum(data$tipo_body == "colección", na.rm = TRUE),
+  `Colecciones (tipo_body == "colección")` = sum(data$tipo_body == "coleccion", na.rm = TRUE),
   `Bases de datos (tipo_body == "base de datos")` = sum(data$tipo_body == "base de datos", na.rm = TRUE),
   `Ciudades con al menos un recurso` = dplyr::n_distinct(data$town[!is.na(data$town)])
 )
@@ -292,7 +292,7 @@ res_col_pub <- crear_mapa(
   data = data,
   basemap = basemap,
   legend_params = legend_params,
-  tipo_coleccion = "colección",
+  tipo_coleccion = "coleccion",
   publican = TRUE
 )
 

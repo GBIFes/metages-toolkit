@@ -1,6 +1,6 @@
 Package: metagesToolkit
 Title: Herramientas internas para METAGES
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: c(
     person("Ruben", "Perez Perez", , "ruben@gbif.es", role = c("aut", "cre")),
     person("CSIC", role = "cph"),
