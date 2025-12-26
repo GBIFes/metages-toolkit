@@ -4,11 +4,23 @@
 \alias{render_informe}
 \title{Renderiza el informe METAGES}
 \usage{
-render_informe()
+render_informe(overwrite = TRUE)
+}
+\arguments{
+\item{overwrite}{Si \code{TRUE}, elimina y vuelve a crear el directorio
+\code{informe_output} si ya existe en el directorio de trabajo.
+Si \code{FALSE} y el directorio existe, la funcion lanza un error.}
 }
 \value{
-Crea varias carpetas y archivos de cache, figuras y un documento .docx.
+Crea varias carpetas y archivos de cache, figuras y un documento (\code{.docx}).
 }
 \description{
-Renderiza el archivo Quarto \code{informe.qmd} incluido en el paquete.
+Renderiza el archivo Quarto \code{informe.qmd} incluido en el paquete \pkg{metagesToolkit}
+y genera un informe Word (\code{.docx}) junto con todos los archivos auxiliares producidos por Quarto.
+}
+\details{
+El informe se renderiza en un directorio temporal y, una vez finalizado,
+todo el contenido generado se copia al directorio de trabajo actual
+dentro de la carpeta \code{informe_output}, preservando la estructura
+de subdirectorios.
 }

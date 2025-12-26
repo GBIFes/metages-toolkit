@@ -24,13 +24,14 @@ genera automaticamente con \code{extraer_colecciones_mapa()}}
 \item{legend_params}{Lista de parametros de leyenda. Si \code{NULL}, se calcula con
 \code{compute_legend_params(data)}.}
 
-\item{tipo_coleccion}{\code{coleccion}, \verb{base de datos} o \code{NULL}.}
+\item{tipo_coleccion}{Uno de \code{coleccion}, \verb{base de datos} o \code{NULL}.}
 
-\item{disciplina}{\code{Zoológica}, \code{Botánica}, \code{Paleontológica}, \code{Mixta}, \code{Microbiológica}, \code{Micológica} o \code{NULL}.}
+\item{disciplina}{Uno de \verb{Zool\\u00F3gica}, \verb{Bot\\u00E1nica}, \verb{Paleontol\\u00F3gica},
+\code{Mixta}, \verb{Microbiol\\u00F3gica}, \verb{Micol\\u00F3gica} o \code{NULL}.}
 
-\item{subdisciplina}{\code{Vertebrados}, \code{Invertebrados}, \verb{Invertebrados y vertebrados}, \code{Plantas}, \code{Hongos}, \code{Algas} o \code{NULL}.}
+\item{subdisciplina}{Uno de \code{Vertebrados}, \code{Invertebrados}, \verb{Invertebrados y vertebrados}, \code{Plantas}, \code{Hongos}, \code{Algas} o \code{NULL}.}
 
-\item{publican}{\code{TRUE}, \code{FALSE} o \code{NULL}.}
+\item{publican}{Uno de \code{TRUE}, \code{FALSE} o \code{NULL}.}
 
 \item{facet}{Nombre de columna (string) para facetar o \code{NULL}.}
 }
@@ -47,5 +48,5 @@ un facet opcional. Devuelve tanto el \code{ggplot} como los datos filtrados.
 }
 \details{
 La funcion asume que los datos de entrada contienen coordenadas
-geograficas y métricas asociadas a colecciones.
+geograficas y metricas asociadas a colecciones.
 }

@@ -4,6 +4,7 @@
 ^\\.Rhistory$
 ^\\.RData$
 ^\\.Renviron$
+^\\.testRenviron$
 ^inst/reports/informe_cache$
 ^inst/reports/informe_files$
 ^inst/reports/informe\\.docx$
