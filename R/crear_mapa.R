@@ -4,17 +4,22 @@
 #' un facet opcional. Devuelve tanto el `ggplot` como los datos filtrados.
 #'
 #' La funcion asume que los datos de entrada contienen coordenadas
-#' geograficas y métricas asociadas a colecciones.
+#' geograficas y metricas asociadas a colecciones.
 #'
 #' @param data data.frame con las columnas necesarias para el mapa. Se  
 #'   genera automaticamente con \code{extraer_colecciones_mapa()}
 #' @param basemap Lista devuelta por \code{get_basemap_es()}.
 #' @param legend_params Lista de parametros de leyenda. Si `NULL`, se calcula con
 #'   \code{compute_legend_params(data)}.
-#' @param tipo_coleccion `coleccion`, `base de datos` o `NULL`.
-#' @param disciplina `Zoológica`, `Botánica`, `Paleontológica`, `Mixta`, `Microbiológica`, `Micológica` o `NULL`.
-#' @param subdisciplina `Vertebrados`, `Invertebrados`, `Invertebrados y vertebrados`, `Plantas`, `Hongos`, `Algas` o `NULL`.
-#' @param publican `TRUE`, `FALSE` o `NULL`.
+#' @param tipo_coleccion 
+#'  Uno de `coleccion`, `base de datos` o `NULL`.
+#' @param disciplina 
+#'  Uno de `Zool\u00F3gica`, `Bot\u00E1nica`, `Paleontol\u00F3gica`,
+#'  `Mixta`, `Microbiol\u00F3gica`, `Micol\u00F3gica` o `NULL`.
+#' @param subdisciplina 
+#'  Uno de `Vertebrados`, `Invertebrados`, `Invertebrados y vertebrados`, `Plantas`, `Hongos`, `Algas` o `NULL`.
+#' @param publican
+#'  Uno de `TRUE`, `FALSE` o `NULL`.
 #' @param facet Nombre de columna (string) para facetar o `NULL`.
 #'
 #' @return Invisiblemente, una lista con:
@@ -39,6 +44,41 @@ crear_mapa <- function(data = data,
                        subdisciplina = NULL,
                        publican = NULL,       
                        facet = NULL) {     
+  
+  
+  # --------------------------------------------------
+  # 0. Validacion de argumentos
+  # --------------------------------------------------
+  
+  tipo_coleccion <- if (!is.null(tipo_coleccion)) {
+    match.arg(tipo_coleccion, c("coleccion", "base de datos"))
+  } else NULL
+  
+  disciplina <- if (!is.null(disciplina)) {
+    match.arg(disciplina, c(
+      "Zool\u00F3gica", "Bot\u00E1nica", "Paleontol\u00F3gica",
+      "Mixta", "Microbiol\u00F3gica", "Micol\u00F3gica"
+    )
+    )
+  } else NULL
+  
+  subdisciplina <- if (!is.null(subdisciplina)) {
+    match.arg(subdisciplina, c(
+      "Vertebrados", "Invertebrados",
+      "Invertebrados y vertebrados",
+      "Plantas", "Hongos", "Algas"
+    ))
+  } else NULL
+  
+  if (!is.null(publican) && (!is.logical(publican) || length(publican) != 1)) {
+    stop("`publican` must be TRUE, FALSE or NULL", call. = FALSE)
+  }
+  
+  if (!is.null(facet)) {
+    if (!is.character(facet) || length(facet) != 1 || !facet %in% names(data)) {
+      stop("`facet` must be a column name in `data` or NULL", call. = FALSE)
+    }
+  }
   
   
   # --------------------------------------------------
