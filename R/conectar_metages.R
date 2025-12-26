@@ -28,6 +28,27 @@
 
 conectar_metages <- function() {
 
+  
+  required_env <- c(
+    "host_prod",
+    "keyfile",
+    "prod_ssh_bridge_R",
+    "Database",
+    "UID",
+    "gbif_wp_pass"
+  )
+  
+  missing <- required_env[Sys.getenv(required_env) == ""]
+  
+  if (length(missing) > 0) {
+    stop(
+      "Missing required environment variables: ",
+      paste(missing, collapse = ", "),
+      call. = FALSE
+    )
+  }
+  
+  
 
 # Credenciales SSH. Ajusta la ruta a tu clave privada
 session <- ssh::ssh_connect(
