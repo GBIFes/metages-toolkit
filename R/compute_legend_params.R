@@ -47,11 +47,3 @@ compute_legend_params <- function(data,
     probs  = probs
   )))
 }
-
-
-
-
-
-
-
-
