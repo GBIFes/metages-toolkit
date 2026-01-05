@@ -8,6 +8,7 @@
 ^inst/reports/informe_cache$
 ^inst/reports/informe_files$
 ^inst/reports/informe\\.docx$
+^informe_output/$
 
 ^\.Rproj\.user$
 ^\.github$

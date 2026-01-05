@@ -67,8 +67,14 @@ render_informe <- function(overwrite = TRUE) {
     recursive = TRUE
   )
   
-  invisible(normalizePath(file.path(dst_reports, "informe.docx"),
-                          mustWork = FALSE))
+  out_docx <- normalizePath(
+    file.path(dst_reports, "reports","informe.docx"),
+    mustWork = FALSE
+  )
+  
+  options(metagesToolkit.last_docx = out_docx)
+  
+  invisible(out_docx)
 }
 
 

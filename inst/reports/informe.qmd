@@ -16,7 +16,7 @@ format:
     toc-depth: 3
     number-sections: true
     # Para imitar el estilo corporativo en Word, crea/usa una plantilla y pon aquí su ruta:
-    # reference-doc: "plantillas/plantilla_informe_gbif.docx"
+    reference-doc: assets/templates/reference.docx
     
 execute:
   echo: false
@@ -28,16 +28,16 @@ execute:
 # NO actualiza los datos (Rapido para tests del informe)
 # Cambiar a PROD antes de publicar
 # =====================================
-  freeze: auto
-  cache: true
+  #freeze: auto
+  #cache: true
 
 # =====================================
 # MODO: PRODUCCION
 # Actualiza los datos (Lento para version final)
 # Cambiar a PROD antes de publicar
 # =====================================
-  #freeze: false
-  #cache: false
+  freeze: false
+  cache: false
   
 bibliography: []
 ---
@@ -55,7 +55,7 @@ bibliography: []
 
 # Portada
 
-*(Opcional)* Inserta aquí logos o una imagen de cabecera (Word/Google Docs lo admiten bien).  
+*(Opcional)* Inserta aquí logos o una imagen de cabecera (Word/Google Docs lo admiten bien).
 Por ejemplo, crea una carpeta `logos/` y añade:
 
 - `inst/reports/assets/images/logos/logo-GBIF-RGB-01.png`
@@ -64,10 +64,10 @@ Por ejemplo, crea una carpeta `logos/` y añade:
 
 Luego descomenta:
 
+![](../reports/assets/images/logos/logo-GBIF-RGB-01.png){width="25%"}
+![](../reports/assets/images/logos/logo-CSIC-big-trans.png){width="25%"}
 
-![](../reports/assets/images/logos/logo-GBIF-RGB-01.png){width=25%}
-![](../reports/assets/images/logos/logo-CSIC-big-trans.png){width=25%}
-![](../reports/assets/images/logos/MCIU.Gob.png){width=25%}
+![](../reports/assets/images/logos/MCIU.Gob.png){width="25%"}
 
 
 # Resumen ejecutivo
@@ -85,86 +85,22 @@ En esta sección se presenta una síntesis de los principales resultados del Reg
 
 
 # Paquete del proyecto (cuando ya sea paquete)
-#devtools::install_github("GBIFes/metages-toolkit")
 library(metagesToolkit)
 
 library(dplyr)
 library(ggplot2)
 library(sf)
 library(DBI)
+library(flextable)
 library(odbc)
+library(scales)
 library(ssh)
-library(giscoR)
+library(giscoR, quietly = TRUE, warn.conflicts = FALSE)
 library(ggrepel)
 library(forcats)
 library(processx)
 
 
-# Paquetes base del informe
-# pkgs <- c(
-#   "dplyr", "ggplot2", "sf",
-#   "DBI", "odbc", "ssh", "giscoR", "ggrepel", "forcats", "processx",
-#   "devtools"
-# )
-# 
-# for (p in pkgs) {
-#   if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
-#   library(p, character.only = TRUE)
-# }
-
-
-
-######################################################################
-
-library(giscoR, quietly = TRUE, warn.conflicts = FALSE)
-
-# Evitar que knitr use métodos HTML
-options(knitr.kable.NA = "")
-options(knitr.table.format = "pandoc")
-
-# Descarga kableExtra si se carga indirectamente
-if ("kableExtra" %in% loadedNamespaces()) {
-  detach("package:kableExtra", unload = TRUE, character.only = TRUE)
-}
-
-######################################################################
-
-
-
-# Carpeta de figuras generadas
-if (!dir.exists("figures")) dir.create("figures", recursive = TRUE)
-
-
-
-
-# ###### TESTING ############
-# # --- localizar el root del proyecto ---
-# if (!requireNamespace("rprojroot", quietly = TRUE)) {
-#   install.packages("rprojroot")
-# }
-# library(rprojroot)
-# 
-# root <- find_root(is_rstudio_project)
-# 
-# # --- sourcear SOLO las funciones necesarias ---
-# # Cargar funciones del repo
-# source(file.path(root, "R", "conectar_metages.R"))
-# source(file.path(root, "R", "extraer_colecciones_mapa.R"))
-# source(file.path(root, "R", "get_basemap_es.R"))
-# source(file.path(root, "R", "compute_legend_params.R"))
-# source(file.path(root, "R", "crear_mapa.R"))
-# 
-# 
-# 
-# 
-# ####### END TESTING #############
-
-
-
-
-# Importa conexión y funciones del repositorio
-#source("R/conectar_metages.R")   # crea `con` (DBI connection) y túnel SSH según tu configuración
-#source("R/crear_mapa.R")         # prepara base map + lee tabla `colecciones` + define `crear_mapa()`
 
 
 # --------------------------------------------------
@@ -190,23 +126,24 @@ legend_params <- compute_legend_params(
 # Utilidad tablas
 # --------------------------------------------------
 # Utilidad: tabla bonita estilo informe (sin colores fijos; el estilo lo debe dar la plantilla DOCX)
-tbl <- function(x, caption = NULL, digits = NULL) {
-  if (!is.null(digits)) {
-    x <- mutate(x, 
-                across(where(is.numeric), ~round(.x, digits)))
+ft_tbl <- function(x, caption = NULL) {
+  ft <- flextable::flextable(x)
+  ft <- flextable::autofit(ft)
+  ft <- flextable::set_table_properties(
+    ft,
+    width = 1,
+    layout = "autofit"
+  )
+  if (!is.null(caption)) {
+    ft <- flextable::set_caption(ft, caption)
   }
-  knitr::kable(x, caption = caption, format = "pandoc",
-    booktabs = FALSE, 
-    longtable = FALSE)
+  ft
 }
 ```
-
 
 ## Indicadores principales
 
 ```{r}
-#| label: tbl-indicadores
-#| results: asis
 
 # Nota: `data` se crea en scripts/crear_mapa.R (tabla `colecciones` ya limpiada)
 indicadores <- tibble::tibble(
@@ -216,7 +153,7 @@ indicadores <- tibble::tibble(
   `Ciudades con al menos un recurso` = dplyr::n_distinct(data$town[!is.na(data$town)])
 )
 
-tbl(indicadores, caption = "Indicadores principales (a partir del Registro).")
+ft_tbl(indicadores, caption = "Indicadores principales (a partir del Registro).")
 ```
 
 # Introducción, justificación y objetivos
@@ -259,7 +196,7 @@ res_general$plot
 
 ## Distribución por disciplina
 
-> **Nota:** si existen `NA` en la variable de facetado, se recomienda filtrarlos antes de facetar.  
+> **Nota:** si existen `NA` en la variable de facetado, se recomienda filtrarlos antes de facetar.
 > Si ya aplicaste ese cambio en tu función, esta nota puede eliminarse.
 
 ```{r}
@@ -302,8 +239,6 @@ res_col_pub$plot
 ### Tabla: top ciudades (colecciones)
 
 ```{r}
-#| label: tbl-top-ciudades-colecciones
-#| results: asis
 
 # Ejecuta una llamada para fijar `data_clean_last` con el mismo filtro que el mapa anterior
 top_ciudades <- res_col_pub$data |>
@@ -316,7 +251,7 @@ top_ciudades <- res_col_pub$data |>
   arrange(dplyr::desc(ejemplares)) |>
   slice_head(n = 15)
 
-tbl(
+ft_tbl(
   top_ciudades,
   caption = "Tabla 1. Top 15 ciudades por número de ejemplares (colecciones que publican en GBIF)."
 )
@@ -346,8 +281,6 @@ res_bbdd_pub$plot
 ### Tabla: top ciudades (BBDD)
 
 ```{r}
-#| label: tbl-top-ciudades-bbdd
-#| results: asis
 
 top_ciudades_bbdd <- res_bbdd_pub$data |>
   group_by(town) |>
@@ -359,7 +292,7 @@ top_ciudades_bbdd <- res_bbdd_pub$data |>
   arrange(dplyr::desc(registros)) |>
   slice_head(n = 15)
 
-tbl(
+ft_tbl(
   top_ciudades_bbdd,
   caption = "Tabla 2. Top 15 ciudades por número de registros (BBDD que publican en GBIF)."
 )
@@ -376,24 +309,32 @@ Redacta aquí conclusiones (texto editable), por ejemplo:
 
 # Anexos
 
-## Anexo A. Parámetros de ejecución
+## Anexo A. Colecciones y bases de datos
+
+
+
+## Anexo B. Parámetros de ejecución
 
 ```{r}
 #| label: anexo-sessioninfo
-#| echo: true
 
 cat(capture.output(sessionInfo()), sep = "\n")
 ```
 
-## Anexo B. Exportación de figuras (opcional)
+## Anexo C. Exportación de figuras (opcional)
 
 Si quieres **guardar copias** de los mapas como PNG además de insertarlos en el Word, puedes usar `ggsave()`:
 
 <!-- ```{r} -->
+
 <!-- #| label: export-figs -->
+
 <!-- #| echo: true -->
+
 <!-- #| eval: false -->
 
 <!-- p <- crear_mapa(facet = "disciplina_def") -->
+
 <!-- ggplot2::ggsave("figuras/mapa_disciplina.png", plot = p, width = 30, height = 22, units = "cm", dpi = 300) -->
+
 <!-- ``` -->
