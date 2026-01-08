@@ -40,11 +40,22 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      # Linux / Windows (comportamiento normal)
       - uses: r-lib/actions/setup-r-dependencies@v2
+        if: runner.os != 'macOS'
         with:
-          pak-extra-args: --no-missing --source
           extra-packages: any::rcmdcheck
           needs: check
+
+      # macOS (permitir fallback a source)
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        if: runner.os == 'macOS'
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+        env:
+          PAK_NO_BINARY: "false"
+
 
       - uses: r-lib/actions/check-r-package@v2
         with:
