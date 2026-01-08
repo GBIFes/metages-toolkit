@@ -1,6 +1,6 @@
 Package: metagesToolkit
 Title: Herramientas internas para METAGES
-Version: 1.0.3
+Version: 1.0.4
 Authors@R: c(
     person("Ruben", "Perez Perez", , "ruben@gbif.es", role = c("aut", "cre")),
     person("CSIC", role = "cph"),
@@ -19,6 +19,7 @@ Imports:
     DBI,
     dplyr,
     flextable,
+    forcats,
     galah,
     geodata,
     ggplot2,

@@ -1,8 +1,8 @@
 ####### ATENCION ########
-# Correr cada vez que queramos cambiar algo en el .Renviron de este proyecto 
+# Correr cada vez que queramos cambiar algo en el .Renviron
 
 
-# 1. Correr dentro del proyecto deseado
+# 1. Abrir .Renviron
 usethis::edit_r_environ()
 
 # 2. Modificar documento que aparece tras la última línea

@@ -1,3 +1,9 @@
+# DOCUMENTACION DEL REPO
+install.packages("directotree")
+directotree::directotree("C:/Users/Ruben/Documents/R/metages-toolkit")
+
+install.packages("here")
+fs::dir_tree(here::here())
 
 # GENERAR INFORME
 render_informe()
