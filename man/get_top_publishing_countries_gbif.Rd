@@ -9,6 +9,13 @@ get_top_publishing_countries_gbif(n = 10, years_back = 2, facet_limit = 300)
 \arguments{
 \item{n}{Numero de paises a devolver. Por defecto, 10.}
 
+\item{years_back}{Entero no negativo que indica cuantos años hacia atras
+se debe calcular el ranking acumulado historico. Por ejemplo:
+\itemize{
+\item \code{years_back = 1}: hasta el final del año pasado.
+\item \code{years_back = 2}: hasta el final del año anterior al pasado (valor por defecto).
+}}
+
 \item{facet_limit}{Límite maximo de categorias devueltas por la faceta
 \code{publishingCountry}. Debe aumentarse si se desea asegurar
 cobertura completa a nivel global.}
@@ -44,4 +51,3 @@ top_publishers_20 <- get_top_publishing_countries_gbif(n = 20)
 }
 
 }
-\keyword{internal}

@@ -59,7 +59,7 @@
 #' top_countries_long <- get_top10_countries_rgbif(years_back = 5)
 #' }
 #'
-#' @keywords internal
+#' @export
 
 get_top10_countries_rgbif <- function(years_back = 2) {
   
@@ -114,6 +114,12 @@ get_top10_countries_rgbif <- function(years_back = 2) {
 #' Los nombres de los paises se devuelven en castellano.
 #'
 #' @param n Numero de paises a devolver. Por defecto, 10.
+#' @param years_back Entero no negativo que indica cuantos años hacia atras
+#'   se debe calcular el ranking acumulado historico. Por ejemplo:
+#'   \itemize{
+#'     \item \code{years_back = 1}: hasta el final del año pasado.
+#'     \item \code{years_back = 2}: hasta el final del año anterior al pasado (valor por defecto).
+#'   }
 #' @param facet_limit Límite maximo de categorias devueltas por la faceta
 #'   \code{publishingCountry}. Debe aumentarse si se desea asegurar
 #'   cobertura completa a nivel global.
@@ -145,7 +151,7 @@ get_top10_countries_rgbif <- function(years_back = 2) {
 #' top_publishers_20 <- get_top_publishing_countries_gbif(n = 20)
 #' }
 #'
-#' @keywords internal
+#' @export
 
 get_top_publishing_countries_gbif <- function(
     n = 10,

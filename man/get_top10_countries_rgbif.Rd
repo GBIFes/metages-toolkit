@@ -62,4 +62,3 @@ top_countries_long <- get_top10_countries_rgbif(years_back = 5)
 }
 
 }
-\keyword{internal}
