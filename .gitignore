@@ -5,3 +5,6 @@
 .Renviron
 .testRenviron
 informe_output
+inst/doc
+/doc/
+/Meta/
