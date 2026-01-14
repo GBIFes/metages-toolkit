@@ -1,9 +1,9 @@
 # Extraer colecciones desde METAGES para mapas
 
 Abre conexión a METAGES (vía
-[`conectar_metages()`](conectar_metages.md)), ejecuta una consulta
-(`SELECT * FROM colecciones c`) y devuelve un data.frame depurado para
-mapas.
+[`conectar_metages()`](https://gbifes.github.io/metages-toolkit/reference/conectar_metages.md)),
+ejecuta una consulta (`SELECT * FROM colecciones c`) y devuelve un
+data.frame depurado para mapas.
 
 ## Usage
 
@@ -21,7 +21,7 @@ extraer_colecciones_mapa(
 
   Vector numérico de longitud 2. Se usa en el procesamiento para
   desplazar los datos de canarias y coincidir con
-  [`get_basemap_es()`](get_basemap_es.md).
+  [`get_basemap_es()`](https://gbifes.github.io/metages-toolkit/reference/get_basemap_es.md).
 
 - cerrar_conexion:
 
@@ -34,4 +34,5 @@ extraer_colecciones_mapa(
 ## Value
 
 Invisiblemente, un data.frame/tibble con los datos de colecciones listos
-para usar en [`crear_mapa()`](crear_mapa.md).
+para usar en
+[`crear_mapa()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa.md).

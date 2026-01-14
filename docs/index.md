@@ -51,15 +51,16 @@ remotes::install_github("GBIFes/metages-toolkit")
 ## Uso
 
 Actualmente, el flujo principal del paquete se articula en torno a la
-función [`render_informe()`](reference/render_informe.md), que orquesta
-internamente la conexión a MetaGES, la extracción de datos, el
-procesamiento, la creación de mapas y la generación de un informe final
-como archivo `.docx`.
+función
+[`render_informe()`](https://gbifes.github.io/metages-toolkit/reference/render_informe.md),
+que orquesta internamente la conexión a MetaGES, la extracción de datos,
+el procesamiento, la creación de mapas y la generación de un informe
+final como archivo `.docx`.
 
 El paquete expone además dos funciones útiles para la exploración
-[`crear_mapa_simple()`](reference/crear_mapa_simple.md) y el
-post-procesado del informe
-[`insertar_tabla_colecciones()`](reference/insertar_tabla_colecciones.md).
+[`crear_mapa_simple()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa_simple.md)
+y el post-procesado del informe
+[`insertar_tabla_colecciones()`](https://gbifes.github.io/metages-toolkit/reference/insertar_tabla_colecciones.md).
 Sin embargo, para usar estas funciones ***es imprescindible tener
 credenciales para acceder a MetaGES:***  
   
@@ -189,6 +190,9 @@ informe.
     │   └── crear-mapas.Rmd                             : Markdown para crear un articulo en github pages (https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html)
     │
     ├── docs/                                           : Documentos necesarios para crear la github page del repo (https://gbifes.github.io/metages-toolkit/index.html)
+    │
+    ├── pkgdown/
+    │   └── assets/pkgnet-report.hmtl                   : Análisis de la arquitectura de metagesToolkit realizado por inst/scripts/actualizar_pkgnet_arquitectura.R
     │
     └── tests/                                          : Tests para las funciones del paquete de R metagesToolkit
         ├── testthat/

@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">metagesToolkit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,7 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="articles/index.html">Articles</a></li>
+<li class="nav-item"><a class="nav-link" href="pkgnet-report.html">Arquitectura</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -142,7 +143,7 @@ Permite filtrar por <code>tipo_coleccion</code>, <code>disciplina</code>, <code>
 <span><span class="co"># Output</span></span>
 <span><span class="va">mapa</span><span class="op">$</span><span class="va">data_map</span>                   <span class="co"># Muestra el data frame creado con los filtros aplicados</span></span>
 <span><span class="va">mapa</span><span class="op">$</span><span class="va">plot</span>                       <span class="co"># Muestra el mapa creado con los filtros aplicados</span></span></code></pre></div>
-<p>👉 Consulta el artículo <a href="https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html" class="external-link">Creación de mapas de colecciones con metagesToolkit</a></p>
+<p>👉 Consulta el artículo <a href="https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html">Creación de mapas de colecciones con metagesToolkit</a></p>
 <hr>
 </div>
 </div>
@@ -205,6 +206,9 @@ Permite filtrar por <code>tipo_coleccion</code>, <code>disciplina</code>, <code>
 │   └── crear-mapas.Rmd                             : Markdown para crear un articulo en github pages (https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html)
 │
 ├── docs/                                           : Documentos necesarios para crear la github page del repo (https://gbifes.github.io/metages-toolkit/index.html)
+│
+├── pkgdown/
+│   └── assets/pkgnet-report.hmtl                   : Análisis de la arquitectura de metagesToolkit realizado por inst/scripts/actualizar_pkgnet_arquitectura.R
 │
 └── tests/                                          : Tests para las funciones del paquete de R metagesToolkit
     ├── testthat/

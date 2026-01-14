@@ -1,6 +1,6 @@
 Package: metagesToolkit
 Title: Herramientas internas para METAGES
-Version: 1.0.8
+Version: 1.0.9
 Authors@R: c(
     person("Ruben", "Perez Perez", , "ruben@gbif.es", role = c("aut", "cre")),
     person("CSIC", role = "cph"),
@@ -10,6 +10,7 @@ Description: Herramientas internas para la gestion del sistema de datos de
     colecciones biologicas METAGES (GBIF.ES): lectura, analisis y
     actualizacion de datos, elaboracion de informes y controles de
     calidad.
+URL: https://gbifes.github.io/metages-toolkit
 License: file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

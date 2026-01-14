@@ -25,11 +25,12 @@ crear_mapa(
 
   data.frame con las columnas necesarias para el mapa. Se genera
   automaticamente con
-  [`extraer_colecciones_mapa()`](extraer_colecciones_mapa.md)
+  [`extraer_colecciones_mapa()`](https://gbifes.github.io/metages-toolkit/reference/extraer_colecciones_mapa.md)
 
 - basemap:
 
-  Lista devuelta por [`get_basemap_es()`](get_basemap_es.md).
+  Lista devuelta por
+  [`get_basemap_es()`](https://gbifes.github.io/metages-toolkit/reference/get_basemap_es.md).
 
 - legend_params:
 

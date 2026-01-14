@@ -179,6 +179,9 @@ metages-toolkit/
 │
 ├── docs/                                           : Documentos necesarios para crear la github page del repo (https://gbifes.github.io/metages-toolkit/index.html)
 │
+├── pkgdown/
+│   └── assets/pkgnet-report.hmtl                   : Análisis de la arquitectura de metagesToolkit realizado por inst/scripts/actualizar_pkgnet_arquitectura.R
+│
 └── tests/                                          : Tests para las funciones del paquete de R metagesToolkit
     ├── testthat/
     │   

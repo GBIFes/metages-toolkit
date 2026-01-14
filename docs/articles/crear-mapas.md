@@ -3,8 +3,9 @@
 ## Introducción
 
 Esta vignette muestra distintos ejemplos de mapas generados con la
-función [`crear_mapa_simple()`](../reference/crear_mapa_simple.md) del
-paquete **metagesToolkit**.
+función
+[`crear_mapa_simple()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa_simple.md)
+del paquete **metagesToolkit**.
 
 El objetivo es ilustrar cómo se pueden visualizar colecciones biológicas
 y bases de datos de biodiversidad en España mediante distintos
@@ -15,13 +16,13 @@ avanzada.
 
 Para los ejemplos se utilizan datos extraídos del Registro de
 colecciones mediante la función
-[`extraer_colecciones_mapa()`](../reference/extraer_colecciones_mapa.md).
+[`extraer_colecciones_mapa()`](https://gbifes.github.io/metages-toolkit/reference/extraer_colecciones_mapa.md).
 
 ## Mapa básico
 
 Ejemplo mínimo de uso de
-[`crear_mapa_simple()`](../reference/crear_mapa_simple.md), mostrando la
-distribución espacial de todos los recursos del Registro.
+[`crear_mapa_simple()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa_simple.md),
+mostrando la distribución espacial de todos los recursos del Registro.
 
 ![](figures/mapa-total.png)
 
@@ -239,7 +240,8 @@ facetada por disciplina.
 
 ## Acceso a los datos usados en el mapa
 
-La función [`crear_mapa_simple()`](../reference/crear_mapa_simple.md)
+La función
+[`crear_mapa_simple()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa_simple.md)
 devuelve una lista que incluye los datos filtrados utilizados para
 generar el mapa, lo que permite reutilizarlos en tablas o análisis
 posteriores.
@@ -251,8 +253,8 @@ head(res$data)
 
 ## Notas técnicas
 
-- [`crear_mapa_simple()`](../reference/crear_mapa_simple.md) devuelve
-  una lista con al menos:
+- [`crear_mapa_simple()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa_simple.md)
+  devuelve una lista con al menos:
   - `plot`: objeto `ggplot2`
   - `data`: datos filtrados utilizados en el mapa
 - El mapa base de España se genera automáticamente y trata de forma
@@ -261,5 +263,5 @@ head(res$data)
 ## Referencias
 
 - Documentación de la función:
-  [`?crear_mapa_simple`](../reference/crear_mapa_simple.md)
+  [`?crear_mapa_simple`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa_simple.md)
 - Sitio pkgdown del paquete **metagesToolkit**

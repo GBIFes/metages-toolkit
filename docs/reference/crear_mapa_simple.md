@@ -1,7 +1,8 @@
 # Mapa METAGES (version simple para uso)
 
-Wrapper de alto nivel sobre [`crear_mapa()`](crear_mapa.md) que fija la
-infraestructura y expone solo filtros y facet.
+Wrapper de alto nivel sobre
+[`crear_mapa()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa.md)
+que fija la infraestructura y expone solo filtros y facet.
 
 ## Usage
 
