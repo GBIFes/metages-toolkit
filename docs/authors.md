@@ -11,11 +11,11 @@
 ## Citation
 
 Perez Perez R (2026). *metagesToolkit: Herramientas internas para
-METAGES*. R package version 1.0.7.
+METAGES*. R package version 1.0.8.
 
     @Manual{,
       title = {metagesToolkit: Herramientas internas para METAGES},
       author = {Ruben {Perez Perez}},
       year = {2026},
-      note = {R package version 1.0.7},
+      note = {R package version 1.0.8},
     }

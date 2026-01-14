@@ -97,7 +97,11 @@ insertar_tabla_colecciones <- function(keyword) {
     value = flextable::as_paragraph(
       flextable::hyperlink_text(
         x   = institucion_proyecto,
-        url = url_institucion
+        url = url_institucion,
+        style = fp_text(
+          color = "blue",
+          underlined = TRUE
+        )
       )
     )
   )
@@ -109,7 +113,11 @@ insertar_tabla_colecciones <- function(keyword) {
     value = flextable::as_paragraph(
       flextable::hyperlink_text(
         x   = coleccion_base,
-        url = coleccion_url
+        url = coleccion_url,
+        style = fp_text(
+          color = "blue",
+          underlined = TRUE
+        )
       )
     )
   )

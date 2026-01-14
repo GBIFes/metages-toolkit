@@ -12,24 +12,104 @@
 library(metagesToolkit)
 library(ggplot2)
 library(dplyr)
+library(fs)
+library(here)
+
+
+# -------------------------------------------------------------------
+# 0.0 Flags de seguridad
+# -------------------------------------------------------------------
+LIMPIAR_DESTINOS <- TRUE
+
+# Recomendado: bloquear borrado si no es interactivo (CI, Rscript, etc.)
+# Si alguna vez quieres permitirlo en CI, cambia la condición o usa un ENV VAR.
+if (LIMPIAR_DESTINOS && !interactive()) {
+  stop(
+    "Este script borra artefactos (LIMPIAR_DESTINOS=TRUE) y requiere ejecución interactiva.\n",
+    "Pon LIMPIAR_DESTINOS <- FALSE o ajusta la condición si lo necesitas en CI."
+  )
+}
+
+
+# ------------------------------------------------------------
+# 0.1 Definicion de rutas y creacion de carpetas
+# ------------------------------------------------------------
+pkg_root <- here::here()
+
+# Necesarias en vignettes/ para pkgdown::build_site() 
+# ↳ No `git push` para evitar ruido en repo publico
+# ↳ Si quieremos contruir el site con Github Actions tendrian que pushearse (pero duplica las imagenes)
+dir_fig_maps_vign  <- fs::path(pkg_root, "vignettes", "figures") 
+
+# Necesarias en inst/ para que informe.qmd las encuentre desde render_informe()
+dir_fig_maps_inst  <- fs::path(pkg_root, "inst", "reports", "assets", "images", "generated")
+
+dir_data_root <- fs::path(pkg_root, "inst", "reports", "data")
+dir_data_maps <- fs::path(dir_data_root, "mapas")
+dir_data_sql  <- fs::path(dir_data_root, "vistas_sql")
+
+# Crea TODAS las carpetas necesarias
+fs::dir_create(c(dir_fig_maps, dir_data_maps, dir_data_sql), recurse = TRUE)
+
+
+
+# ------------------------------------------------------------
+# 0.2 Limpieza de carpetas de destino
+# ------------------------------------------------------------
+
+limpiar_dir <- function(dir) {
+  if (!fs::dir_exists(dir)) return(invisible(NULL))
+  files <- fs::dir_ls(dir, recurse = TRUE, type = "file")
+  if (length(files) > 0) fs::file_delete(files)
+  invisible(NULL)
+}
+
+if (LIMPIAR_DESTINOS) {
+  limpiar_dir(dir_fig_maps_vign)
+  limpiar_dir(dir_fig_maps_inst)
+  limpiar_dir(dir_data_maps)
+  limpiar_dir(dir_data_sql)
+}
+
+message("==> Rutas de destino definidas y limpias.")
+
+
 
 message("==> Iniciando actualización de mapas para vignettes")
 
 # ------------------------------------------------------------
-# 1. Extraer datos (privado)
+# 1. Extraer y guardar datos (privado)
 # ------------------------------------------------------------
 message(" - Extrayendo datos del Registro...")
-dom  <- extraer_colecciones_mapa()
-data <- dom$data
+
+con <- conectar_metages()$con # Solo necesario para vistas SQL
+
+message(" - Generando tablas derivadas de vistas SQL")
+
+vistas_sql <- list(
+  colecciones                 = "SELECT * FROM colecciones",
+  colecciones_informatizacion = "SELECT * FROM colecciones_informatizacion_ejemplares",
+  colecciones_per_anno        = "SELECT * FROM colecciones_per_anno",
+  colecciones_per_publican    = "SELECT * FROM colecciones_per_estado_publicacion",
+  colecciones_por_disciplina  = "SELECT * FROM colecciones_por_disciplina"
+)
+
+for (nombre in names(vistas_sql)) {
+  message("   ↳ ", nombre)
+  
+  df <- DBI::dbGetQuery(con, vistas_sql[[nombre]])
+  
+  saveRDS(
+    df,
+    file = fs::path(dir_data_sql, paste0(nombre, ".rds"))
+  )
+}
+
+
 
 # ------------------------------------------------------------
-# 2. Preparar carpeta de salida
+# 2. Preparar carpeta de salida para mapas
 # ------------------------------------------------------------
-fig_dir <- file.path("vignettes", "figures")
-if (!dir.exists(fig_dir)) {
-  dir.create(fig_dir, recursive = TRUE)
-  message(" - Carpeta creada: ", fig_dir)
-}
 
 # Parámetros comunes de exportación
 gg_opts_all <- list(
@@ -41,17 +121,21 @@ gg_opts_all <- list(
 # Función auxiliar para guardar mapas
 save_map <- function(plot, filename, gg_opts = gg_opts_all) {
   message("   * Guardando ", filename)
-  do.call(
-    ggplot2::ggsave,
-    c(
-      list(
-        filename = file.path(fig_dir, filename),
-        plot     = plot
-      ),
-      gg_opts
+  
+  for (dir in c(dir_fig_maps_inst, dir_fig_maps_vign)) {
+    do.call(
+      ggplot2::ggsave,
+      c(
+        list(
+          filename = file.path(dir, filename),
+          plot     = plot
+        ),
+        gg_opts
+      )
     )
-  )
+  }
 }
+
 
 # ------------------------------------------------------------
 # 3. Mapa total
@@ -62,6 +146,11 @@ res_total <- crear_mapa_simple()
 save_map(
   plot     = res_total$plot,
   filename = "mapa-total.png"
+)
+
+saveRDS(
+  res_total$data_map,
+  file = fs::path(dir_data_maps, "mapa-total.rds")
 )
 
 
@@ -81,6 +170,11 @@ save_map(
   filename = "mapa-colecciones-zoo.png"
 )
 
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-zoo.rds")
+)
+
 
 # ------------------------------------------------------------
 # 5. Mapa solo colecciones zoológicas (publicadoras)
@@ -97,6 +191,10 @@ save_map(
   filename = "mapa-colecciones-zoo-pub.png"
 )
 
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-zoo-pub.rds")
+)
 
 # ------------------------------------------------------------
 # 6. Mapa solo colecciones de invertebrados
@@ -110,6 +208,11 @@ res_colecciones <- crear_mapa_simple(
 save_map(
   plot     = res_colecciones$plot,
   filename = "mapa-colecciones-inv.png"
+)
+
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-inv.rds")
 )
 
 
@@ -128,6 +231,11 @@ save_map(
   filename = "mapa-colecciones-inv-pub.png"
 )
 
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-inv-pub.rds")
+)
+
 
 # ------------------------------------------------------------
 # 8. Mapa solo colecciones de Vertebrados
@@ -141,6 +249,11 @@ res_colecciones <- crear_mapa_simple(
 save_map(
   plot     = res_colecciones$plot,
   filename = "mapa-colecciones-zoo-vert.png"
+)
+
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-zoo-vert.rds")
 )
 
 
@@ -159,6 +272,10 @@ save_map(
   filename = "mapa-colecciones-zoo-vert-pub.png"
 )
 
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-zoo-vert-pub.rds")
+)
 
 # ------------------------------------------------------------
 # 10. Mapa solo colecciones de invertebrados y vertebrados
@@ -174,6 +291,11 @@ save_map(
   filename = "mapa-colecciones-invver.png"
 )
 
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-invver.rds")
+)
+
 # ------------------------------------------------------------
 # 11. Mapa solo colecciones de invertebrados y vertebrados publicadoras
 # ------------------------------------------------------------
@@ -186,7 +308,12 @@ res_colecciones <- crear_mapa_simple(
 
 save_map(
   plot     = res_colecciones$plot,
-  filename = "mapa-colecciones-invver_pub.png"
+  filename = "mapa-colecciones-invver-pub.png"
+)
+
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-invver-pub.rds")
 )
 
 
@@ -202,6 +329,11 @@ res_colecciones <- crear_mapa_simple(
 save_map(
   plot     = res_colecciones$plot,
   filename = "mapa-colecciones-bot.png"
+)
+
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-bot.rds")
 )
 
 
@@ -220,6 +352,11 @@ save_map(
   filename = "mapa-colecciones-bot-pub.png"
 )
 
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-bot-pub.rds")
+)
+
 
 # ------------------------------------------------------------
 # 14. Mapa solo colecciones de plantas
@@ -233,6 +370,11 @@ res_colecciones <- crear_mapa_simple(
 save_map(
   plot     = res_colecciones$plot,
   filename = "mapa-colecciones-pla.png"
+)
+
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-pla.rds")
 )
 
 
@@ -251,6 +393,11 @@ save_map(
   filename = "mapa-colecciones-pla-pub.png"
 )
 
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-pla-pub.rds")
+)
+
 
 # ------------------------------------------------------------
 # 16. Mapa solo colecciones de Algas
@@ -264,6 +411,11 @@ res_colecciones <- crear_mapa_simple(
 save_map(
   plot     = res_colecciones$plot,
   filename = "mapa-colecciones-alg.png"
+)
+
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-alg.rds")
 )
 
 
@@ -282,6 +434,11 @@ save_map(
   filename = "mapa-colecciones-alg-pub.png"
 )
 
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-alg-pub.rds")
+)
+
 
 # ------------------------------------------------------------
 # 18. Mapa solo colecciones de hongos
@@ -295,6 +452,11 @@ res_colecciones <- crear_mapa_simple(
 save_map(
   plot     = res_colecciones$plot,
   filename = "mapa-colecciones-hong.png"
+)
+
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-hong.rds")
 )
 
 # ------------------------------------------------------------
@@ -312,6 +474,11 @@ save_map(
   filename = "mapa-colecciones-hong-pub.png"
 )
 
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-hong-pub.rds")
+)
+
 
 # ------------------------------------------------------------
 # 20. Mapa solo colecciones microbiologicas
@@ -325,6 +492,11 @@ res_colecciones <- crear_mapa_simple(
 save_map(
   plot     = res_colecciones$plot,
   filename = "mapa-colecciones-micro.png"
+)
+
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-micro.rds")
 )
 
 
@@ -343,6 +515,11 @@ save_map(
   filename = "mapa-colecciones-micro-pub.png"
 )
 
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-micro-pub.rds")
+)
+
 
 # ------------------------------------------------------------
 # 22. Mapa solo colecciones micologicas
@@ -356,6 +533,11 @@ res_colecciones <- crear_mapa_simple(
 save_map(
   plot     = res_colecciones$plot,
   filename = "mapa-colecciones-mico.png"
+)
+
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-mico.rds")
 )
 
 
@@ -374,6 +556,11 @@ save_map(
   filename = "mapa-colecciones-mico.png"
 )
 
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-mico.rds")
+)
+
 # ------------------------------------------------------------
 # 24. Mapa solo colecciones Paleontologicas
 # ------------------------------------------------------------
@@ -386,6 +573,11 @@ res_colecciones <- crear_mapa_simple(
 save_map(
   plot     = res_colecciones$plot,
   filename = "mapa-colecciones-pale.png"
+)
+
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-pale.rds")
 )
 
 
@@ -404,6 +596,11 @@ save_map(
   filename = "mapa-colecciones-pale-pub.png"
 )
 
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-pale-pub.rds")
+)
+
 
 # ------------------------------------------------------------
 # 26. Mapa solo colecciones Mixtas
@@ -417,6 +614,11 @@ res_colecciones <- crear_mapa_simple(
 save_map(
   plot     = res_colecciones$plot,
   filename = "mapa-colecciones-mix.png"
+)
+
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-mix.rds")
 )
 
 
@@ -433,6 +635,11 @@ res_colecciones <- crear_mapa_simple(
 save_map(
   plot     = res_colecciones$plot,
   filename = "mapa-colecciones-mix-pub.png"
+)
+
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-mix-pub.rds")
 )
 
 
@@ -455,24 +662,43 @@ save_map(
                  dpi    = 100)
 )
 
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-facet-bd-disciplina-pub.rds")
+)
+
 
 
 # ------------------------------------------------------------
 # 29. Mapa facetado por bases de datos no publicadoras
 # ------------------------------------------------------------
 message(" - Generando mapa bd facetado por disciplina no publicadoras")
-res_facet <- crear_mapa_simple(
-  tipo_coleccion = "base de datos",
-  facet = "disciplina_def",
-  publican = F
-)
 
-save_map(
-  plot     = res_facet$plot,
-  filename = "mapa-facet-bd-disciplina-nopub.png",
-  gg_opts = list(width  = 14,
-                 height = 9,
-                 dpi    = 100)
+tryCatch(
+  {
+    res_facet <- crear_mapa_simple(
+      tipo_coleccion = "base de datos",
+      facet = "disciplina_def",
+      publican = F
+    )
+    
+    save_map(
+      plot     = res_facet$plot,
+      filename = "mapa-facet-bd-disciplina-nopub.png",
+      gg_opts = list(width  = 14,
+                     height = 9,
+                     dpi    = 100)
+    )
+    
+    saveRDS(
+      res_colecciones$data_map,
+      file = fs::path(dir_data_maps, "mapa-facet-bd-disciplina-nopub.rds")
+    )
+  },
+  error = function(e) {
+    message(" ↳ Sin datos para generar este mapa (se omite).")
+    invisible(NULL)
+  }
 )
 
 # ------------------------------------------------------------

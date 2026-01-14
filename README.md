@@ -112,6 +112,7 @@ mapa <- crear_mapa_simple(tipo_coleccion = "coleccion",
 mapa$data_map                   # Muestra el data frame creado con los filtros aplicados
 mapa$plot                       # Muestra el mapa creado con los filtros aplicados
 ```
+👉 Consulta el artículo [Creación de mapas de colecciones con metagesToolkit](https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html)
 
 
 
@@ -130,11 +131,18 @@ metages-toolkit/
 │   │   ├── assets/                                 : Imágenes y plantillas para el informe.
 │   │   │   ├── images/                             
 │   │   │   │   ├── external/
+│   │   │   │   │
+│   │   │   │   ├── generated/                      : Contiene imagenes autogeneradas por inst/scripts/actualizar_mapas_vignettes.R para ser usadas por informe.qmd
 │   │   │   │   │   
 │   │   │   │   └── logos/
 │   │   │   │       
 │   │   │   └── templates/
 │   │   │       └── reference.docx
+│   │   │
+│   │   ├── data/                                   : Contiene carpetas autogeneradas por inst/scripts/actualizar_mapas_vignettes.R
+│   │   │   ├── mapas/                              : Contiene objetos .rds con la tabla de datos que genera cada mapa del informe y las vignettes
+│   │   │   └── vistas_sql/                         : Contiene objetos .rds con la tabla de datos que genera cada vista SQL de MetaGES
+│   │   │
 │   │   └── informe.qmd                             : Documento Quarto que genera el informe de colecciones usando las funciones del paquete de R metagesToolkit.
 │   └── scripts/                                    : R Scripts de apoyo a la gestión de la base de datos MetaGES, del paquete de R metagesToolkit y para almacenar funciones que aun no han sido añadidas al paquete de R.
 │       ├── actualizar_SQL_scripts.R
@@ -164,7 +172,12 @@ metages-toolkit/
 │       ├── colecciones_informatizacion_ejemplares.sql
 │       ├── colecciones_per_anno.sql
 │       ├── contactos_entidades.sql
-│       └── ... 
+│       ├── ... 
+│
+├── vignettes/ 
+│   └── crear-mapas.Rmd                             : Markdown para crear un articulo en github pages (https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html)
+│
+├── docs/                                           : Documentos necesarios para crear la github page del repo (https://gbifes.github.io/metages-toolkit/index.html)
 │
 └── tests/                                          : Tests para las funciones del paquete de R metagesToolkit
     ├── testthat/

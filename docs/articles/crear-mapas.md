@@ -87,7 +87,7 @@ Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Invertebrados y vertebrados", publican = T)`,
 mostrando la distribución espacial de los recursos del Registro.
 
-![](figures/mapa-colecciones-invver_pub.png)
+![](figures/mapa-colecciones-invver-pub.png)
 
 ## Mapa solo colecciones botánicas
 
@@ -232,6 +232,8 @@ Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "base de datos", facet = "disciplina_def", publican = F)`,
 mostrando la distribución espacial de los recursos del Registro,
 facetada por disciplina.
+
+(*Si no hay imagen es porque no hay datos para esta categoría*)
 
 ![](figures/mapa-facet-bd-disciplina-nopub.png)
 
