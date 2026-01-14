@@ -42,42 +42,41 @@ execute:
 bibliography: []
 ---
 
-::: {.callout-note}
+
+::: callout-note
 **Cómo usar este archivo**
 
-1. Coloca este `informe.qmd` en la raíz del repositorio (ya lo está).
-2. Asegúrate de tener configuradas las variables de entorno necesarias para `scripts/conectar_metages.R` (host, usuario, rutas a clave SSH, etc.).
-3. Renderiza a Word (editable): `quarto render informe.qmd`.
-4. Abre el `.docx` en Word o súbelo a Google Docs para edición colaborativa.
+1.  Coloca este `informe.qmd` en la raíz del repositorio (ya lo está).
+2.  Asegúrate de tener configuradas las variables de entorno necesarias para `scripts/conectar_metages.R` (host, usuario, rutas a clave SSH, etc.).
+3.  Renderiza a Word (editable): `quarto render informe.qmd`.
+4.  Abre el `.docx` en Word o súbelo a Google Docs para edición colaborativa.
 
 > Este informe está pensado para **generar automáticamente mapas y tablas** a partir del Registro (Metages/WordPress) siguiendo una estructura similar a los informes institucionales de GBIF España.
 :::
 
 # Portada
 
-*(Opcional)* Inserta aquí logos o una imagen de cabecera (Word/Google Docs lo admiten bien).
-Por ejemplo, crea una carpeta `logos/` y añade:
+*(Opcional)* Inserta aquí logos o una imagen de cabecera (Word/Google Docs lo admiten bien). Por ejemplo, crea una carpeta `logos/` y añade:
 
-- `inst/reports/assets/images/logos/logo-GBIF-RGB-01.png`
-- `inst/reports/assets/images/logos/Logotipo_del_CSIC.svg.png`
-- `inst/reports/assets/images/logos/MCIU.Gob.png`
+-   `inst/reports/assets/images/logos/logo-GBIF-RGB-01.png`
+-   `inst/reports/assets/images/logos/Logotipo_del_CSIC.svg.png`
+-   `inst/reports/assets/images/logos/MCIU.Gob.png`
 
 Luego descomenta:
 
-![](../reports/assets/images/logos/logo-GBIF-RGB-01.png){width="25%"}
-![](../reports/assets/images/logos/logo-CSIC-big-trans.png){width="25%"}
-
-![](../reports/assets/images/logos/MCIU.Gob.png){width="25%"}
+![](../reports/assets/images/logos/logo-GBIF-RGB-01.png){width="20%"}
+![](../reports/assets/images/logos/logo-CSIC-big-trans.png){width="20%"}
+![](../reports/assets/images/logos/MCIU.Gob.png){width="20%"}
 
 
 # Resumen ejecutivo
 
 En esta sección se presenta una síntesis de los principales resultados del Registro, con especial atención a:
 
-- número de colecciones / bases de datos con registros (>0)
-- distribución espacial
-- principales focos (ciudades) según nº de ejemplares/registros
-- publicación en GBIF
+-   número de colecciones / bases de datos con registros (\>0)
+-   distribución espacial
+-   principales focos (ciudades) según nº de ejemplares/registros
+-   publicación en GBIF
 
 ```{r}
 #| label: setup
@@ -85,6 +84,7 @@ En esta sección se presenta una síntesis de los principales resultados del Reg
 
 
 # Paquete del proyecto (cuando ya sea paquete)
+#devtools::load_all(here::here())
 library(metagesToolkit)
 
 library(dplyr)
@@ -99,7 +99,6 @@ library(giscoR, quietly = TRUE, warn.conflicts = FALSE)
 library(ggrepel)
 library(forcats)
 library(processx)
-
 
 
 
@@ -141,6 +140,419 @@ ft_tbl <- function(x, caption = NULL) {
 }
 ```
 
+```{r}
+#| label: datos
+#| include: false
+
+
+# SQL Views
+con <- conectar_metages()$con
+# col <- dbGetQuery(con, "SELECT * FROM colecciones")
+# col_inform_ejemp <- dbGetQuery(con, "SELECT * FROM colecciones_informatizacion_ejemplares")
+# col_per_anno <- dbGetQuery(con, "SELECT * FROM colecciones_per_anno")
+# col_per_publican <- dbGetQuery(con, "SELECT * FROM colecciones_per_estado_publicacion")
+# col_disciplina <- dbGetQuery(con, "SELECT * FROM colecciones_por_disciplina")
+
+
+
+# data
+n_entidades_actual <- NULL ############## REVISAR ############################
+n_entidades_informe_anterior <- NULL ############# REVISAR ###################
+n_edicion_informe_anterior <- "sexta"
+n_edicion_informe_actual <- "septima"
+anno_actual <- format(Sys.Date(), "%Y")
+anno_informe_anterior <- 2019
+mes_anno_informe_anterior <- "diciembre de 2019"
+mes_anno_actual <- format(Sys.Date(), "%B de %Y")
+
+
+
+
+```
+
+
+# RESUMEN EJECUTIVO
+
+En el presente **Informe de Colecciones Biológicas y Bases de Datos de Biodiversidad en España. Año `r anno_actual`**, se muestra la situación de las colecciones biológicas, las bases de datos y proyectos sobre biodiversidad publicados en el [Registro de colecciones, proyectos y bases de datos de biodiversidad en España](https://gbif.es/registro-colecciones/) hasta `r mes_anno_actual`. Se ofrecen los datos y estadísticas ~~de los últimos cinco años (desde el 1 de enero de 2015 hasta el 31 de diciembre de 2019)~~ en relación a las entidades (instituciones o centros), colecciones, bases de datos y proyectos adscritos a la **Unidad de Coordinación del Nodo Nacional de Información en Biodiversidad** (UdC). Se hace una síntesis y valoración de las entidades, sus colecciones, proyectos y datos asociados, con especial relevancia de aquellas que publican datos en el Portal Nacional de GBIF España. 
+
+La información referente a las entidades y proyectos, y a las colecciones biológicas o bases de datos de biodiversidad se obtiene mediante [formularios](https://gbif.es/datos-biodiversidad/accede-a-los-datos/registro/cuestionario-para-colecciones-biologicas-y-bases-de-datos/) que cumplimentan las propias instituciones, tal como se refleja en dicho Registro, si bien y de forma puntual, se tienen en cuenta las modificaciones y correcciones de los metadatos enviadas por los respectivos responsables a través de los correos de contacto de GBIF.ES. 
+
+~~Hay 229 entidades (instituciones, centros y proyectos) vinculadas al Nodo Nacional de Información en Biodiversidad, referidas y actualizadas hasta diciembre de 2019, de las cuales 104 (el 45 %) publican datos. Con respecto al informe anterior se han incorporado 53 —50 instituciones o centros y 3 proyectos—, es decir, un 23 % más. Estas entidades poseen en conjunto 474 colecciones biológicas o bases de datos y 308 recursos o juegos de datos con un total de 32.367.320 registros en línea, que publican a través de los portales GBIF. Con respecto al informe anterior (diciembre de 2014) se han incorporado 64 colecciones (un 14 % más) y 136 recursos (un 79 % más) a la infraestructura de GBIF, y el número de registros publicados ha crecido en 22.170.677, lo que supone un incremento del 317,42 %, de manera que en este periodo España se mantiene en el décimo país del mundo que más contribuye a GBIF, tal como se puede ver en la tabla 1.a. y gráfica 1.b.~~
+
+```{r}
+top10 <- get_top10_countries_rgbif()
+ft_tbl(top10, caption = "Registros de datos de biodiversidad publicados en GBIF.ORG.")
+
+top10_publishing <- get_top_publishing_countries_gbif()
+ft_tbl(top10_publishing, caption = "Registros de datos de biodiversidad publicados en GBIF.ORG.")
+
+```
+
+![](../reports/assets/images/external/ranking_occurrences.png){width="50%"}
+
+Un resumen de los principales datos del Registro en `r anno_actual` y su incremento con respecto al informe anterior de `r anno_informe_anterior` se muestra en la ~~tabla 1.c.~~ Durante este periodo, algunas entidades han reestructurado sus colecciones biológicas y bases de datos. Aquí presentamos la información más relevante, que se verá en detalle en el desarrollo de este informe. 
+
+# INTRODUCCIÓN. JUSTIFICACIÓN Y OBJETIVOS
+
+La Infraestructura Mundial de Información en Biodiversidad (GBIF, de sus siglas inglesas, Global Biodiversity Information Facility) es una iniciativa intergubernamental creada para poner en Internet, a disposición pública y de manera gratuita, toda la información disponible sobre los organismos vivos conocidos a nivel mundial, facilitando el acceso a esta información y compartiendo los datos científicos para avance de la ciencia y beneficio de la sociedad. 
+
+A `r mes_anno_actual`, GBIF cuenta entre sus miembros con ~~59 países y 38 organizaciones internacionales~~. España es miembro fundador de GBIF, representada por el Ministerio de Ciencia e Innovación, el cual encomendó al CSIC la gestión científico-técnica del “Nodo Nacional de Información en Biodiversidad para la participación en el Programa Internacional Global Biodiversity Information Facility (BOE, 12 de junio de 2002) y para lo que constituyó la Unidad de Coordinación de GBIF en España, sita en el Real Jardín Botánico de Madrid. 
+
+Para cumplir con sus objetivos, esta Unidad de Coordinación recopila y publica información sobre las entidades que producen, agregan o administran datos e información sobre biodiversidad. Esta información da contexto a los datos publicados sobre biodiversidad en España, permite determinar el estado del conocimiento y establecer sus prioridades, bien de índole científica, bien desde el punto de vista de la gestión y conservación de la biodiversidad y el medioambiente. En el año 2005, la Unidad de Coordinación abrió un registro de las instituciones y proyectos con sede en el territorio español que cuenta con información ligada al conocimiento y la conservación de la biodiversidad. Esta información se encuentra, en unos casos, en **colecciones biológicas** de distintos tipos (zoológicas, botánicas, microbiológicas, paleontológicas y mixtas) que, como tales, contienen ejemplares físicos que sirven de respaldo a la información (ejemplares preservados o sus partes, fósiles, bancos de germoplasma, de tejidos…). En otros casos la información se recoge en **bases de datos** creadas en el ámbito de proyectos de investigación, o de otra índole, sin contar con el respaldo físico de ejemplares (inventarios, listados, eventos de muestreo…). 
+
+Los contenidos de este informe y del sistema informático subyacente se organizan en tres niveles: 
+
+1. entidades (instituciones o centros) y proyectos, 
+2. colecciones biológicas o bases de datos de biodiversidad,
+3. juegos de datos publicados en línea. 
+
+La información de los dos primeros se recopila mediante formularios que cumplimentan los propios centros, tal como se refleja en el **Registro de instituciones, colecciones y bases de datos de biodiversidad**. La información de los juegos de datos en línea se introduce por parte de los propios responsables en la [plataforma de publicación de datos de GBIF – IPT](http://www.gbif.es/ipt/). El flujo de la información se refleja en el esquema 2.
+
+
+![Mapa X. Prueba de titulo](../reports/assets/images/external/esquema_flujo_metages.jpg){width="100%"}
+
+La `r n_edicion_informe_anterior` edición del informe, presentado en ~~2015~~, recogía la información disponible hasta ~~diciembre de 2014~~. En esta `r n_edicion_informe_actual` edición, **“Informe de Colecciones Biológicas y Bases de Datos de Biodiversidad en España. Año `r anno_actual`”**, se presentan los datos y estadísticas de los últimos ~~cinco~~ años (desde `r mes_anno_informe_anterior` hasta `r mes_anno_actual`) en relación a las instituciones, colecciones, bases de datos y proyectos adscritos al Nodo Nacional de Información en Biodiversidad. Se hace una síntesis y valoración de las entidades, sus colecciones, proyectos y datos asociados, con especial relevancia de las que publican datos en el Registro de GBIF.ES.
+
+Se puede acceder a la información del Registro, de manera detallada y continuamente actualizada, desde [](https://www.gbif.es/registro-instituciones/). 
+
+Todos los mapas se han realizado de manera dinamica al generar el informe usando el paquete de R [metagesToolkit](https://gbifes.github.io/metages-toolkit/index.html). Los topónimos de las ciudades que figuran en los mapas de las colecciones biológicas y bases de datos corresponden a los nombres estandarizados segun se introdujeron en MetaGES por parte de los gestores de cada coleccion. El tamaño de las burbujas expresa el nº de ejemplares (para colecciones) o de registros publicados (para bases de datos y colecciones publicadoras). La leyenda se ha estandarizado a lo largo de todos los mapas generados atendiendo a los percentiles 10, 40, 65 y 90 del conjunto total de ejemplares y registros por coleccion o base de datos. Todos los mapas generados pueden visualizarse en [Generación de mapas con metagesToolkit](https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html).
+
+# DATOS GENERALES Y FUNCIONAMIENTO DE GBIF
+
+## METODOLOGÍA Y TÉRMINOS USADOS
+
+### Entidades, proyectos, colecciones y bases de datos
+
+A continuación, se detallan y explican los conceptos y términos utilizados en este
+informe:
+
+La unidad o nivel principal, llamada **entidad**, es el centro o institución (o
+proyecto independiente), que puede albergar una o más **colecciones**, que constituyen
+el segundo nivel. Estas pueden ser **colecciones biológicas** (ejemplares físicos) o bien
+colecciones de datos virtuales que son **bases de datos**. Cada colección o base de datos
+puede dar lugar a uno o más juegos de datos (también llamados a veces recursos o
+dataset, que serían el tercer nivel. Estos juegos de datos son los que se publican en el
+[Portal de Datos de Biodiversidad del Nodo Nacional GBIF.ES](https://datos.gbif.es/) y en
+el [Portal Internacional de GBIF](https://www.gbif.org/).
+
+Los **proyectos** pueden ser independientes y albergar sus propias bases de datos.
+En estos casos en el Registro funcionan como entidades y siempre llevan asociadas sus
+propias bases de datos, es decir, recursos de datos virtuales. Otras veces los proyectos
+no son independientes y están vinculados directamente a alguna entidad, que es la que
+alberga esas bases de datos, y así se indica también su dependencia en el Registro.
+
+HACER ALGO ESTILO https://github.com/iobis/env-data/issues/10#issuecomment-444422701 PARA EXPLICAR JERARQUIAS
+~~Ejemplo donde la entidad es un centro o institución. La Sociedad de Ciencias Aranzadi alberga
+3 colecciones biológicas y 4 bases de datos (nivel 2), y comparte 5 recursos en los portales (nivel
+3):~~ 
+
+~~Ejemplo donde la entidad es un proyecto independiente: el proyecto Observatorio de
+seguimiento de los efectos del cambio global de Sierra Nevada (OBSNEV) figura en el nivel de
+entidad y alberga una colección virtual (base de datos) con 7 recursos en línea.~~
+
+~~Ejemplo de proyecto dependiente de una institución: Flora Mycologica Iberica,
+https://www.gbif.es/coleccion/csic-real-jardin-botanico-flora-mycologica-iberica/, depende de
+la entidad Real Jardín Botánico (CSIC) https://www.gbif.es/instituciones/csic-real-jardinbotanico/ y figura en el nivel de colección (nivel 2) albergando una base de datos.~~
+
+En el **Anexo 1**, se pueden ver todas las entidades y proyectos incluidos en el Registro,
+con sus colecciones y bases de datos asociadas. Es importante indicar que los nombres
+empleados para instituciones, proyectos, colecciones y recursos, son los proporcionados por los propios responsables vía formularios y mensajes electrónicos, y son también los que figuran en el [Registro de colecciones](https://www.gbif.es/registro-colecciones/). No obstante, en algunos casos concretos se especifica, más allá de la información proporcionada por los responsables, la procedencia de los datos o la vinculación de los proyectos con las instituciones para una mejor comprensión de la información.
+
+### Categorías de las entidades en el Registro
+
+Las entidades (centros e instituciones) y sus colecciones —tanto físicas como virtuales—
+se han agrupado en ~~cinco~~ categorías por grupos taxonómicos y disciplinas para facilitar las comparaciones y los análisis ~~(tabla 3.1.2.)~~.
+
+AÑADIR VISUALIZACION CON IMAGENES O ESQUEMATICA DE LAS DISCIPLINAS
+
+Dentro de la categoría **Zoológica** se distinguen **invertebrados** y **vertebrados** por fines prácticos: el número promedio de registros y ejemplares recogidos en las colecciones y bases de datos de invertebrados es muy superior al de vertebrados, de modo que un abordaje conjunto haría inapreciables estos últimos en cualquier estudio o consulta. Para unos pocos casos en los que no se ha diferenciado entre estos dos grupos, se ha utilizado una tercera categoría: “**Invertebrados y vertebrados**”.
+
+La categoría **Botánica** se subdivide en tres grupos bien reconocidos:
+
+- **Plantas**, en el que se incluyen las plantas vasculares: fanerógamas y criptógamas
+vasculares como los helechos (pteridofitos), además de musgos y afines (briofitos).
+- **Algas**. REQUIERE EXPLICACION DE SI SON MACROALGAS O MIXTAS
+- **Hongos**, que incluye los líquenes.
+
+La categoría **Microbiológica** incluye microorganismos, en general bacterias, fitoplancton
+y zooplancton. La **Paleontológica** las colecciones y bases de datos de organismos fósiles y la categoría **Mixta** colecciones y bases de datos que tienen ejemplares de dos o más de alguna de las categorías anteriores.
+
+## ENTIDADES: SITUACIÓN GENERAL Y MAPA DE LOCALIZACIÓN
+
+### Situación general de las entidades
+Desde su inicio, el **Registro de Colecciones Biológicas y Bases de Datos de Biodiversidad en España** el número de entidades (instituciones, centros y proyectos) incluidas se ha ido
+incrementando de manera constante, de igual manera que las colecciones, bases de datos,
+registros y datos publicados.
+
+A fecha de `r mes_anno_actual` hay ~~229 entidades~~ (instituciones, centros y proyectos) que
+forman parte del Nodo Nacional de Información en Biodiversidad, ~~de las cuáles 104 (el 45 %)
+15 publican datos. Con respecto al informe anterior (diciembre de 2015) ha habido 53 nuevas
+incorporaciones.~~
+
+En la gráfica ~~3.2.1.~~ se enumeran las entidades por categorías. Así mismo, se especifica
+para una el número de entidades que publican datos en GBIF.
+
+Hay que tener en cuenta que una misma entidad puede albergar colecciones o bases de
+datos que correspondan a más de una categoría, por lo que el número de entidades mixtas es
+elevado, mientras que, por ejemplo, las exclusivamente microbiológicas es muy reducido. Se
+observa también que no hay ninguna entidad exclusivamente microbiológica o paleontológica.
+Por eso, estas categorías las veremos más adelante mejor diferenciadas y definidas en el 2º nivel, de colecciones biológicas y bases de datos.
+
+GRAFICA AQUI
+
+::: callout-note
+Nota: para las entidades que tienen colecciones de diferentes categorías se ha
+generalizado para la mejor representada. No existe ninguna entidad paleontológica como tal, sí colecciones paleontológicas que pertenecen a entidades de otras categorías.
+:::
+
+### Distribución geográfica de las entidades registradas
+
+La distribución espacial de las entidades registradas que forman parte del Nodo Nacional
+de Información en Biodiversidad, queda reflejada en el ~~mapa 3.2.2.~~ Se observa dónde pueden localizarse las entidades que forman parte del Registro en España por CC.AA. Se destacan las que publican datos ~~(círculos de color azul)~~ y el ~~tamaño de los círculos es proporcional a la cantidad de registros publicados~~.
+
+## SITUACIÓN GENERAL DE LAS COLECCIONES BIOLÓGICAS Y BASES DE DATOS: TOTAL DE REGISTROS, ACTUALIZACIONES E INCORPORACIONES
+
+Actualmente hay contabilizadas ~~474 colecciones biológicas y bases de datos
+pertenecientes a 229 entidades~~. Desde 2004, que se tienen datos en el Registro, ha habido un aumento anual constante, tal como refleja la ~~gráfica 3.3.a.~~, donde se indican los totales y el número de nuevas incorporaciones por año. ~~En los últimos cinco años (periodo 2015-2019),~~ desde el anterior informe, se han incrementado en ~~64 el número de~~ colecciones y bases de datos.
+
+GRAFICA AQUI
+TABLA AQUI
+GRAFICA AQUI
+PIE CHART AQUI
+
+### Incorporación de registros a la red de GBIF
+
+A fecha de `r mes_anno_actual`, de las ~~474 colecciones biológicas y bases de datos del
+Registro, hay 208 (44 %) que publican datos a través de sus 308 recursos en línea (juegos de
+datos), constituyendo así el aporte de datos del Nodo Nacional de Información en Biodiversidad, que suman en total 32.367.320 registros, y que colocan am España como décimo país por registros publicados en la red internacional de GBIF.
+
+En la tabla 3.3.1.a. se muestra una comparativa entre los registros publicados en 2014 y
+los de 2019. El incremento de registros en ese periodo ha sido de 22.170.079 (317,42 %).~~
+
+TABLA AQUI
+
+~~En la gráfica 3.3.1.b. podemos ver la progresión del número de registros publicados en
+GBIF desde 2005 hasta diciembre de 2019 hasta alcanzar los 32.367.320 registros actuales.~~
+
+GRAFICA AQUI
+
+Otro punto de vista bajo el que analizar las entidades, colecciones y datos de
+biodiversidad del Registro, es el ámbito o sector en el que se enmarcan las mismas, y así se han distinguido los siguientes:
+- **Académico**: instituciones educativas, museos, centros de investigación o vinculados a
+proyectos concretos de investigación.
+- **Administraciones públicas**: gobiernos de las CCAA, ayuntamientos, consejerías,
+cabildos…
+- **Ciencia ciudadana**: principalmente asociaciones y centros de información
+medioambiental cuyos datos proceden generalmente de voluntarios y aficionados,
+profesionales o no.
+- **Sector privado**: empresas privadas.
+
+La mayor parte de las colecciones y bases de datos proceden del ámbito académico,
+mientras que por número de registros son las administraciones públicas y las de ciencia
+ciudadana los sectores que más aportan. Es de destacar que desde mediados de 2019 se
+incorpora el sector privado al ámbito de GBIF, con la cementera LafargeHolcim España, que
+publicó un primer juego de datos en 2019. Se abre así una nueva entrada de datos, que por
+volumen y foco (estudios de impacto ambiental, restauración de paisaje), puede completar y
+complementar el mundo de los datos de biodiversidad de manera relevante.
+
+Como las entidades y colecciones pueden asignarse a más de un sector, la distribución
+de datos entre ellas se ve más claramente a nivel de recursos en línea y registros publicados. El desglose de estos datos por sectores se ve en la ~~tabla 3.3.1.c. y en las gráficas 3.3.1.d. y 3.3.1.e.~~
+
+TABLA AQUI
+GRAFICA AQUI
+GRAFICA AQUI
+
+Por último, examinamos los datos publicados en GBIF por parte de entidades españolas
+desde el punto de vista del tipo de registro de los juegos de datos. En la red de GBIF —de la
+mano de la especificación “Darwin Core Archive”— se reconocen cuatro tipos:
+
+- **Registros de presencia** (en inglés “occurrences”). Cada registro contiene
+información sobre la presencia (o ausencia) de una especie en un lugar y en un período de tiempo determinados. Los registros correspondientes a ejemplares de colecciones biológicas
+(físicas) son un ejemplo de este caso. Observaciones ocasionales hechas por
+ciudadanos de una planta en el campo, también.
+
+- **Registros asociados a una metodología** explícita de muestreo sistemático ligado a
+un lugar y en un período de tiempo determinados (llamado en este contexto “evento/event”). Estos recursos, en terminología de GBIF se conocen como “event-based datasets”). Por ejemplo,
+muestreos periódicos en parcelas, seguimiento de especies en transectos, muestreos [LTER](https://lternet.edu/).
+
+- **Registros que dan información de especies** con un cierto nivel abstracción, no ligada
+a individuos, ejemplares u observaciones concretas. En terminología GBIF, “checklists”. Pertenecen a este grupo recursos que contienen listas de especies presentes en un territorio, listas de especies con sus nombres comunes usados en un territorio, listas rojas, especies protegidas en un territorio con sus descripciones, aves avistadas en un transecto visitado cada mes, etc.
+
+- **Registros no publicados**, solo se hacen disponibles los metadatos del juego de datos.
+(“metadata”). 
+
+Hay que tener en cuenta que todos los registros de un juego de datos han de ser del mismo tipo. Según estos tipos, los números para los recursos en línea accesibles vía GBIF
+procedentes de entidades españolas se muestran en la  ~~tabla 3.3.1.f ~~.
+
+
+### Actualización de las colecciones publicadas en GBIF
+
+# COLECCIONES BIOLÓGICAS
+
+## ANÁLISIS Y SITUACIÓN GENERAL
+
+### Situación general
+
+### Fondos y estado de informatización de las colecciones biológicas
+
+### Estado de conservación de las colecciones biológicas
+
+### Accesibilidad de las colecciones
+
+#### Accesibilidad a los ejemplares
+
+#### Accesibilidad a los datos informatizados
+
+#### Posibilidad de acceso a los datos
+
+#### Medio de acceso a los datos informatizados
+
+### Colecciones biológicas que publican en GBIF
+
+### Distribución de las colecciones biológicas
+
+## COLECCIONES ZOOLÓGICAS
+
+### Estado de informatización de las colecciones zoológicas
+
+### Colecciones zoológicas: invertebrados
+
+### Mapa de distribución de las colecciones zoológicas de invertebrados en España
+
+En los  ~~mapas 4.2.2.1.a. y 4.2.2.1.b.~~ se muestran las colecciones zoológicas de
+invertebrados, representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo el número de colecciones que publican a través de los portales GBIF.
+
+![](assets/images/generated/mapa-colecciones-inv.png)
+![](assets/images/generated/mapa-colecciones-inv-pub.png)
+
+### Grandes colecciones zoológicas de invertebrados
+
+### Colecciones zoológicas: vertebrados
+
+
+### Mapa de distribución de las colecciones zoológicas de vertebrados en España
+
+![](assets/images/generated/mapa-colecciones-zoo-vert.png)
+![](assets/images/generated/mapa-colecciones-zoo-vert-pub.png)
+
+### Grandes colecciones zoológicas de vertebrados
+
+### Colecciones zoológicas conjuntas de invertebrados y vertebrados
+
+### Mapa de distribución de las colecciones zoológicas conjuntas de invertebrados y vertebrados en España
+
+![](assets/images/generated/mapa-colecciones-invver.png)
+![](assets/images/generated/mapa-colecciones-invver-pub.png)
+
+### Grandes colecciones zoológicas conjuntas de invertebrados y vertebrados
+
+### Colecciones zoológicas que publican datos en GBIF
+
+## COLECCIONES BOTÁNICAS
+
+### Estado de informatización de las colecciones botánicas
+
+### Colecciones de plantas
+
+### Mapa de distribución de las colecciones de plantas
+
+![](assets/images/generated/mapa-colecciones-pla.png)
+![](assets/images/generated/mapa-colecciones-pla-pub.png)
+
+### Grandes colecciones de plantas
+
+### Colecciones de algas
+
+### Mapa de distribución de las colecciones de algas
+
+![](assets/images/generated/mapa-colecciones-alg.png)
+![](assets/images/generated/mapa-colecciones-alg-pub.png)
+
+### Grandes colecciones de algas
+
+### Colecciones de hongos
+
+### Mapa de distribución de las colecciones de hongos
+
+![](assets/images/generated/mapa-colecciones-hong.png)
+![](assets/images/generated/mapa-colecciones-hong-pub.png)
+
+### Grandes colecciones de hongos
+
+### Colecciones botánicas que publican en GBIF
+
+## COLECCIONES MICROBIOLÓGICAS
+
+### Entidades y colecciones microbiológicas y su estado de informatización
+
+### Mapa de distribución de las colecciones microbiológicas
+
+![](assets/images/generated/mapa-colecciones-micro.png)
+![](assets/images/generated/mapa-colecciones-micro-pub.png)
+
+## COLECCIONES PALEONTOLÓGICAS
+
+### Entidades y colecciones paleontológicas y su estado de informatización
+
+### Mapa de distribución de las colecciones paleontológicas
+
+![](assets/images/generated/mapa-colecciones-pale.png)
+![](assets/images/generated/mapa-colecciones-pale-pub.png)
+
+## COLECCIONES MIXTAS
+
+### Entidades y colecciones mixtas y su estado de informatización
+
+### Mapa de distribución de las colecciones mixtas
+
+![](assets/images/generated/mapa-colecciones-mix.png)
+![](assets/images/generated/mapa-colecciones-mix-pub.png)
+
+# BASES DE DATOS
+
+## PROYECTOS: SITUACIÓN GENERAL
+
+## BASES DE DATOS: SITUACIÓN GENERAL
+
+### Bases de datos de biodiversidad en España
+
+### Bases de datos en GBIF
+
+### Mapa de distribución de las bases de datos registradas
+
+### Bases de datos que publican registros en GBIF
+
+![](assets/images/generated/mapa-facet-bd-disciplina-pub.png)
+
+# DATOS BASADOS EN ESPECÍMENES DE COLECCIONES CIENTÍFICAS FRENTE A DATOS OBSERVACIONALES (SIN RESPALDO DE ESPECÍMENES)
+
+## Comparativa taxonómica
+
+### Observaciones
+
+### Especímenes de colecciones
+
+## Comparativa temporal
+
+## Comparativa espacial
+
+### Observaciones
+
+### Especímenes preservados en colecciones
+
+#### Colecciones zoológicas
+
+#### Colecciones botánicas
+
+## Síntesis y conclusiones
+
+# ANEXO I: COLECCIONES BIOLÓGICAS Y BASES DE DATOS SOBRE BIODIVERSIDAD REGISTRADAS EN ESPAÑA
+
+# ANEXO II
+
+
+
+
 ## Indicadores principales
 
 ```{r}
@@ -160,16 +572,16 @@ ft_tbl(indicadores, caption = "Indicadores principales (a partir del Registro)."
 
 Describe aquí (texto editable) el contexto del Registro, su uso como herramienta de diagnóstico del estado de las colecciones y bases de datos, y el objetivo del informe.
 
-- **Contexto**: Registro de instituciones, colecciones y BBDD de biodiversidad (GBIF España).
-- **Cobertura**: instituciones/colecciones/bbdd y publicación asociada.
-- **Objetivo**: síntesis y apoyo a priorización de digitalización y publicación.
+-   **Contexto**: Registro de instituciones, colecciones y BBDD de biodiversidad (GBIF España).
+-   **Cobertura**: instituciones/colecciones/bbdd y publicación asociada.
+-   **Objetivo**: síntesis y apoyo a priorización de digitalización y publicación.
 
 # Metodología y términos usados
 
 ## Fuente de datos
 
-- Metadatos procedentes del Registro (base de datos asociada al sitio/WordPress).
-- Limpieza básica: eliminación de blancos, normalización de campos y filtrado de ciudades no informadas.
+-   Metadatos procedentes del Registro (base de datos asociada al sitio/WordPress).
+-   Limpieza básica: eliminación de blancos, normalización de campos y filtrado de ciudades no informadas.
 
 ## Cartografía
 
@@ -179,25 +591,12 @@ Los mapas se generan automáticamente a partir de coordenadas (lat/long) y el *b
 
 ## Distribución general de recursos
 
-```{r}
-#| label: fig-mapa-general
-#| fig-cap: "Mapa 1. Distribución general de colecciones biológicas y bases de datos (tamaño proporcional al nº de ejemplares o registros según corresponda)."
-#| fig-width: 10
-#| fig-height: 7
 
-res_general <- crear_mapa(
-  data = data,
-  basemap = basemap,
-  legend_params = legend_params
-)
 
-res_general$plot
-```
 
 ## Distribución por disciplina
 
-> **Nota:** si existen `NA` en la variable de facetado, se recomienda filtrarlos antes de facetar.
-> Si ya aplicaste ese cambio en tu función, esta nota puede eliminarse.
+> **Nota:** si existen `NA` en la variable de facetado, se recomienda filtrarlos antes de facetar. Si ya aplicaste ese cambio en tu función, esta nota puede eliminarse.
 
 ```{r}
 #| label: fig-mapa-disciplina
@@ -205,113 +604,66 @@ res_general$plot
 #| fig-width: 12
 #| fig-height: 9
 
-res_disciplina <- crear_mapa(
-  data = data,
-  basemap = basemap,
-  legend_params = legend_params,
-  facet = "disciplina_def"
-)
-
-res_disciplina$plot
+# res_disciplina <- crear_mapa(
+#   data = data,
+#   basemap = basemap,
+#   legend_params = legend_params,
+#   facet = "disciplina_def"
+# )
+# 
+# res_disciplina$plot
 ```
 
 ## Colecciones biológicas
 
 ### Colecciones que publican en GBIF (solo colecciones)
 
-```{r}
-#| label: fig-mapa-colecciones-publican
-#| fig-cap: "Mapa 3. Colecciones biológicas que publican datos en GBIF."
-#| fig-width: 10
-#| fig-height: 7
 
-res_col_pub <- crear_mapa(
-  data = data,
-  basemap = basemap,
-  legend_params = legend_params,
-  tipo_coleccion = "coleccion",
-  publican = TRUE
-)
-
-res_col_pub$plot
-```
 
 ### Tabla: top ciudades (colecciones)
 
 ```{r}
 
 # Ejecuta una llamada para fijar `data_clean_last` con el mismo filtro que el mapa anterior
-top_ciudades <- res_col_pub$data |>
-  group_by(town) |>
-  summarise(
-    ejemplares = sum(number_of_subunits, na.rm = TRUE),
-    colecciones = dplyr::n(),
-    .groups = "drop"
-  ) |>
-  arrange(dplyr::desc(ejemplares)) |>
-  slice_head(n = 15)
-
-ft_tbl(
-  top_ciudades,
-  caption = "Tabla 1. Top 15 ciudades por número de ejemplares (colecciones que publican en GBIF)."
-)
+# top_ciudades <- res_col_pub$data |>
+#   group_by(town) |>
+#   summarise(
+#     ejemplares = sum(number_of_subunits, na.rm = TRUE),
+#     colecciones = dplyr::n(),
+#     .groups = "drop"
+#   ) |>
+#   arrange(dplyr::desc(ejemplares)) |>
+#   slice_head(n = 15)
+# 
+# ft_tbl(
+#   top_ciudades,
+#   caption = "Tabla 1. Top 15 ciudades por número de ejemplares (colecciones que publican en GBIF)."
+# )
 ```
 
 ## Bases de datos
 
 ### Bases de datos que publican en GBIF (solo BBDD)
 
-```{r}
-#| label: fig-mapa-bbdd-publican
-#| fig-cap: "Mapa 4. Bases de datos de biodiversidad que publican registros en GBIF."
-#| fig-width: 10
-#| fig-height: 7
 
-res_bbdd_pub <- crear_mapa(
-  data = data,
-  basemap = basemap,
-  legend_params = legend_params,
-  tipo_coleccion = "base de datos",
-  publican = TRUE
-)
-
-res_bbdd_pub$plot
 ```
 
 ### Tabla: top ciudades (BBDD)
 
-```{r}
 
-top_ciudades_bbdd <- res_bbdd_pub$data |>
-  group_by(town) |>
-  summarise(
-    registros = sum(numberOfRecords, na.rm = TRUE),
-    recursos = dplyr::n(),
-    .groups = "drop"
-  ) |>
-  arrange(dplyr::desc(registros)) |>
-  slice_head(n = 15)
-
-ft_tbl(
-  top_ciudades_bbdd,
-  caption = "Tabla 2. Top 15 ciudades por número de registros (BBDD que publican en GBIF)."
-)
-```
 
 # Síntesis y conclusiones
 
 Redacta aquí conclusiones (texto editable), por ejemplo:
 
-- principales concentraciones espaciales
-- disciplinas con mayor volumen de ejemplares/registros
-- oportunidades de mejora en publicación y metadatos
-- próximos pasos recomendados
+-   principales concentraciones espaciales
+-   disciplinas con mayor volumen de ejemplares/registros
+-   oportunidades de mejora en publicación y metadatos
+-   próximos pasos recomendados
 
 # Anexos
 
 ## Anexo A. Colecciones y bases de datos
-
-
 
 ## Anexo B. Parámetros de ejecución
 
