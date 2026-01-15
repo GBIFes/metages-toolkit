@@ -22,19 +22,19 @@ WITH total AS (
     
     
 -- Calculo de porcentajes y numero de records por disciplina
-SELECT r.disciplina_def, 
-	   SUM(r.numberOfRecords) AS records,
+SELECT r.disciplina_def AS 'Disciplina', 
+	   SUM(r.numberOfRecords) AS 'Nº de registros publicados',
 	   CONCAT(ROUND(SUM(r.numberOfRecords) / MAX(total.total_records) * 100, 2),
-	   		  '%') AS porcentaje
+	   		  '%') AS '% registros publicados'
 FROM registros AS r
 CROSS JOIN total
 GROUP BY disciplina_def
 
 UNION ALL
 
-SELECT 'TOTAL' AS disciplina_def, 
-		MAX(total.total_records) AS records,
-		'100%' AS porcentaje
+SELECT 'TOTAL' AS 'Disciplina', 
+		MAX(total.total_records) AS 'Nº de registros publicados',
+		'100%' AS '% registros publicados'
 FROM total
 
 

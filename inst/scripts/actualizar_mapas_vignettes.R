@@ -49,7 +49,7 @@ dir_data_maps <- fs::path(dir_data_root, "mapas")
 dir_data_sql  <- fs::path(dir_data_root, "vistas_sql")
 
 # Crea TODAS las carpetas necesarias
-fs::dir_create(c(dir_fig_maps, dir_data_maps, dir_data_sql), recurse = TRUE)
+fs::dir_create(c(dir_fig_maps_inst, dir_fig_maps_vign, dir_data_maps, dir_data_sql), recurse = TRUE)
 
 
 
@@ -78,20 +78,21 @@ message("==> Rutas de destino definidas y limpias.")
 message("==> Iniciando actualización de mapas para vignettes")
 
 # ------------------------------------------------------------
-# 1. Extraer y guardar datos (privado)
+# 1.1 Extraer y guardar datos de MetaGES (privado)
 # ------------------------------------------------------------
 message(" - Extrayendo datos del Registro...")
 
 con <- conectar_metages()$con # Solo necesario para vistas SQL
 
-message(" - Generando tablas derivadas de vistas SQL")
+message(" - Descargando vistas SQL")
 
 vistas_sql <- list(
   colecciones                 = "SELECT * FROM colecciones",
   colecciones_informatizacion = "SELECT * FROM colecciones_informatizacion_ejemplares",
   colecciones_per_anno        = "SELECT * FROM colecciones_per_anno",
   colecciones_per_publican    = "SELECT * FROM colecciones_per_estado_publicacion",
-  colecciones_por_disciplina  = "SELECT * FROM colecciones_por_disciplina"
+  colecciones_por_disciplina  = "SELECT * FROM colecciones_por_disciplina",
+  registros_por_disciplina    = "SELECT * FROM registros_por_disciplina"
 )
 
 for (nombre in names(vistas_sql)) {
@@ -105,6 +106,112 @@ for (nombre in names(vistas_sql)) {
   )
 }
 
+# ------------------------------------------------------------
+# 1.2 Crear y guardar datos derivados de las vistas SQL
+# ------------------------------------------------------------
+
+message(" - Generando tablas derivadas de vistas SQL")
+
+df <- readRDS("inst/reports/data/vistas_sql/colecciones.rds")
+
+
+# Estado de conservación de las colecciones
+df %>% filter(tipo_body == "coleccion") %>%
+        mutate(condiciones_col = if_else(is.na(condiciones_col),
+                                          "No especificado",
+                                          condiciones_col)) %>%
+        count(condiciones_col, name = "Número de colecciones") %>%
+        mutate(`%` = paste0(round(
+                              100 * `Número de colecciones` / sum(`Número de colecciones`), 
+                              2),
+                            " %")) %>%
+        rename(`Condiciones de conservación` = condiciones_col) %>%
+        mutate(`Condiciones de conservación` = factor(
+                                                  `Condiciones de conservación`,
+                                                  levels = c(
+                                                    "Óptimas",
+                                                    "Óptimas - adecuadas",
+                                                    "Adecuadas",
+                                                    "Malas - adecuadas",
+                                                    "Malas",
+                                                    "No especificado"
+                                                  ))) %>%
+        arrange(`Condiciones de conservación`) %>%
+        saveRDS(file = fs::path(dir_data_sql, "estado_conservacion.rds"))
+
+
+# Accesibilidad a los ejemplares
+df %>% filter(tipo_body == "coleccion") %>%
+        mutate(acceso_ejemplares = case_when(is.na(acceso_ejemplares) ~ "No disponible o no especificado",
+                                             acceso_ejemplares == "No disponible" ~ "No disponible o no especificado",
+                                             acceso_ejemplares == "Libre acceso" ~ "Al público en general",
+                                             TRUE ~ acceso_ejemplares)) %>%
+        count(acceso_ejemplares, name = "Número de colecciones") %>%
+        mutate(`%` = paste0(round(
+                              100 * `Número de colecciones` / sum(`Número de colecciones`),
+                              2),
+                            " %")) %>%
+        rename(`Accesibilidad a los ejemplares` = acceso_ejemplares) %>%
+        mutate(`Accesibilidad a los ejemplares` = factor(
+                                              `Accesibilidad a los ejemplares`,
+                                              levels = c(
+                                                "Al público en general",
+                                                "A investigadores o personal in situ",
+                                                "Se hacen préstamos",
+                                                "No disponible o no especificado"))) %>%
+        arrange(`Accesibilidad a los ejemplares`) %>%
+        saveRDS(file = fs::path(dir_data_sql, "acceso_ejemplares.rds"))
+
+
+# Accesibilidad a los datos informatizados de los ejemplares
+df %>% filter(tipo_body == "coleccion") %>%
+  mutate(acceso_informatizado = if_else(is.na(acceso_informatizado),
+                                   "No especificado",
+                                   acceso_informatizado)) %>%
+  count(acceso_informatizado, name = "Número de colecciones") %>%
+  mutate(`%` = paste0(round(
+    100 * `Número de colecciones` / sum(`Número de colecciones`), 
+    2),
+    " %")) %>%
+  rename(`Accesibilidad a los datos informatizados` = acceso_informatizado) %>%
+  mutate(`Accesibilidad a los datos informatizados` = factor(
+    `Accesibilidad a los datos informatizados`,
+    levels = c(
+      "Libre acceso",
+      "Caso por caso",
+      "Protegido por clave",
+      "Otros",
+      "No disponible",
+      "No especificado"
+    ))) %>%
+  arrange(`Accesibilidad a los datos informatizados`) %>%
+  saveRDS(file = fs::path(dir_data_sql, "acceso_informatizado.rds"))
+
+
+
+# Medio de acceso a los datos informatizados de los ejemplares
+# df %>% filter(tipo_body == "coleccion") %>%
+#   mutate(acceso_informatizado = if_else(is.na(acceso_informatizado),
+#                                         "No especificado",
+#                                         acceso_informatizado)) %>%
+#   count(acceso_informatizado, name = "Número de colecciones") %>%
+#   mutate(`%` = paste0(round(
+#     100 * `Número de colecciones` / sum(`Número de colecciones`), 
+#     2),
+#     " %")) %>%
+#   rename(`Accesibilidad a los datos informatizados` = acceso_informatizado) %>%
+#   mutate(`Accesibilidad a los datos informatizados` = factor(
+#     `Accesibilidad a los datos informatizados`,
+#     levels = c(
+#       "Libre acceso",
+#       "Caso por caso",
+#       "Protegido por clave",
+#       "Otros",
+#       "No disponible",
+#       "No especificado"
+#     ))) %>%
+#   arrange(`Accesibilidad a los datos informatizados`) %>%
+#   saveRDS(file = fs::path(dir_data_sql, "acceso_informatizado.rds"))
 
 
 # ------------------------------------------------------------

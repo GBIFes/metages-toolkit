@@ -58,9 +58,9 @@ FROM recurso_limpio;
 
 
 -- Proporcion de Condiciones de las colecciones
-SELECT COUNT(*), condiciones  
-FROM metages_gbifpreguntasextra AS mg 
-GROUP BY condiciones 
+SELECT COUNT(*), c.condiciones_col 
+FROM colecciones c 
+GROUP BY condiciones_col 
 
 
 -- Top 10 colecciones con más ejemplares por disciplina

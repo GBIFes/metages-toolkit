@@ -8,6 +8,23 @@ fs::dir_tree(here::here())
 # GENERAR INFORME
 render_informe()
 
+#######################################################
+#######################################################
+
+# Trabajar viendo lo que ve el usuario externo
+devtools::document()  # si tocaste roxygen
+devtools::install(".", upgrade = "never")
+.rs.restartR()
+library(metagesToolkit)
+find.package("metagesToolkit") # debe estar en AppData...
+
+getwd()
+render_informe()
+insertar_tabla_colecciones("Anexos")
+
+#######################################################
+#######################################################
+
 
 
 # TESTAR FUNCIONES

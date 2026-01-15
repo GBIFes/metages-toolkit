@@ -36,6 +36,7 @@ SELECT
     COALESCE(r.publica_en_gbif, 0) AS publica_en_gbif, 
     r.numberOfRecords, 
     YEAR(mb.created_when) AS fecha_alta_coleccion,
+    YEAR(mb.updated_when) AS ultima_actualizacion_coleccion,
     r.ultima_actualizacion_recursos, 
     md.disciplina_id ,
     mb.condiciones_col,
