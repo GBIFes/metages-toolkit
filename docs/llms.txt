@@ -79,8 +79,8 @@ automáticamente al iniciar una sesión de R:
 - `UID`
 - `gbif_wp_pass`
 
-[Instrucciones para editar y guardar
-credenciales](https://github.com/GBIFes/metages-toolkit/blob/main/inst/scripts/actualizar_Renviron.R)
+**[Instrucciones para editar y guardar
+credenciales](https://github.com/GBIFes/metages-toolkit/blob/main/inst/scripts/actualizar_Renviron.R)**
 
 ------------------------------------------------------------------------
 
@@ -111,21 +111,28 @@ Permite filtrar por `tipo_coleccion`, `disciplina`, `subdisciplina` y si
 `publican` en GBIF o no. Además, permite hacer un `facet` con cualquier
 columna de la tabla de datos.
 
-``` r
-# Función independiente para exploración y visualización de datos de colecciones.
-mapa <- crear_mapa_simple()     # Genera una lista de R con 2 elementos
-mapa <- crear_mapa_simple(disciplina = "Zoo", 
-                          publican = TRUE)
-mapa <- crear_mapa_simple(tipo_coleccion = "coleccion",
-                          facet = "disciplina_def")                          
+👉 **Consulta el artículo [Creación de mapas de colecciones con
+metagesToolkit](https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html)**
 
-# Output
-mapa$data_map                   # Muestra el data frame creado con los filtros aplicados
-mapa$plot                       # Muestra el mapa creado con los filtros aplicados
+- ***Mapa de las colecciones de invertebrados publicadoras***
+
+``` r
+crear_mapa_simple(tipo_coleccion = "coleccion",
+                          subdisciplina = "Invertebrados", 
+                          publican = TRUE)$plot
 ```
 
-👉 Consulta el artículo [Creación de mapas de colecciones con
-metagesToolkit](https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html)
+![](articles/figures/mapa-colecciones-inv-pub.png)
+
+- ***Mapa de las bases de datos publicadoras faceteado por disciplina***
+
+``` r
+crear_mapa_simple(tipo_coleccion = "base de datos",
+                          facet = "disciplina_def",
+                          publican = TRUE)$plot                       
+```
+
+![](articles/figures/mapa-facet-bd-disciplina-pub.png)
 
 ------------------------------------------------------------------------
 
@@ -201,26 +208,35 @@ informe.
 
 # Package index
 
-## All functions
+## Conectar a MetaGES y extraer datos
 
 - [`conectar_metages()`](https://gbifes.github.io/metages-toolkit/reference/conectar_metages.md)
   : Conectar con la base de datos METAGES
+- [`extraer_colecciones_mapa()`](https://gbifes.github.io/metages-toolkit/reference/extraer_colecciones_mapa.md)
+  : Extraer colecciones desde METAGES para mapas
+
+## Crear mapas
+
 - [`crear_mapa()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa.md)
   : Crear mapa de colecciones METAGES
 - [`crear_mapa_simple()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa_simple.md)
   : Mapa METAGES (version simple para uso)
-- [`extraer_colecciones_mapa()`](https://gbifes.github.io/metages-toolkit/reference/extraer_colecciones_mapa.md)
-  : Extraer colecciones desde METAGES para mapas
 - [`get_basemap_es()`](https://gbifes.github.io/metages-toolkit/reference/get_basemap_es.md)
   : Obtener basemap de España (con Canarias desplazadas)
+
+## Crear y modificar Informe
+
+- [`render_informe()`](https://gbifes.github.io/metages-toolkit/reference/render_informe.md)
+  : Renderiza el informe METAGES
+- [`insertar_tabla_colecciones()`](https://gbifes.github.io/metages-toolkit/reference/insertar_tabla_colecciones.md)
+  : Inserta la tabla de colecciones en el informe Word
+
+## Extraer datos externos a MetaGES
+
 - [`get_top10_countries_rgbif()`](https://gbifes.github.io/metages-toolkit/reference/get_top10_countries_rgbif.md)
   : Top 10 paises con mayor numero de registros en GBIF
 - [`get_top_publishing_countries_gbif()`](https://gbifes.github.io/metages-toolkit/reference/get_top_publishing_countries_gbif.md)
   : Top paises publicadores de datos en GBIF
-- [`insertar_tabla_colecciones()`](https://gbifes.github.io/metages-toolkit/reference/insertar_tabla_colecciones.md)
-  : Inserta la tabla de colecciones en el informe Word
-- [`render_informe()`](https://gbifes.github.io/metages-toolkit/reference/render_informe.md)
-  : Renderiza el informe METAGES
 
 # Articles
 

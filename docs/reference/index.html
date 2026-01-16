@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">metagesToolkit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -15,11 +15,15 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
+      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Funciones</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-art-culos" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Artículos</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-art-culos"><li><a class="dropdown-item" href="../articles/crear-mapas.html">Mapas y visualización</a></li>
+  </ul></li>
 <li class="nav-item"><a class="nav-link" href="../pkgnet-report.html">Arquitectura</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/GBIFes/metages-toolkit"><span class="fa fa-github"></span></a></li>
       </ul></div>
 
 
@@ -32,7 +36,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="conectar-a-metages-y-extraer-datos">Conectar a MetaGES y extraer datos<a class="anchor" aria-label="anchor" href="#conectar-a-metages-y-extraer-datos"></a></h2>
 
 
 
@@ -50,6 +54,22 @@
 
         <dt>
 
+          <code><a href="extraer_colecciones_mapa.html">extraer_colecciones_mapa()</a></code>
+
+        </dt>
+        <dd>Extraer colecciones desde METAGES para mapas</dd>
+      </dl></div><div class="section level2">
+      <h2 id="crear-mapas">Crear mapas<a class="anchor" aria-label="anchor" href="#crear-mapas"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
           <code><a href="crear_mapa.html">crear_mapa()</a></code>
 
         </dt>
@@ -64,19 +84,44 @@
 
         <dt>
 
-          <code><a href="extraer_colecciones_mapa.html">extraer_colecciones_mapa()</a></code>
-
-        </dt>
-        <dd>Extraer colecciones desde METAGES para mapas</dd>
-
-        <dt>
-
           <code><a href="get_basemap_es.html">get_basemap_es()</a></code>
 
         </dt>
         <dd>Obtener basemap de España (con Canarias desplazadas)</dd>
+      </dl></div><div class="section level2">
+      <h2 id="crear-y-modificar-informe">Crear y modificar Informe<a class="anchor" aria-label="anchor" href="#crear-y-modificar-informe"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="render_informe.html">render_informe()</a></code>
+
+        </dt>
+        <dd>Renderiza el informe METAGES</dd>
 
         <dt>
+
+          <code><a href="insertar_tabla_colecciones.html">insertar_tabla_colecciones()</a></code>
+
+        </dt>
+        <dd>Inserta la tabla de colecciones en el informe Word</dd>
+      </dl></div><div class="section level2">
+      <h2 id="extraer-datos-externos-a-metages">Extraer datos externos a MetaGES<a class="anchor" aria-label="anchor" href="#extraer-datos-externos-a-metages"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="get_top10_countries_rgbif.html">get_top10_countries_rgbif()</a></code>
 
@@ -89,26 +134,13 @@
 
         </dt>
         <dd>Top paises publicadores de datos en GBIF</dd>
-
-        <dt>
-
-          <code><a href="insertar_tabla_colecciones.html">insertar_tabla_colecciones()</a></code>
-
-        </dt>
-        <dd>Inserta la tabla de colecciones en el informe Word</dd>
-
-        <dt>
-
-          <code><a href="render_informe.html">render_informe()</a></code>
-
-        </dt>
-        <dd>Renderiza el informe METAGES</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Ruben Perez Perez, GBIF ES.</p>
+  <p>Developed by <a href="https://github.com/rubenpp7" class="external-link">Ruben Perez Perez</a>, <a href="https://gbif.es/" class="external-link">GBIF ES</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

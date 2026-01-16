@@ -7,6 +7,15 @@ función
 [`crear_mapa_simple()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa_simple.md)
 del paquete **metagesToolkit**.
 
+``` r
+# Función para la exploración y visualización de datos de colecciones y bases de datos.
+mapa <- crear_mapa_simple()     # Genera una lista de R con 2 elementos
+
+# Output
+mapa$data_map                   # Muestra el data frame creado con los filtros aplicados
+mapa$plot                       # Muestra el mapa creado con los filtros aplicados
+```
+
 El objetivo es ilustrar cómo se pueden visualizar colecciones biológicas
 y bases de datos de biodiversidad en España mediante distintos
 parámetros de la función, sin entrar en detalles de edición cartográfica
@@ -15,8 +24,7 @@ avanzada.
 ## Datos de ejemplo
 
 Para los ejemplos se utilizan datos extraídos del Registro de
-colecciones mediante la función
-[`extraer_colecciones_mapa()`](https://gbifes.github.io/metages-toolkit/reference/extraer_colecciones_mapa.md).
+colecciones mediante la función `extraer_colecciones_mapa()$data`.
 
 ## Mapa básico
 

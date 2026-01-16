@@ -270,7 +270,14 @@ Actualmente hay contabilizadas ~~474 colecciones biológicas y bases de datos
 pertenecientes a 229 entidades~~. Desde 2004, que se tienen datos en el Registro, ha habido un aumento anual constante, tal como refleja la ~~gráfica 3.3.a.~~, donde se indican los totales y el número de nuevas incorporaciones por año. ~~En los últimos cinco años (periodo 2015-2019),~~ desde el anterior informe, se han incrementado en ~~64 el número de~~ colecciones y bases de datos.
 
 GRAFICA AQUI
-TABLA AQUI
+```{r}
+proporcion_col_base <- readRDS("data/vistas_sql/proporcion_col_base.rds")
+
+ft_tbl(
+  proporcion_col_base,
+  caption = "Tabla 3.3.b. Número y porcentaje de colecciones biológicas (físicas) y bases de datos (digitales) registradas."
+)
+```
 GRAFICA AQUI
 PIE CHART AQUI
 
@@ -300,8 +307,7 @@ profesionales o no.
 ~~La mayor parte de las colecciones y bases de datos proceden del ámbito académico,
 mientras que por número de registros son las administraciones públicas y las de ciencia ciudadana los sectores que más aportan. Es de destacar que desde mediados de 2019 se incorpora el sector privado al ámbito de GBIF, con la cementera LafargeHolcim España, que publicó un primer juego de datos en 2019. Se abre así una nueva entrada de datos, que por volumen y foco (estudios de impacto ambiental, restauración de paisaje), puede completar y complementar el mundo de los datos de biodiversidad de manera relevante.~~
 
-Como las entidades y colecciones pueden asignarse a más de un sector, la distribución
-de datos entre ellas se ve más claramente a nivel de recursos en línea y registros publicados. El desglose de estos datos por sectores se ve en la ~~tabla 3.3.1.c. y en las gráficas 3.3.1.d. y 3.3.1.e.~~
+Como las entidades y colecciones pueden asignarse a más de un sector, la distribución de datos entre ellas se ve más claramente a nivel de recursos en línea y registros publicados. El desglose de estos datos por sectores se ve en la ~~tabla 3.3.1.c. y en las gráficas 3.3.1.d. y 3.3.1.e.~~
 
 TABLA AQUI
 GRAFICA AQUI
@@ -437,7 +443,7 @@ La colección ~~botánica Herbario de Plantas Vasculares (MA) es la que más reg
 publica, con 761.311, seguida de la zoológica de Invertebrados de agua dulce del Museo de Zoología de la Universidad de Navarra, con 266.400, y de la colección de Vertebrados del Museo de Zoología de la Universidad de Navarra, MZNA-Vert, con 231.365 registros. En los apartados 4.2. a 4.6. se revisan en detalle y por categorías (grupos taxonómicos/disciplinas) los datos de Las colecciones biológicas definidos en la tabla 3.1.2.a.~~
 
 ```{r}
-tabla_registros <- readRDS("data/vistas_sql/registros_por_disciplina.rds")
+tabla_registros <- readRDS("data/vistas_sql/registros_por_disciplina_col.rds")
 
 ft_tbl(
   tabla_registros,
@@ -456,7 +462,14 @@ MAPA AQUI
 
 Como se indica en el apartado ~~3.1.2.,~~ las colecciones zoológicas se dividen para su presentación de datos en invertebrados y vertebrados, más un tercer grupo (“Invertebrados y vertebrados”) para las colecciones que presentan los datos de los dos grupos anteriores de manera conjunta. La tabla ~~4.2.~~ desglosa los subtipos zoológicos, su proporción, el número de ejemplares que albergan y los registros publicados.
 
-TABLA AQUI
+```{r}
+tabla_sub_zoo <- readRDS("data/vistas_sql/colecciones_por_subdisciplina_zoologica.rds")
+
+ft_tbl(
+  tabla_sub_zoo,
+  caption = "Tabla 4.2. Colecciones zoológicas y su proporción según subtipos, con indicación del número de ejemplares y registros que publican."
+)
+```
 
 ### Estado de informatización de las colecciones zoológicas
 
@@ -539,7 +552,15 @@ GRAFICA AQUI
 
 Las colecciones botánicas se dividen en tres grupos o subtipos: Plantas, Algas y Hongos, tal como se refleja en la ~~tabla 3.1.2.a. La tabla 4.3.~~ muestra el desglose por subtipos botánicos y su proporción.
 
-TABLA AQUI
+```{r}
+tabla_sub_bot <- readRDS("data/vistas_sql/colecciones_por_subdisciplina_botanica.rds")
+
+ft_tbl(
+  tabla_sub_bot,
+  caption = "Tabla 4.3. Colecciones botánicas según subtipos y su proporción, con indicación del número de ejemplares que albergan y los registros que publican.
+"
+)
+```
 
 ### Estado de informatización de las colecciones botánicas
 
@@ -569,7 +590,7 @@ En los mapas ~~4.3.2.1.a. y 4.3.2.1.b.~~ se muestran las colecciones botánicas 
 
 De las grandes colecciones botánicas de plantas del Registro, ~~destaca la colección CSICReal Jardín Botánico-Colección de Plantas Vasculares (CSIC-RJB-MA-Phanero), con 875.000 pliegos de herbario. La siguiente es la colección Herbario BC, Instituto Botánico de Barcelona (BC), con 800.000 ejemplares, que alberga tanto fanerógamas como criptógamas. En tercer lugar, está la colección del Herbario de la Universidad de Barcelona (BCN), del Centro de Documentación de Biodiversidad Vegetal - CeDocBIV, con 402.000 ejemplares de todos los grupos botánicos. La gráfica 4.3.2.2.~~ muestra las 10 colecciones botánicas que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-TABLA AQUI
+GRAFICA AQUI
 
 ### Colecciones de algas
 
@@ -589,7 +610,7 @@ En los mapas ~~4.3.3.1.a. y 4.3.3.1.b.~~ se muestran las colecciones botánicas 
 
 De las grandes colecciones botánicas de algas del Registro, ~~destaca la colección Herbario TFC, Universidad de La Laguna: algas, con 15.200 ejemplares, seguida de la colección del Herbario de la Universidad de Girona - sección algas, con más de 13.000, y de la colección CSIC Real Jardín Botánico-Herbario de Criptogamia: algas, con 10.000 ejemplares. La gráfica 4.3.3.2.~~ muestra las 10 colecciones botánicas de algas que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-TABLA AQUI
+GRAFICA AQUI
 
 
 ### Colecciones de hongos
@@ -624,8 +645,7 @@ GRAFICA AQUI
 Actualmente hay dadas de alta en el Registro del Nodo Nacional de Información en
 Biodiversidad ~~7 colecciones microbiológicas de 6~~ entidades distintas. ~~Las 4 colecciones que publican datos son Diatomeas de Lagos Pirenaicos (CEAB-LOOP-DIATOMS) y Fitoplancton de lagos pirenaicos (CEAB-LOOP-PHYTOPLANKTON), del Centre d'Estudis Avançats de Blanes – CSIC, el Herbario LEB “Jaime Andrés Rodríguez”: LEB-Diatomea, de la Universidad de León, y la Colección Española de Cultivos Tipo (CECT), de la institución homónima.~~
 
-La ~~tabla 4.4.1.a.~~ muestra el porcentaje de informatización de los ejemplares que
-albergan y su proporción.
+La ~~tabla 4.4.1.a.~~ muestra el porcentaje de informatización de los ejemplares que albergan y su proporción.
 
 TABLA AQUI
 

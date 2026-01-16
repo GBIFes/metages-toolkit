@@ -71,7 +71,7 @@ y se cargarán automáticamente al iniciar una sesión de R:
 * `UID`
 * `gbif_wp_pass`
 
-[Instrucciones para editar y guardar credenciales](https://github.com/GBIFes/metages-toolkit/blob/main/inst/scripts/actualizar_Renviron.R)
+**[Instrucciones para editar y guardar credenciales](https://github.com/GBIFes/metages-toolkit/blob/main/inst/scripts/actualizar_Renviron.R)**
 
 
 *** 
@@ -100,20 +100,23 @@ Genera un mapa a partir de los datos procesados.
 Permite filtrar por `tipo_coleccion`, `disciplina`, `subdisciplina` y si `publican` en GBIF o no.
 Además, permite hacer un `facet` con cualquier columna de la tabla de datos. 
 
+👉 **Consulta el artículo [Creación de mapas de colecciones con metagesToolkit](https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html)**
+
+- _**Mapa de las colecciones de invertebrados publicadoras**_
 ```r
-# Función independiente para exploración y visualización de datos de colecciones.
-mapa <- crear_mapa_simple()     # Genera una lista de R con 2 elementos
-mapa <- crear_mapa_simple(disciplina = "Zoo", 
-                          publican = TRUE)
-mapa <- crear_mapa_simple(tipo_coleccion = "coleccion",
-                          facet = "disciplina_def")                          
-
-# Output
-mapa$data_map                   # Muestra el data frame creado con los filtros aplicados
-mapa$plot                       # Muestra el mapa creado con los filtros aplicados
+crear_mapa_simple(tipo_coleccion = "coleccion",
+                          subdisciplina = "Invertebrados", 
+                          publican = TRUE)$plot
 ```
-👉 Consulta el artículo [Creación de mapas de colecciones con metagesToolkit](https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html)
+![](vignettes/figures/mapa-colecciones-inv-pub.png)
 
+- _**Mapa de las bases de datos publicadoras faceteado por disciplina**_
+```r
+crear_mapa_simple(tipo_coleccion = "base de datos",
+                          facet = "disciplina_def",
+                          publican = TRUE)$plot                       
+```
+![](vignettes/figures/mapa-facet-bd-disciplina-pub.png)
 
 
 ***

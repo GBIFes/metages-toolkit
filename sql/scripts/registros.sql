@@ -9,10 +9,10 @@
 -- 
 -- ===================================================================
 
--- CREATE OR REPLACE VIEW registros AS
+ CREATE OR REPLACE VIEW registros AS
 
 
-    SELECT mr.recurso_id, mr.body_fk, mr.numberOfRecords, 
+    SELECT mr.recurso_id, mr.body_fk, c.tipo_body, mr.numberOfRecords, 
     	   mr.url_ipt, mr.title, mtd.descripcion_dataset AS disciplina_def,
     	   ml.licencia, mr.publica_en_gbif,
            YEAR(COALESCE(mr.updated_when, mr.created_when)) AS ultima_actualizacion
@@ -21,6 +21,8 @@
 	ON mr.tipo_dataset = CAST(mtd.tipo_dataset_id AS CHAR) OR mr.tipo_dataset = mtd.tipo_dataset 
 	LEFT JOIN metages_licencia ml 
 	ON mr.licence = ml.licencia_id 
+	LEFT JOIN colecciones c  
+	ON mr.body_fk = c.body_id 
 	WHERE mr.tipo_dataset <> '' 
 	AND mr.numberOfRecords <> 0 -- Quita checklists, metadata only y errores
 	AND mr.private = 0

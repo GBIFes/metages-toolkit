@@ -13,6 +13,15 @@ vignette: >
 Esta vignette muestra distintos ejemplos de mapas generados con la función
 `crear_mapa_simple()` del paquete **metagesToolkit**.
 
+```r
+# Función para la exploración y visualización de datos de colecciones y bases de datos.
+mapa <- crear_mapa_simple()     # Genera una lista de R con 2 elementos
+
+# Output
+mapa$data_map                   # Muestra el data frame creado con los filtros aplicados
+mapa$plot                       # Muestra el mapa creado con los filtros aplicados
+```
+
 El objetivo es ilustrar cómo se pueden visualizar colecciones biológicas
 y bases de datos de biodiversidad en España mediante distintos parámetros
 de la función, sin entrar en detalles de edición cartográfica avanzada.
@@ -20,8 +29,34 @@ de la función, sin entrar en detalles de edición cartográfica avanzada.
 ## Datos de ejemplo
 
 Para los ejemplos se utilizan datos extraídos del Registro de colecciones
-mediante la función `extraer_colecciones_mapa()`.
+mediante la función `extraer_colecciones_mapa()$data`.
 
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(DT)
+
+dt <- readRDS("../inst/reports/data/mapas/mapa-total.rds")
+
+cols_ocultar <- c("body_id", "url_institucion", "coleccion_url", "disciplina_id",
+                  "condiciones_col", "longitude_adj", "latitude_adj")
+
+datatable(
+  dt,
+  options = list(
+    pageLength = 5,
+    lengthMenu = c(5, 10, 25, 50),
+    scrollX = TRUE,
+    autoWidth = FALSE,
+    columnDefs = list(
+      list(
+        visible = FALSE,
+        targets = which(names(dt) %in% cols_ocultar)
+      )
+    )
+  ),
+  width = "100%"
+)
+
+```
 
 ## Mapa básico
 

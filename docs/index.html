@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Herramientas internas para METAGES">
-<meta name="description" content="Herramientas internas para la gestion del sistema de datos de colecciones biologicas METAGES (GBIF.ES): lectura, analisis y actualizacion de datos, elaboracion de informes y controles de calidad.">
-<meta property="og:description" content="Herramientas internas para la gestion del sistema de datos de colecciones biologicas METAGES (GBIF.ES): lectura, analisis y actualizacion de datos, elaboracion de informes y controles de calidad.">
+<meta name="description" content="Herramientas internas para la gestion del sistema de datos de colecciones biologicas MetaGES (GBIF.ES): lectura, analisis y actualizacion de datos, elaboracion de informes y controles de calidad.">
+<meta property="og:description" content="Herramientas internas para la gestion del sistema de datos de colecciones biologicas MetaGES (GBIF.ES): lectura, analisis y actualizacion de datos, elaboracion de informes y controles de calidad.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">metagesToolkit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.11</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,14 +31,20 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="articles/index.html">Articles</a></li>
+<li class="nav-item"><a class="nav-link" href="reference/index.html">Funciones</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-art-culos" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Artículos</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-art-culos">
+<li><a class="dropdown-item" href="articles/crear-mapas.html">Mapas y visualización</a></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="pkgnet-report.html">Arquitectura</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/GBIFes/metages-toolkit"><span class="fa fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -109,7 +115,7 @@
 <li><code>UID</code></li>
 <li><code>gbif_wp_pass</code></li>
 </ul>
-<p><a href="https://github.com/GBIFes/metages-toolkit/blob/main/inst/scripts/actualizar_Renviron.R" class="external-link">Instrucciones para editar y guardar credenciales</a></p>
+<p><strong><a href="https://github.com/GBIFes/metages-toolkit/blob/main/inst/scripts/actualizar_Renviron.R" class="external-link">Instrucciones para editar y guardar credenciales</a></strong></p>
 <hr>
 </div>
 <div class="section level3">
@@ -132,18 +138,23 @@ El informe contiene información detallada sobre el contenido de la base de dato
 </h3>
 <p>Genera un mapa a partir de los datos procesados.<br>
 Permite filtrar por <code>tipo_coleccion</code>, <code>disciplina</code>, <code>subdisciplina</code> y si <code>publican</code> en GBIF o no. Además, permite hacer un <code>facet</code> con cualquier columna de la tabla de datos.</p>
+<p>👉 <strong>Consulta el artículo <a href="https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html">Creación de mapas de colecciones con metagesToolkit</a></strong></p>
+<ul>
+<li><em><strong>Mapa de las colecciones de invertebrados publicadoras</strong></em></li>
+</ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Función independiente para exploración y visualización de datos de colecciones.</span></span>
-<span><span class="va">mapa</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/crear_mapa_simple.html">crear_mapa_simple</a></span><span class="op">(</span><span class="op">)</span>     <span class="co"># Genera una lista de R con 2 elementos</span></span>
-<span><span class="va">mapa</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/crear_mapa_simple.html">crear_mapa_simple</a></span><span class="op">(</span>disciplina <span class="op">=</span> <span class="st">"Zoo"</span>, </span>
-<span>                          publican <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">mapa</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/crear_mapa_simple.html">crear_mapa_simple</a></span><span class="op">(</span>tipo_coleccion <span class="op">=</span> <span class="st">"coleccion"</span>,</span>
-<span>                          facet <span class="op">=</span> <span class="st">"disciplina_def"</span><span class="op">)</span>                          </span>
-<span></span>
-<span><span class="co"># Output</span></span>
-<span><span class="va">mapa</span><span class="op">$</span><span class="va">data_map</span>                   <span class="co"># Muestra el data frame creado con los filtros aplicados</span></span>
-<span><span class="va">mapa</span><span class="op">$</span><span class="va">plot</span>                       <span class="co"># Muestra el mapa creado con los filtros aplicados</span></span></code></pre></div>
-<p>👉 Consulta el artículo <a href="https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html">Creación de mapas de colecciones con metagesToolkit</a></p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/crear_mapa_simple.html">crear_mapa_simple</a></span><span class="op">(</span>tipo_coleccion <span class="op">=</span> <span class="st">"coleccion"</span>,</span>
+<span>                          subdisciplina <span class="op">=</span> <span class="st">"Invertebrados"</span>, </span>
+<span>                          publican <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
+<p><img src="articles/figures/mapa-colecciones-inv-pub.png"></p>
+<ul>
+<li><em><strong>Mapa de las bases de datos publicadoras faceteado por disciplina</strong></em></li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/crear_mapa_simple.html">crear_mapa_simple</a></span><span class="op">(</span>tipo_coleccion <span class="op">=</span> <span class="st">"base de datos"</span>,</span>
+<span>                          facet <span class="op">=</span> <span class="st">"disciplina_def"</span>,</span>
+<span>                          publican <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">plot</span>                       </span></code></pre></div>
+<p><img src="articles/figures/mapa-facet-bd-disciplina-pub.png"></p>
 <hr>
 </div>
 </div>
@@ -235,8 +246,10 @@ Permite filtrar por <code>tipo_coleccion</code>, <code>disciplina</code>, <code>
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Ruben Perez Perez <br><small class="roles"> Author, maintainer </small>   </li>
-<li>GBIF ES <br><small class="roles"> Funder </small>   </li>
+<li>
+<a href="https://github.com/rubenpp7" class="external-link">Ruben Perez Perez</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-0974-3401" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>
+<a href="https://gbif.es/" class="external-link">GBIF ES</a> <br><small class="roles"> Funder </small>   </li>
 <li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
@@ -255,7 +268,7 @@ Permite filtrar por <code>tipo_coleccion</code>, <code>disciplina</code>, <code>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Ruben Perez Perez, GBIF ES.</p>
+  <p>Developed by <a href="https://github.com/rubenpp7" class="external-link">Ruben Perez Perez</a>, <a href="https://gbif.es/" class="external-link">GBIF ES</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

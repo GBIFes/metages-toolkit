@@ -92,7 +92,11 @@ vistas_sql <- list(
   colecciones_per_anno        = "SELECT * FROM colecciones_per_anno",
   colecciones_per_publican    = "SELECT * FROM colecciones_per_estado_publicacion",
   colecciones_por_disciplina  = "SELECT * FROM colecciones_por_disciplina",
-  registros_por_disciplina    = "SELECT * FROM registros_por_disciplina"
+  colecciones_por_subdisciplina_botanica  = "SELECT * FROM colecciones_por_subdisciplina_botanica",
+  colecciones_por_subdisciplina_zoologica  = "SELECT * FROM colecciones_por_subdisciplina_zoologica",
+  registros_por_disciplina    = "SELECT * FROM registros_por_disciplina",
+  registros_por_disciplina_col    = "SELECT * FROM registros_por_disciplina_col",
+  registros_por_disciplina_bd    = "SELECT * FROM registros_por_disciplina_bd"
 )
 
 for (nombre in names(vistas_sql)) {
@@ -113,6 +117,35 @@ for (nombre in names(vistas_sql)) {
 message(" - Generando tablas derivadas de vistas SQL")
 
 df <- readRDS("inst/reports/data/vistas_sql/colecciones.rds")
+
+
+# Proporcion de tipos de colecciones segun el tipo de evidencia tras los registros
+df %>%
+  mutate(
+    tipo_body = recode(
+      tipo_body,
+      "coleccion" = "Colecciones biológicas",
+      "base_datos" = "Bases de datos"
+    )
+  ) %>%
+  count(`2º nivel: colección / base de datos` = tipo_body) %>%
+  mutate(
+    Porcentaje = n / sum(n) * 100
+  ) %>%
+  mutate(
+    Porcentaje = sprintf("%.2f %%", Porcentaje)
+  )  %>%
+  bind_rows(
+    tibble(
+      `2º nivel: colección / base de datos` = "TOTAL",
+      n = sum(.$n),
+      Porcentaje = "100 %"
+    )
+  ) %>%
+  rename(`Nº colecciones` = n) %>%
+  saveRDS(file = fs::path(dir_data_sql, "proporcion_col_base.rds"))
+
+
 
 
 # Estado de conservación de las colecciones
@@ -214,6 +247,12 @@ df %>% filter(tipo_body == "coleccion") %>%
 #   saveRDS(file = fs::path(dir_data_sql, "acceso_informatizado.rds"))
 
 
+
+
+
+
+
+
 # ------------------------------------------------------------
 # 2. Preparar carpeta de salida para mapas
 # ------------------------------------------------------------
@@ -255,8 +294,11 @@ save_map(
   filename = "mapa-total.png"
 )
 
+# Extraer datos de extraer_colecciones_mapa en lugar de desde crear_mapa_simple
+# porque crear_mapa_simple tiene filtros propios relacionados con la `variable activa`
+# y no muestra todos los registros. Con extraer_colecciones_mapa se muestran todos.
 saveRDS(
-  res_total$data_map,
+  extraer_colecciones_mapa()$data,
   file = fs::path(dir_data_maps, "mapa-total.rds")
 )
 
