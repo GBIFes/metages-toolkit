@@ -313,8 +313,7 @@ TABLA AQUI
 GRAFICA AQUI
 GRAFICA AQUI
 
-Por último, examinamos los datos publicados en GBIF por parte de entidades españolas
-desde el punto de vista del tipo de registro de los juegos de datos. En la red de GBIF —de la mano de la especificación “Darwin Core Archive”— se reconocen cuatro tipos:
+Por último, examinamos los datos publicados en GBIF por parte de entidades españolas desde el punto de vista del tipo de registro de los juegos de datos. En la red de GBIF —de la mano de la especificación “Darwin Core Archive”— se reconocen cuatro tipos:
 
 - **Registros de presencia** (en inglés “occurrences”). Cada registro contiene
 información sobre la presencia (o ausencia) de una especie en un lugar y en un período de tiempo determinados. Los registros correspondientes a ejemplares de colecciones biológicas (físicas) son un ejemplo de este caso. Observaciones ocasionales hechas por ciudadanos de una planta en el campo, también.
@@ -475,12 +474,27 @@ ft_tbl(
 
 Se recopila en esta sección la informatización para el conjunto ~~de las 136 colecciones zoológicas de las que 55 publican datos en GBIF~~, y también se desglosan en las tres subcategorías. La tabla 4.2.1.a. muestra el porcentaje de informatización de los ejemplares que albergan y su proporción.
 
-TABLA AQUI
+```{r}
+tabla_inform_zoo <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_zoo.rds") %>% 
+                    select(-total_ejemplares)
+
+ft_tbl(
+  tabla_inform_zoo,
+  caption = "Tabla 4.2.1.a. Número de colecciones zoológicas por subtipos en relación al estado de informatización desus ejemplares."
+)
+```
 
 En relación al software o sistema de informatización y gestión de las colecciones, la
 nueva aplicación Elysia se está usando en algunas colecciones zoológicas en sustitución de la herramienta Zoorbar. ~~La tabla 4.2.1.b. muestra las colecciones zoológicas en relación a los softwares~~ utilizados para la informatización de sus ejemplares.
 
-TABLA AQUI
+```{r}
+tabla_soft_zoo <- readRDS("data/vistas_sql/colecciones_uso_software_zoo.rds")
+
+ft_tbl(
+  tabla_soft_zoo,
+  caption = "Tabla 4.2.1.b. Número de colecciones zoológicas españolas en relación a los softwares de informatización. * Incluye Access, Excel y otros sistemas que no especificaron los proveedores."
+)
+```
 
 ### Colecciones zoológicas: invertebrados
 
@@ -566,12 +580,27 @@ ft_tbl(
 
 Se detalla la informatización para el conjunto de las ~~148 colecciones botánicas, de las que 79 publican datos en GBIF, y también se desglosan en las tres subcategorías diferenciadas para este grupo. La tabla 4.3.1.a.~~ muestra el porcentaje de informatización de los ejemplares que albergan y su proporción. Nótese que el nº de registros publicados es mayor que el de informatizados. Este desfase de debe a una desactualización en la información proporcionada para el Registro.
 
-TABLA AQUI
+```{r}
+tabla_inform_bot <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_bot.rds") %>% 
+                    select(-total_ejemplares)
+
+ft_tbl(
+  tabla_inform_bot,
+  caption = "Tabla 4.3.1.a. Número de colecciones botánicas por subtipos en relación al estado de informatización de sus ejemplares"
+)
+```
 
 En relación al software o sistema de informatización y gestión de las colecciones, la
 nueva aplicación Elysia se está usando en algunas colecciones botánicas en sustitución de la herramienta Herbar. ~~La tabla 4.3.1.b.~~ muestra las colecciones botánicas en relación a los softwares utilizados para la informatización de sus ejemplares.
 
-TABLA AQUI
+```{r}
+tabla_soft_bot <- readRDS("data/vistas_sql/colecciones_uso_software_bot.rds")
+
+ft_tbl(
+  tabla_soft_bot,
+  caption = "Tabla 4.3.1.b. Número de colecciones botánicas españolas en relación a los softwares de informatización."
+)
+```
 
 
 ### Colecciones de plantas
@@ -647,12 +676,28 @@ Biodiversidad ~~7 colecciones microbiológicas de 6~~ entidades distintas. ~~Las
 
 La ~~tabla 4.4.1.a.~~ muestra el porcentaje de informatización de los ejemplares que albergan y su proporción.
 
-TABLA AQUI
+```{r}
+tabla_inform_micro <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_micro.rds")
+
+ft_tbl(
+  tabla_inform_micro,
+  caption = "Tabla 4.4.1.a. Número de colecciones microbiológicas españolas en relación a la informatización de sus ejemplares.
+"
+)
+```
 
 La ~~tabla 4.4.1.b.~~ muestra las colecciones microbiológicas en relación a los softwares
 utilizados para la informatización de sus ejemplares.
 
-TABLA AQUI
+```{r}
+tabla_soft_micro <- readRDS("data/vistas_sql/colecciones_uso_software_micro.rds")
+
+ft_tbl(
+  tabla_soft_micro,
+  caption = "Tabla 4.4.1.b. Número de colecciones microbiológicas españolas en relación a softwares de informatización.
+"
+)
+```
 
 En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades, y en la ~~gráfica 4.4.1.d. se muestran las 7 colecciones microbiológicas ordenadas por nº de ejemplares~~. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
@@ -675,12 +720,26 @@ Biodiversidad ~~44 colecciones paleontológicas de 32 entidades distintas, todas
 
 Se hace detalla la informatización para el conjunto de las ~~44 colecciones paleontológicas. La tabla 4.5.1.a.~~ muestra el porcentaje de informatización de los ejemplares que albergan y su proporción.
 
-TABLA AQUI
+```{r}
+tabla_inform_paleo <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_paleo.rds")
+
+ft_tbl(
+  tabla_inform_paleo,
+  caption = "Tabla 4.5.1.a. Número de colecciones paleontológicas en relación al estado de informatización de sus ejemplares."
+)
+```
 
 La ~~tabla 4.5.1.b.~~ muestra las colecciones paleontológicas en relación a los softwares
 utilizados para la informatización de sus ejemplares.
 
-TABLA AQUI
+```{r}
+tabla_soft_paleo <- readRDS("data/vistas_sql/colecciones_uso_software_paleo.rds")
+
+ft_tbl(
+  tabla_soft_paleo,
+  caption = "Tabla 4.5.1.b. Número de colecciones paleontológicas españolas en relación a los softwares de informatización."
+)
+```
 
 En la ~~gráfica 4.5.1.c.~~ se muestran las 10 colecciones paleontológicas que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
@@ -704,11 +763,25 @@ Biodiversidad ~~12 colecciones biológicas de 10 entidades distintas catalogadas
 La ~~tabla 4.6.1.a.~~ muestra el porcentaje de informatización de los ejemplares que
 albergan y su proporción.
 
-TABLA AQUI
+```{r}
+tabla_inform_mixta <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_mixta.rds")
+
+ft_tbl(
+  tabla_inform_mixta,
+  caption = "Tabla 4.6.1.a. Número de colecciones mixtas en relación al estado de informatización de sus ejemplares."
+)
+```
 
 La ~~tabla 4.6.1.b.~~ muestra las colecciones mixtas en relación a los softwares utilizados para la informatización de sus ejemplares.
 
-TABLA AQUI
+```{r}
+tabla_soft_mixta <- readRDS("data/vistas_sql/colecciones_uso_software_mixta.rds")
+
+ft_tbl(
+  tabla_soft_mixta,
+  caption = "Tabla 4.6.1.a. Número de colecciones mixtas en relación al estado de informatización de sus ejemplares."
+)
+```
 
 La ~~gráfica 4.6.1.c.~~ muestra las 10 colecciones mixtas que más ejemplares albergan
 ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.

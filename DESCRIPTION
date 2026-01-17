@@ -1,6 +1,6 @@
 Package: metagesToolkit
 Title: Herramientas internas para METAGES
-Version: 1.0.11
+Version: 1.0.12
 Authors@R: c(
     person("Ruben", 
             "Perez Perez", , 
@@ -47,6 +47,7 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
-    withr
+    withr,
+    DT
 Config/testthat/edition: 3
 VignetteBuilder: knitr

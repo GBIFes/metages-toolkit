@@ -108,7 +108,7 @@ crear_mapa_simple(tipo_coleccion = "coleccion",
                           subdisciplina = "Invertebrados", 
                           publican = TRUE)$plot
 ```
-![](vignettes/figures/mapa-colecciones-inv-pub.png)
+![](man/figures/mapa-colecciones-inv-pub.png)
 
 - _**Mapa de las bases de datos publicadoras faceteado por disciplina**_
 ```r
@@ -116,7 +116,7 @@ crear_mapa_simple(tipo_coleccion = "base de datos",
                           facet = "disciplina_def",
                           publican = TRUE)$plot                       
 ```
-![](vignettes/figures/mapa-facet-bd-disciplina-pub.png)
+![](man/figures/mapa-facet-bd-disciplina-pub.png)
 
 
 ***

@@ -122,7 +122,7 @@ crear_mapa_simple(tipo_coleccion = "coleccion",
                           publican = TRUE)$plot
 ```
 
-![](articles/figures/mapa-colecciones-inv-pub.png)
+![](reference/figures/mapa-colecciones-inv-pub.png)
 
 - ***Mapa de las bases de datos publicadoras faceteado por disciplina***
 
@@ -132,7 +132,7 @@ crear_mapa_simple(tipo_coleccion = "base de datos",
                           publican = TRUE)$plot                       
 ```
 
-![](articles/figures/mapa-facet-bd-disciplina-pub.png)
+![](reference/figures/mapa-facet-bd-disciplina-pub.png)
 
 ------------------------------------------------------------------------
 
