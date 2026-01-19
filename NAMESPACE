@@ -2,7 +2,9 @@
 
 export(compute_legend_params)
 export(conectar_metages)
+export(crear_barplot_top_colecciones_pub)
 export(crear_mapa)
+export(crear_mapa_entidades)
 export(crear_mapa_simple)
 export(extraer_colecciones_mapa)
 export(get_basemap_es)

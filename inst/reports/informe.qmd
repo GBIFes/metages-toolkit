@@ -264,6 +264,8 @@ Para las entidades que tienen colecciones de diferentes categorías se ha genera
 
 La distribución espacial de las entidades registradas que forman parte del Nodo Nacional de Información en Biodiversidad, queda reflejada en el ~~mapa 3.2.2.~~ Se observa dónde pueden localizarse las entidades que forman parte del Registro en España por CC.AA. Se destacan las que publican datos ~~(círculos de color azul)~~ y el ~~tamaño de los círculos es proporcional a la cantidad de registros publicados~~.
 
+![](assets/images/generated/mapa-entidades.png)
+
 ## SITUACIÓN GENERAL DE LAS COLECCIONES BIOLÓGICAS Y BASES DE DATOS: TOTAL DE REGISTROS, ACTUALIZACIONES E INCORPORACIONES
 
 Actualmente hay contabilizadas ~~474 colecciones biológicas y bases de datos
@@ -454,7 +456,7 @@ ft_tbl(
 
 El mapa ~~4.1.6. muestra la distribución de colecciones biológicas en el territorio español, tanto peninsular como insular. Destacan las CC.AA. de Andalucía, Madrid y Cataluña en cuanto a número de entidades que publican datos, mientras que en el otro extremo se encuentra, por ejemplo, Cantabria, con ninguna entidad publicadora de datos, o Castilla-La Mancha, Castilla y León y Extremadura, con un máximo de dos entidades publicadoras en cada CC.AA. En el caso de la Comunidad Valenciana, el elevado número de entidades presentes en el registro de colecciones contrasta con el número de las que publican datos (solo dos).~~
 
-MAPA AQUI
+![](assets/images/generated/mapa_col_pub.png)
 
 
 ## COLECCIONES ZOOLÓGICAS

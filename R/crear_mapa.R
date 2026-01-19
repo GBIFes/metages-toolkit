@@ -290,8 +290,18 @@ crear_mapa <- function(data = data,
   
   # ---------------- Facet opcional ----------------
   if (!is.null(facet)) {
-    plot <- plot +
-      facet_wrap(vars(.data[[facet]]))
+    if (facet == "publica_en_gbif") {
+      plot <- plot +
+        facet_wrap(
+          vars(.data[[facet]]),
+          labeller = as_labeller(
+            c(`0` = "No publica en GBIF", `1` = "Publica en GBIF")
+          )
+        )
+    } else {
+      plot <- plot +
+        facet_wrap(vars(.data[[facet]]))
+    }
   }
   
   

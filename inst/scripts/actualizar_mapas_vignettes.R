@@ -94,7 +94,7 @@ vistas_sql <- list(
   colecciones_informatizacion_ejemplares_micro = "SELECT * FROM colecciones_informatizacion_ejemplares_micro",
   colecciones_informatizacion_ejemplares_mixta = "SELECT * FROM colecciones_informatizacion_ejemplares_mixta",
   colecciones_informatizacion_ejemplares_paleo = "SELECT * FROM colecciones_informatizacion_ejemplares_paleo",
-   colecciones_per_anno        = "SELECT * FROM colecciones_per_anno",
+  colecciones_per_anno        = "SELECT * FROM colecciones_per_anno",
   colecciones_per_publican    = "SELECT * FROM colecciones_per_estado_publicacion",
   colecciones_por_disciplina  = "SELECT * FROM colecciones_por_disciplina",
   colecciones_por_subdisciplina_botanica  = "SELECT * FROM colecciones_por_subdisciplina_botanica",
@@ -294,7 +294,19 @@ save_map <- function(plot, filename, gg_opts = gg_opts_all) {
 
 
 # ------------------------------------------------------------
-# 3. Mapa total
+# 3.0 Mapa entidades
+# ------------------------------------------------------------
+message(" - Generando mapa total")
+mapa_entidades <- crear_mapa_entidades()
+
+save_map(
+  plot     = mapa_entidades,
+  filename = "mapa-entidades.png"
+)
+
+
+# ------------------------------------------------------------
+# 3.1 Mapa total
 # ------------------------------------------------------------
 message(" - Generando mapa total")
 res_total <- crear_mapa_simple()
@@ -310,6 +322,24 @@ save_map(
 saveRDS(
   extraer_colecciones_mapa()$data,
   file = fs::path(dir_data_maps, "mapa-total.rds")
+)
+
+
+# ------------------------------------------------------------
+# 3.1 Mapa colecciones segun publicacion en GBIF
+# ------------------------------------------------------------
+message(" - Generando mapa total")
+mapa_col_pub <- crear_mapa_entidades(
+  tipo_coleccion = "coleccion")
+
+save_map(
+  plot     = mapa_col_pub,
+  filename = "mapa_col_pub.png"
+)
+
+saveRDS(
+  mapa_col_pub$data_map,
+  file = fs::path(dir_data_maps, "mapa_col_pub.rds")
 )
 
 
