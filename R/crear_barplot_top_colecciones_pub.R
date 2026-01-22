@@ -14,17 +14,53 @@
 #' @export
 crear_barplot_top_colecciones_pub <- function(rds_path) {
   
-  df <- readRDS(rds_path) %>%
-    filter(publica_en_gbif == 1) %>%
-    head(10) %>%
-    transmute(collection_code = coalesce(collection_code, coleccion_base), 
-              numberOfRecords)
+  data <- readRDS(rds_path)
+  
+  # ---- caso 1: colecciones que publican en GBIF ----
+  df_pub <- data %>%
+    filter(
+      publica_en_gbif == 1,
+      !is.na(numberOfRecords),
+      numberOfRecords > 0
+    ) %>%
+    arrange(desc(numberOfRecords)) %>%
+    transmute(
+      collection_code = coalesce(collection_code, coleccion_base),
+      value = numberOfRecords
+    ) %>%
+    distinct()
+  
+  if (nrow(df_pub) >= 10) {
+    
+    df <- df_pub %>%
+      head(10)
+    
+    x_label <- "N\u00BA registros"
+    
+  } else {
+    
+    # ---- fallback: todas las colecciones por subunidades ----
+    df <- data %>%
+      filter(
+        !is.na(number_of_subunits),
+        number_of_subunits > 0
+      ) %>%
+      arrange(desc(number_of_subunits)) %>%
+      transmute(
+        collection_code = coalesce(collection_code, coleccion_base),
+        value = number_of_subunits
+      ) %>%
+      distinct() %>%
+      head(10)
+    
+    x_label <- "N\u00BA de ejemplares"
+  }
   
   plot <- ggplot(
     df,
     aes(
-      x = numberOfRecords,
-      y = reorder(collection_code, numberOfRecords)
+      x = value,
+      y = reorder(collection_code, value)
     )
   ) +
     geom_col(
@@ -36,14 +72,14 @@ crear_barplot_top_colecciones_pub <- function(rds_path) {
         label = scales::label_number(
           big.mark = ".",
           decimal.mark = ","
-        )(numberOfRecords)
+        )(value)
       ),
       hjust = -0.05,
       size = 3
     ) +
     labs(
-      x = "N\u00BA registros",
-      y = "C\u00F3digo de colecci\u00F3n"
+      x = x_label,
+      y = "C\u00F3digo de la colecci\u00F3n"
     ) +
     theme_minimal() +
     theme(
