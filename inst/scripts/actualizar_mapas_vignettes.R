@@ -293,6 +293,25 @@ save_map <- function(plot, filename, gg_opts = gg_opts_all) {
 }
 
 
+# Función auxiliar para guardar barplots
+save_plot <- function(plot, filename, width = 10) {
+  message("   * Guardando barplot ", filename)
+  
+  for (dir in c(dir_fig_maps_inst, dir_fig_maps_vign)) {
+    ggplot2::ggsave(
+      filename  = file.path(dir, filename),
+      plot      = plot,
+      width     = width,
+      height    = 6,
+      units     = "in",
+      dpi       = 300,
+      limitsize = FALSE
+    )
+  }
+}
+
+
+
 # ------------------------------------------------------------
 # 3.0 Mapa entidades
 # ------------------------------------------------------------
@@ -326,7 +345,7 @@ saveRDS(
 
 
 # ------------------------------------------------------------
-# 3.1 Mapa colecciones segun publicacion en GBIF
+# 3.2 Mapa colecciones segun publicacion en GBIF
 # ------------------------------------------------------------
 message(" - Generando mapa total")
 mapa_col_pub <- crear_mapa_entidades(
@@ -346,7 +365,7 @@ saveRDS(
 ##############################################################
 
 # ------------------------------------------------------------
-# 4. Mapa solo colecciones zoológicas
+# 4. Mapa colecciones zoológicas
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones zoológicas")
 res_colecciones <- crear_mapa_simple(
@@ -364,9 +383,14 @@ saveRDS(
   file = fs::path(dir_data_maps, "mapa-colecciones-zoo.rds")
 )
 
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-colecciones-zoo.rds")),
+          filename = "barplot-colecciones-zoo.png",
+          width = 12)
+
 
 # ------------------------------------------------------------
-# 5. Mapa solo colecciones zoológicas (publicadoras)
+# 5. Mapa colecciones zoológicas (publicadoras)
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones zoológicas publicadoras")
 res_colecciones <- crear_mapa_simple(
@@ -386,7 +410,7 @@ saveRDS(
 )
 
 # ------------------------------------------------------------
-# 6. Mapa solo colecciones de invertebrados
+# 6. Mapa colecciones de invertebrados
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones de invertebrados")
 res_colecciones <- crear_mapa_simple(
@@ -405,8 +429,13 @@ saveRDS(
 )
 
 
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-colecciones-inv.rds")),
+          filename = "barplot-colecciones-inv.png",
+          width = 12)
+
 # ------------------------------------------------------------
-# 7. Mapa solo colecciones de invertebrados (publicadoras)
+# 7. Mapa colecciones de invertebrados (publicadoras)
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones de invertebrados publicadoras")
 res_colecciones <- crear_mapa_simple(
@@ -427,7 +456,7 @@ saveRDS(
 
 
 # ------------------------------------------------------------
-# 8. Mapa solo colecciones de Vertebrados
+# 8. Mapa colecciones de Vertebrados
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones de Vertebrados")
 res_colecciones <- crear_mapa_simple(
@@ -437,17 +466,21 @@ res_colecciones <- crear_mapa_simple(
 
 save_map(
   plot     = res_colecciones$plot,
-  filename = "mapa-colecciones-zoo-vert.png"
+  filename = "mapa-colecciones-vert.png"
 )
 
 saveRDS(
   res_colecciones$data_map,
-  file = fs::path(dir_data_maps, "mapa-colecciones-zoo-vert.rds")
+  file = fs::path(dir_data_maps, "mapa-colecciones-vert.rds")
 )
 
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-colecciones-vert.rds")),
+          filename = "barplot-colecciones-vert.png",
+          width = 12)
 
 # ------------------------------------------------------------
-# 9. Mapa solo colecciones Vertebrados (publicadoras)
+# 9. Mapa colecciones Vertebrados (publicadoras)
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones Vertebrados publicadoras")
 res_colecciones <- crear_mapa_simple(
@@ -458,16 +491,16 @@ res_colecciones <- crear_mapa_simple(
 
 save_map(
   plot     = res_colecciones$plot,
-  filename = "mapa-colecciones-zoo-vert-pub.png"
+  filename = "mapa-colecciones-vert-pub.png"
 )
 
 saveRDS(
   res_colecciones$data_map,
-  file = fs::path(dir_data_maps, "mapa-colecciones-zoo-vert-pub.rds")
+  file = fs::path(dir_data_maps, "mapa-colecciones-vert-pub.rds")
 )
 
 # ------------------------------------------------------------
-# 10. Mapa solo colecciones de invertebrados y vertebrados
+# 10. Mapa colecciones de invertebrados y vertebrados
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones de invertebrados y vertebrados")
 res_colecciones <- crear_mapa_simple(
@@ -485,8 +518,13 @@ saveRDS(
   file = fs::path(dir_data_maps, "mapa-colecciones-invver.rds")
 )
 
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-colecciones-invver.rds")),
+          filename = "barplot-colecciones-invver.png",
+          width = 12)
+
 # ------------------------------------------------------------
-# 11. Mapa solo colecciones de invertebrados y vertebrados publicadoras
+# 11. Mapa colecciones de invertebrados y vertebrados publicadoras
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones de invertebrados y vertebrados publicadoras")
 res_colecciones <- crear_mapa_simple(
@@ -507,7 +545,7 @@ saveRDS(
 
 
 # ------------------------------------------------------------
-# 12. Mapa solo colecciones botanicas
+# 12. Mapa colecciones botanicas
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones botanicas")
 res_colecciones <- crear_mapa_simple(
@@ -525,9 +563,13 @@ saveRDS(
   file = fs::path(dir_data_maps, "mapa-colecciones-bot.rds")
 )
 
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-colecciones-bot.rds")),
+          filename = "barplot-colecciones-bot.png",
+          width = 12)
 
 # ------------------------------------------------------------
-# 13. Mapa solo colecciones botanicas (publicadoras)
+# 13. Mapa colecciones botanicas (publicadoras)
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones botanicas publicadoras")
 res_colecciones <- crear_mapa_simple(
@@ -548,7 +590,7 @@ saveRDS(
 
 
 # ------------------------------------------------------------
-# 14. Mapa solo colecciones de plantas
+# 14. Mapa colecciones de plantas
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones de plantas")
 res_colecciones <- crear_mapa_simple(
@@ -566,9 +608,14 @@ saveRDS(
   file = fs::path(dir_data_maps, "mapa-colecciones-pla.rds")
 )
 
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-colecciones-pla.rds")),
+          filename = "barplot-colecciones-pla.png",
+          width = 12)
+
 
 # ------------------------------------------------------------
-# 15. Mapa solo colecciones de plantas (publicadoras)
+# 15. Mapa colecciones de plantas (publicadoras)
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones de plantas publicadoras")
 res_colecciones <- crear_mapa_simple(
@@ -589,7 +636,7 @@ saveRDS(
 
 
 # ------------------------------------------------------------
-# 16. Mapa solo colecciones de Algas
+# 16. Mapa colecciones de Algas
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones de Algas")
 res_colecciones <- crear_mapa_simple(
@@ -607,9 +654,14 @@ saveRDS(
   file = fs::path(dir_data_maps, "mapa-colecciones-alg.rds")
 )
 
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-colecciones-alg.rds")),
+          filename = "barplot-colecciones-alg.png",
+          width = 12)
+
 
 # ------------------------------------------------------------
-# 17. Mapa solo colecciones Algas (publicadoras)
+# 17. Mapa colecciones Algas (publicadoras)
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones de Algas")
 res_colecciones <- crear_mapa_simple(
@@ -630,7 +682,7 @@ saveRDS(
 
 
 # ------------------------------------------------------------
-# 18. Mapa solo colecciones de hongos
+# 18. Mapa colecciones de hongos
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones de hongos")
 res_colecciones <- crear_mapa_simple(
@@ -648,8 +700,14 @@ saveRDS(
   file = fs::path(dir_data_maps, "mapa-colecciones-hong.rds")
 )
 
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-colecciones-hong.rds")),
+          filename = "barplot-colecciones-hong.png",
+          width = 12)
+
+
 # ------------------------------------------------------------
-# 19. Mapa solo colecciones de hongos publicadoras
+# 19. Mapa colecciones de hongos publicadoras
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones de hongos publicadoras")
 res_colecciones <- crear_mapa_simple(
@@ -670,7 +728,7 @@ saveRDS(
 
 
 # ------------------------------------------------------------
-# 20. Mapa solo colecciones microbiologicas
+# 20. Mapa colecciones microbiologicas
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones microbiologicas")
 res_colecciones <- crear_mapa_simple(
@@ -688,9 +746,14 @@ saveRDS(
   file = fs::path(dir_data_maps, "mapa-colecciones-micro.rds")
 )
 
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-colecciones-micro.rds")),
+          filename = "barplot-colecciones-micro.png",
+          width = 12)
+
 
 # ------------------------------------------------------------
-# 21. Mapa solo colecciones microbiologicas (publicadoras)
+# 21. Mapa colecciones microbiologicas (publicadoras)
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones microbiologicas publicadoras")
 res_colecciones <- crear_mapa_simple(
@@ -711,7 +774,7 @@ saveRDS(
 
 
 # ------------------------------------------------------------
-# 22. Mapa solo colecciones micologicas
+# 22. Mapa colecciones micologicas
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones micologicas")
 res_colecciones <- crear_mapa_simple(
@@ -729,9 +792,14 @@ saveRDS(
   file = fs::path(dir_data_maps, "mapa-colecciones-mico.rds")
 )
 
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-colecciones-mico.rds")),
+          filename = "barplot-colecciones-mico.png",
+          width = 12)
+
 
 # ------------------------------------------------------------
-# 23. Mapa solo colecciones micologicas (publicadoras)
+# 23. Mapa colecciones micologicas (publicadoras)
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones micologicas publicadoras")
 res_colecciones <- crear_mapa_simple(
@@ -751,7 +819,7 @@ saveRDS(
 )
 
 # ------------------------------------------------------------
-# 24. Mapa solo colecciones Paleontologicas
+# 24. Mapa colecciones Paleontologicas
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones Paleontologicas")
 res_colecciones <- crear_mapa_simple(
@@ -769,9 +837,14 @@ saveRDS(
   file = fs::path(dir_data_maps, "mapa-colecciones-pale.rds")
 )
 
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-colecciones-pale.rds")),
+          filename = "barplot-colecciones-pale.png",
+          width = 12)
+
 
 # ------------------------------------------------------------
-# 25. Mapa solo colecciones Paleontologicas (publicadoras)
+# 25. Mapa colecciones Paleontologicas (publicadoras)
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones Paleontologicas publicadoras")
 res_colecciones <- crear_mapa_simple(
@@ -792,7 +865,7 @@ saveRDS(
 
 
 # ------------------------------------------------------------
-# 26. Mapa solo colecciones Mixtas
+# 26. Mapa colecciones Mixtas
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones Mixtas")
 res_colecciones <- crear_mapa_simple(
@@ -810,9 +883,14 @@ saveRDS(
   file = fs::path(dir_data_maps, "mapa-colecciones-mix.rds")
 )
 
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-colecciones-mix.rds")),
+          filename = "barplot-colecciones-mix.png",
+          width = 12)
+
 
 # ------------------------------------------------------------
-# 27. Mapa solo colecciones Mixtas (publicadoras)
+# 27. Mapa colecciones Mixtas (publicadoras)
 # ------------------------------------------------------------
 message(" - Generando mapa de colecciones Mixtas publicadoras")
 res_colecciones <- crear_mapa_simple(
@@ -834,7 +912,35 @@ saveRDS(
 
 
 # ------------------------------------------------------------
-# 28. Mapa facetado por bases de datos publicadoras
+# 28. Mapa facetado por bases de datos 
+# ------------------------------------------------------------
+message(" - Generando mapa bd facetado por disciplina")
+res_facet <- crear_mapa_simple(
+  tipo_coleccion = "base de datos",
+  facet = "disciplina_def"
+)
+
+save_map(
+  plot     = res_facet$plot,
+  filename = "mapa-facet-bd-disciplina.png",
+  gg_opts = list(width  = 14,
+                 height = 9,
+                 dpi    = 100)
+)
+
+saveRDS(
+  res_facet$data_map,
+  file = fs::path(dir_data_maps, "mapa-facet-bd-disciplina.rds")
+)
+
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-facet-bd-disciplina.rds")),
+          filename = "barplot-facet-bd-disciplina.png",
+          width = 12)
+
+
+# ------------------------------------------------------------
+# 29. Mapa facetado por bases de datos publicadoras
 # ------------------------------------------------------------
 message(" - Generando mapa bd facetado por disciplina publicadoras")
 res_facet <- crear_mapa_simple(
@@ -852,14 +958,19 @@ save_map(
 )
 
 saveRDS(
-  res_colecciones$data_map,
+  res_facet$data_map,
   file = fs::path(dir_data_maps, "mapa-facet-bd-disciplina-pub.rds")
 )
+
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-facet-bd-disciplina-pub.rds")),
+          filename = "barplot-facet-bd-disciplina-pub.png",
+          width = 12)
 
 
 
 # ------------------------------------------------------------
-# 29. Mapa facetado por bases de datos no publicadoras
+# 30. Mapa facetado por bases de datos no publicadoras
 # ------------------------------------------------------------
 message(" - Generando mapa bd facetado por disciplina no publicadoras")
 
@@ -890,7 +1001,8 @@ tryCatch(
   }
 )
 
+
 # ------------------------------------------------------------
-# 7. Fin
+# 31. Fin
 # ------------------------------------------------------------
 message("==> Mapas de vignettes actualizados correctamente")

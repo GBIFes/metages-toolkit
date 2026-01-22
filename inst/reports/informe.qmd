@@ -516,7 +516,7 @@ invertebrados, representadas en función de la localidad donde se ubica la entid
 ~~Destaca con mucha diferencia la colección de Invertebrados de agua dulce del Museo
 de Zoología de la Universidad de Navarra (MZNA-INV-FRW), con 25 millones ejemplares. La sigue a gran distancia la Colección de entomología del Museo Nacional de Ciencias Naturales (MNCNEnt), con 4 millones. Y en tercer lugar la colección Artrópodos, Museu de Ciències Naturals de Barcelona (MCNB-Art), con 1,9 millones. La gráfica 4.2.2.2. muestra las 10 colecciones de vertebrados que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.~~
 
-GRAFICA AQUI
+![](assets/images/generated/barplot-colecciones-inv.png)
 
 ### Colecciones zoológicas: vertebrados
 
@@ -529,14 +529,14 @@ En los mapas 4.2.3.1.a. y 4.2.3.1.b. se muestran las colecciones zoológicas de
 vertebrados, representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo el número de colecciones que publican a través de los portales GBIF.
 
 
-![](assets/images/generated/mapa-colecciones-zoo-vert.png)
-![](assets/images/generated/mapa-colecciones-zoo-vert-pub.png)
+![](assets/images/generated/mapa-colecciones-vert.png)
+![](assets/images/generated/mapa-colecciones-vert-pub.png)
 
 ### Grandes colecciones zoológicas de vertebrados
 
 De las grandes colecciones zoológicas de vertebrados del Registro, ~~destaca la Colección de ictiología del Museo Nacional de Ciencias Naturales (MNCN_ICTIO), con 325.000 ejemplares, seguida de la colección de Vertebrados del Museo de Zoología, de la Universidad de Navarra (MZNA-Vert), con más de 206.000, y de la Colección de anfibios y reptiles, también del Museo Nacional de Ciencias Naturales (MNCN-Herpeto), con más de 60.000 ejemplares. La gráfica 4.2.3.2. muestra las 10 colecciones de vertebrados que más ejemplares albergan ordenadas por nº de registros.~~ En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-GRAFICA AQUI
+![](assets/images/generated/barplot-colecciones-vert.png)
 
 ### Colecciones zoológicas conjuntas de invertebrados y vertebrados
 
@@ -555,14 +555,14 @@ En los ~~mapas 4.2.4.1.a y 4.2.4.1.b~~ se muestran las colecciones zoológicas c
 De las grandes colecciones zoológicas conjuntas de invertebrados y vertebrados del
 Registro, ~~destaca la colección del Museo de Zoología de la Universidad de Navarra (MZNA), con 1,7 millones de ejemplares, seguida de la colección Efectos del Cambio Ambiental en las comunidades de organismos de los ríos mediterráneos (CARIMED), de la Universitat de Barcelona, con casi 600.000, y de la Colección de tejidos y ADN, del Museo Nacional de Ciencias Naturales (MNCN-ADN), con más de 50.000 ejemplares. La gráfica 4.2.4.2. ~~muestra las 10 colecciones de vertebrados que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-GRAFICA AQUI
+![](assets/images/generated/barplot-colecciones-invver.png)
 
 
 ### Colecciones zoológicas que publican datos en GBIF
 
 En la ~~gráfica 4.2.5.~~ podemos ver las diez colecciones zoológicas que más registros publican en los portales de GBIF ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-GRAFICA AQUI
+![](assets/images/generated/barplot-colecciones-zoo.png)
 
 ## COLECCIONES BOTÁNICAS
 
@@ -621,7 +621,7 @@ En los mapas ~~4.3.2.1.a. y 4.3.2.1.b.~~ se muestran las colecciones botánicas 
 
 De las grandes colecciones botánicas de plantas del Registro, ~~destaca la colección CSICReal Jardín Botánico-Colección de Plantas Vasculares (CSIC-RJB-MA-Phanero), con 875.000 pliegos de herbario. La siguiente es la colección Herbario BC, Instituto Botánico de Barcelona (BC), con 800.000 ejemplares, que alberga tanto fanerógamas como criptógamas. En tercer lugar, está la colección del Herbario de la Universidad de Barcelona (BCN), del Centro de Documentación de Biodiversidad Vegetal - CeDocBIV, con 402.000 ejemplares de todos los grupos botánicos. La gráfica 4.3.2.2.~~ muestra las 10 colecciones botánicas que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-GRAFICA AQUI
+![](assets/images/generated/barplot-colecciones-pla.png)
 
 ### Colecciones de algas
 
@@ -641,7 +641,7 @@ En los mapas ~~4.3.3.1.a. y 4.3.3.1.b.~~ se muestran las colecciones botánicas 
 
 De las grandes colecciones botánicas de algas del Registro, ~~destaca la colección Herbario TFC, Universidad de La Laguna: algas, con 15.200 ejemplares, seguida de la colección del Herbario de la Universidad de Girona - sección algas, con más de 13.000, y de la colección CSIC Real Jardín Botánico-Herbario de Criptogamia: algas, con 10.000 ejemplares. La gráfica 4.3.3.2.~~ muestra las 10 colecciones botánicas de algas que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-GRAFICA AQUI
+![](assets/images/generated/barplot-colecciones-alg.png)
 
 
 ### Colecciones de hongos
@@ -660,14 +660,14 @@ En los ~~mapas 4.3.4.1.a. y 4.3.4.1.b.~~ se muestran las colecciones de hongos r
 
 De las grandes colecciones de hongos del Registro, ~~destaca la colección CSIC-Real Jardín Botánico-Herbario de Criptogamia: hongos y líquenes, con más de 117.000 ejemplares, seguida de la colección Herbario VIT Criptogamia, Museo de Ciencias Naturales de Álava, con casi 50.000 ejemplares, y de la colección Herbario de la Universidad de Barcelona: hongos, con 42.000 ejemplares. La gráfica 4.3.4.2.~~ muestra las 10 colecciones de hongos que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-GRAFICA AQUI
+![](assets/images/generated/barplot-colecciones-hong.png)
 
 ### Colecciones botánicas que publican en GBIF
 
 En la ~~gráfica 4.3.5.~~ podemos ver las diez colecciones botánicas que más registros
 publican en los portales de GBIF ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-GRAFICA AQUI
+![](assets/images/generated/barplot-colecciones-bot.png)
 
 ## COLECCIONES MICROBIOLÓGICAS
 
@@ -703,7 +703,7 @@ ft_tbl(
 
 En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades, y en la ~~gráfica 4.4.1.d. se muestran las 7 colecciones microbiológicas ordenadas por nº de ejemplares~~. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-GRAFICA AQUI
+![](assets/images/generated/barplot-colecciones-micro.png)
 
 ### Mapa de distribución de las colecciones microbiológicas
 
@@ -745,7 +745,7 @@ ft_tbl(
 
 En la ~~gráfica 4.5.1.c.~~ se muestran las 10 colecciones paleontológicas que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-GRAFICA AQUI
+![](assets/images/generated/barplot-colecciones-pale.png)
 
 ### Mapa de distribución de las colecciones paleontológicas
 
@@ -788,7 +788,7 @@ ft_tbl(
 La ~~gráfica 4.6.1.c.~~ muestra las 10 colecciones mixtas que más ejemplares albergan
 ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-GRAFICA AQUI
+![](assets/images/generated/barplot-colecciones-mix.png)
 
 ### Mapa de distribución de las colecciones mixtas
 
@@ -834,13 +834,13 @@ En el Anexo I están todas incluidas bajo la categoría “BD” de la columna �
 continuación, se muestran las diez bases de datos que más registros publican en GBIF. El desajuste respecto a los datos publicados se debe a que algunos proveedores no han actualizado los metadatos en el Registro a nivel de entidad o no han proporcionado el estado de sus fondos digitales. ~~Destaca con 8 millones de registros SEO/BirdLife-Colección de Aves Silvestres Marcadas de España, seguida de Cartografía de vegetación a escala de detalle 1:10.000 de la masa forestal de Andalucía, de la Red de Información Ambiental de Andalucía (REDIAM) de la Junta de Andalucía, con casi 7 millones. En tercer lugar la base de datos ICO-ornitho.cat, del Institut Català d’Ornitologia, con 1,75 millones, y en cuarto lugar aparece el primer proyecto
 Banco de Datos de la Biodiversidad de la Generalitat Valenciana (BDBCV-general).~~
 
-GRAFICA AQUI
+![](assets/images/generated/barplot-facet-bd-disciplina.png)
 
 ### Mapa de distribución de las bases de datos registradas
 
 En el ~~mapa 5.2.3.~~ se puede observar la distribución en España de las bases de datos del Registro organizadas por grupos y diferenciadas por colores.
 
-MAPA AQUI
+![](assets/images/generated/mapa-facet-bd-disciplina.png)
 
 ### Bases de datos que publican registros en GBIF
 
@@ -849,10 +849,9 @@ De las ~~68 bases de datos que publican en GBIF, destaca con casi 9 millones de 
 En el ~~mapa 5.2.4.a.~~ se puede observar la distribución en España de las bases de datos que publican en GBIF organizadas por grupos y diferenciadas por colores.
 
 ![](assets/images/generated/mapa-facet-bd-disciplina-pub.png)
-A continuación, en la gráfica 5.2.4.b. se muestran las diez bases de datos de
-biodiversidad españolas con mayor número de registros publicados en GBIF. Nótese que el nº de registros publicados es mayor que el de informatizados. Este desfase de debe a una desactualización en la información proporcionada para el Registro.
+A continuación, en la gráfica 5.2.4.b. se muestran las diez bases de datos de biodiversidad españolas con mayor número de registros publicados en GBIF. Nótese que el nº de registros publicados es mayor que el de informatizados. Este desfase de debe a una desactualización en la información proporcionada para el Registro.
 
-GRAFICA AQUI
+![](assets/images/generated/barplot-facet-bd-disciplina-pub.png)
 
 # DATOS BASADOS EN ESPECÍMENES DE COLECCIONES CIENTÍFICAS FRENTE A DATOS OBSERVACIONALES (SIN RESPALDO DE ESPECÍMENES)
 
