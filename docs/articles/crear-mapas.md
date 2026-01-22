@@ -26,7 +26,16 @@ avanzada.
 Para los ejemplos se utilizan datos extraídos del Registro de
 colecciones mediante la función `extraer_colecciones_mapa()$data`.
 
-## Mapa básico
+## Mapa básico por estado de publicación
+
+Ejemplo mínimo de uso de
+[`crear_mapa_entidades()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa_entidades.md),
+mostrando la distribución espacial de las entidades del Registro segun
+su estado de publicación en GBIF.
+
+![](figures/mapa-entidades.png)
+
+## Mapa básico por numero de ejemplares
 
 Ejemplo mínimo de uso de
 [`crear_mapa_simple()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa_simple.md),
@@ -34,7 +43,7 @@ mostrando la distribución espacial de todos los recursos del Registro.
 
 ![](figures/mapa-total.png)
 
-## Mapa solo colecciones zoológicas
+## Mapa colecciones zoológicas
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Zoo")`,
@@ -42,7 +51,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-zoo.png)
 
-## Mapa solo colecciones zoológicas publicadoras
+## Mapa colecciones zoológicas publicadoras
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Zoo", publican = T)`,
@@ -50,7 +59,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-zoo-pub.png)
 
-## Mapa solo colecciones de invertebrados
+## Mapa colecciones de invertebrados
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Invertebrados")`,
@@ -58,7 +67,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-inv.png)
 
-## Mapa solo colecciones de invertebrados publicadoras
+## Mapa colecciones de invertebrados publicadoras
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Invertebrados", publican = T)`,
@@ -66,7 +75,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-inv-pub.png)
 
-## Mapa solo colecciones de vertebrados
+## Mapa colecciones de vertebrados
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Vertebrados")`,
@@ -74,7 +83,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-zoo-vert.png)
 
-## Mapa solo colecciones de vertebrados publicadoras
+## Mapa colecciones de vertebrados publicadoras
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Vertebrados", publican = T)`,
@@ -82,7 +91,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-zoo-vert-pub.png)
 
-## Mapa solo colecciones de invertebrados y vertebrados
+## Mapa colecciones de invertebrados y vertebrados
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Invertebrados y vertebrados")`,
@@ -90,7 +99,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-invver.png)
 
-## Mapa solo colecciones de invertebrados y vertebrados publicadoras
+## Mapa colecciones de invertebrados y vertebrados publicadoras
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Invertebrados y vertebrados", publican = T)`,
@@ -98,7 +107,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-invver-pub.png)
 
-## Mapa solo colecciones botánicas
+## Mapa colecciones botánicas
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Bot")`,
@@ -106,7 +115,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-bot.png)
 
-## Mapa solo colecciones botánicas publicadoras
+## Mapa colecciones botánicas publicadoras
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Bot", publican = T)`,
@@ -114,7 +123,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-bot-pub.png)
 
-## Mapa solo colecciones de plantas
+## Mapa colecciones de plantas
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Plant")`,
@@ -122,7 +131,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-pla.png)
 
-## Mapa solo colecciones de plantas publicadoras
+## Mapa colecciones de plantas publicadoras
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Plant", publican = T)`,
@@ -130,7 +139,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-pla-pub.png)
 
-## Mapa solo colecciones de algas
+## Mapa colecciones de algas
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Algas")`,
@@ -138,7 +147,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-alg.png)
 
-## Mapa solo colecciones de algas publicadoras
+## Mapa colecciones de algas publicadoras
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Algas", publican = T)`,
@@ -146,7 +155,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-alg-pub.png)
 
-## Mapa solo colecciones de hongos
+## Mapa colecciones de hongos
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Hong")`,
@@ -154,7 +163,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-hong.png)
 
-## Mapa solo colecciones de hongos publicadoras
+## Mapa colecciones de hongos publicadoras
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Hong", publican = T)`,
@@ -162,7 +171,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-hong-pub.png)
 
-## Mapa solo colecciones microbiológicas
+## Mapa colecciones microbiológicas
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Micro")`,
@@ -170,7 +179,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-micro.png)
 
-## Mapa solo colecciones microbiológicas publicadoras
+## Mapa colecciones microbiológicas publicadoras
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Micro", publican = T)`,
@@ -178,7 +187,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-micro-pub.png)
 
-## Mapa solo colecciones micológicas
+## Mapa colecciones micológicas
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Mico")`,
@@ -186,7 +195,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-mico.png)
 
-## Mapa solo colecciones micológicas publicadoras
+## Mapa colecciones micológicas publicadoras
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Mico", publican = T)`,
@@ -194,7 +203,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-mico.png)
 
-## Mapa solo colecciones paleontológicas
+## Mapa colecciones paleontológicas
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Pale")`,
@@ -202,7 +211,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-pale.png)
 
-## Mapa solo colecciones paleontológicas publicadoras
+## Mapa colecciones paleontológicas publicadoras
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Pale", publican = T)`,
@@ -210,7 +219,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-pale-pub.png)
 
-## Mapa solo colecciones mixtas
+## Mapa colecciones mixtas
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Mix")`,
@@ -218,7 +227,7 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-mix.png)
 
-## Mapa solo colecciones mixtas publicadoras
+## Mapa colecciones mixtas publicadoras
 
 Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Mix", publican = T)`,

@@ -215,14 +215,19 @@ informe.
 - [`extraer_colecciones_mapa()`](https://gbifes.github.io/metages-toolkit/reference/extraer_colecciones_mapa.md)
   : Extraer colecciones desde METAGES para mapas
 
-## Crear mapas
+## Crear mapas y graficos
 
 - [`crear_mapa()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa.md)
   : Crear mapa de colecciones METAGES
 - [`crear_mapa_simple()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa_simple.md)
   : Mapa METAGES (version simple para uso)
+- [`crear_mapa_entidades()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa_entidades.md)
+  : Crear mapa de entidades en el Registro facetado segun publicacion en
+  GBIF
 - [`get_basemap_es()`](https://gbifes.github.io/metages-toolkit/reference/get_basemap_es.md)
   : Obtener basemap de España (con Canarias desplazadas)
+- [`crear_barplot_top_colecciones_pub()`](https://gbifes.github.io/metages-toolkit/reference/crear_barplot_top_colecciones_pub.md)
+  : Crear grafico de top colecciones por número de registros
 
 ## Crear y modificar Informe
 

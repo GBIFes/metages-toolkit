@@ -42,11 +42,13 @@ reference:
   - '`conectar_metages`'
   - '`extraer_colecciones_mapa`'
 
-- title: Crear mapas
+- title: Crear mapas y graficos
   contents:
   - '`crear_mapa`'
   - '`crear_mapa_simple`'
+  - '`crear_mapa_entidades`'
   - '`get_basemap_es`'
+  - '`crear_barplot_top_colecciones_pub`'
 
 - title: Crear y modificar Informe
   contents:
