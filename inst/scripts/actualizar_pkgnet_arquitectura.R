@@ -13,22 +13,32 @@
 # Dependencias (script de mantenimiento)
 stopifnot(requireNamespace("pkgnet", quietly = TRUE))
 stopifnot(requireNamespace("git2r", quietly = TRUE))
+stopifnot(requireNamespace("devtools", quietly = TRUE))
 
-repo_url <- "https://github.com/GBIFes/metages-toolkit.git"
-
-# ------------------------------------------------------------
-# 1. Clonar repositorio oficial en entorno limpio
-# ------------------------------------------------------------
-
-src <- tempfile("metagesToolkit-official-")
-git2r::clone(repo_url, src)
 
 # ------------------------------------------------------------
-# 2. Leer metadatos desde DESCRIPTION
+# OPCIÓN A — USAR REPOSITORIO LOCAL (desarrollo)
 # ------------------------------------------------------------
 
-desc_path <- file.path(src, "DESCRIPTION")
-dcf <- read.dcf(desc_path)
+src <- "."  # repo local
+devtools::install(".", upgrade = "never", dependencies = FALSE, quiet = TRUE)
+
+
+# ------------------------------------------------------------
+# OPCIÓN B — CLONAR REPOSITORIO OFICIAL (CI / publicación)
+# ------------------------------------------------------------
+
+# repo_url <- "https://github.com/GBIFes/metages-toolkit.git"
+# src <- tempfile("metagesToolkit-official-")
+# git2r::clone(repo_url, src)
+# devtools::install(src, upgrade = "never", dependencies = FALSE, quiet = TRUE)
+
+
+# ------------------------------------------------------------
+# Metadatos desde DESCRIPTION
+# ------------------------------------------------------------
+
+dcf <- read.dcf(file.path(src, "DESCRIPTION"))
 
 pkg_name <- dcf[1, "Package"]
 version  <- dcf[1, "Version"]
@@ -36,17 +46,18 @@ version  <- dcf[1, "Version"]
 message("Generando reporte pkgnet para ", pkg_name,
         " (versión ", version, ")")
 
+
 # ------------------------------------------------------------
-# 3. Preparar carpeta de salida para pkgdown
+# Salida pkgdown
 # ------------------------------------------------------------
 
 out_dir <- file.path("pkgdown", "assets")
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
-
 out_file <- file.path(out_dir, "pkgnet-report.html")
 
+
 # ------------------------------------------------------------
-# 4. Generar reporte HTML standalone con pkgnet
+# Generar reporte pkgnet
 # ------------------------------------------------------------
 
 pkgnet::CreatePackageReport(
