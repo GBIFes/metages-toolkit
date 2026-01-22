@@ -1,8 +1,8 @@
-#' Crear gráfico de top colecciones por número de registros
+#' Crear grafico de top colecciones por número de registros
 #'
-#' Genera un gráfico de barras horizontales con las 10 colecciones
-#' con mayor número de registros que publican en GBIF, a partir
-#' de un objeto leído desde un archivo `.rds` interno de metagesToolkit.
+#' Genera un grafico de barras horizontales con las 10 colecciones
+#' con mayor numero de registros que publican en GBIF, a partir
+#' de un objeto leido desde un archivo `.rds` interno de metagesToolkit.
 #'
 #' @param rds_path Ruta al archivo `.rds` que contiene el mapa de colecciones.
 #'
@@ -42,8 +42,8 @@ crear_barplot_top_colecciones_pub <- function(rds_path) {
       size = 3
     ) +
     labs(
-      x = "Nº registros",
-      y = "Código de colección"
+      x = "N\u00BA registros",
+      y = "C\u00F3digo de colecci\u00F3n"
     ) +
     theme_minimal() +
     theme(

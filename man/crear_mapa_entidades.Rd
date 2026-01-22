@@ -2,7 +2,7 @@
 % Please edit documentation in R/crear_mapa_entidades.R
 \name{crear_mapa_entidades}
 \alias{crear_mapa_entidades}
-\title{Crear mapa de entidades en el Registro facetado según publicación en GBIF}
+\title{Crear mapa de entidades en el Registro facetado segun publicacion en GBIF}
 \usage{
 crear_mapa_entidades(tipo_coleccion = NULL)
 }
@@ -15,15 +15,15 @@ Si es \code{NULL}, se muestran todas.}
 Un objeto \code{ggplot}.
 }
 \description{
-Genera un mapa de España que muestra la localización de las entidades
-incluidas en el Registro de Colecciones de GBIF.ES. El mapa se facetiza según el
-estado de publicación en GBIF (\code{publica_en_gbif}), separando visualmente
+Genera un mapa del país que muestra la localizacion de las entidades
+incluidas en el Registro de Colecciones de GBIF.ES. El mapa se facetiza segun el
+estado de publicacion en GBIF (\code{publica_en_gbif}), separando visualmente
 las entidades que publican de aquellas que no.
 }
 \details{
-Las entidades se representan mediante puntos de tamaño fijo. Para evitar
+Las entidades se representan mediante puntos fijos. Para evitar
 ocultamientos completos entre entidades cercanas, se aplica un jitter
 espacial muy leve. Los nombres que aparecen en el mapa corresponden a las
-regiones, y se sitúan en el centroide empírico de las entidades de cada
-región y panel, manteniendo coherencia cartográfica.
+regiones, y se situan en el centroide empirico de las entidades de cada
+region y panel, manteniendo coherencia cartografica.
 }

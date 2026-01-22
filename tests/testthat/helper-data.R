@@ -3,6 +3,7 @@ library(sf)
 # Datos mínimos para crear_mapa()
 test_data <- data.frame(
   town = c("Madrid", "Madrid", "Sevilla"),
+  region = c("Comunidad de Madrid", "Comunidad de Madrid", "Andalucía"),
   longitude = c("-3.7", "-3.7", "-3.5"),
   latitude  = c("40.4", "40.4", "39.0"),
   longitude_adj = c(-3.7, -3.7, -5.9),

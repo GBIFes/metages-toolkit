@@ -1,15 +1,15 @@
-#' Crear mapa de entidades en el Registro facetado según publicación en GBIF
+#' Crear mapa de entidades en el Registro facetado segun publicacion en GBIF
 #'
-#' Genera un mapa de España que muestra la localización de las entidades
-#' incluidas en el Registro de Colecciones de GBIF.ES. El mapa se facetiza según el
-#' estado de publicación en GBIF (`publica_en_gbif`), separando visualmente
+#' Genera un mapa del país que muestra la localizacion de las entidades
+#' incluidas en el Registro de Colecciones de GBIF.ES. El mapa se facetiza segun el
+#' estado de publicacion en GBIF (`publica_en_gbif`), separando visualmente
 #' las entidades que publican de aquellas que no.
 #'
-#' Las entidades se representan mediante puntos de tamaño fijo. Para evitar
+#' Las entidades se representan mediante puntos fijos. Para evitar
 #' ocultamientos completos entre entidades cercanas, se aplica un jitter
 #' espacial muy leve. Los nombres que aparecen en el mapa corresponden a las
-#' regiones, y se sitúan en el centroide empírico de las entidades de cada
-#' región y panel, manteniendo coherencia cartográfica.
+#' regiones, y se situan en el centroide empirico de las entidades de cada
+#' region y panel, manteniendo coherencia cartografica.
 #'
 #'
 #' @param tipo_coleccion Tipo de entidad a representar. Uno de
@@ -35,7 +35,7 @@ crear_mapa_entidades <- function(tipo_coleccion = NULL) {
   
   
   # --------------------------------------------------
-  # 1.1 Validación de argumentos
+  # 1.1 Validacion de argumentos
   # --------------------------------------------------
   
   tipo_coleccion <- if (!is.null(tipo_coleccion)) {
@@ -45,7 +45,7 @@ crear_mapa_entidades <- function(tipo_coleccion = NULL) {
   }
   
   
-  # Filtrado opcional por tipo de colección
+  # Filtrado opcional por tipo de coleccion
   if (!is.null(tipo_coleccion)) {
     data <- data %>%
       filter(tipo_body == tipo_coleccion)
@@ -54,7 +54,7 @@ crear_mapa_entidades <- function(tipo_coleccion = NULL) {
   
   
   # --------------------------------------------------
-  # 2. Preparación de datos de puntos (entidades)
+  # 2. Preparacion de datos de puntos (entidades)
   # --------------------------------------------------
   
   data_points <- data %>%
@@ -73,7 +73,7 @@ crear_mapa_entidades <- function(tipo_coleccion = NULL) {
     )
   
   # --------------------------------------------------
-  # 3. Preparación de datos de labels (centroides de región)
+  # 3. Preparacion de datos de labels (centroides de region)
   # --------------------------------------------------
   
   data_labels <- data_points %>%
@@ -95,7 +95,7 @@ crear_mapa_entidades <- function(tipo_coleccion = NULL) {
   )
   
   # --------------------------------------------------
-  # 5. Construcción del mapa
+  # 5. Construccion del mapa
   # --------------------------------------------------
   
   plot <- ggplot() +
@@ -156,24 +156,13 @@ crear_mapa_entidades <- function(tipo_coleccion = NULL) {
     
     # Escala de color (sin leyenda: facet ya explica)
     scale_color_manual(
-      name = "Publicación en GBIF",
+      name = "Publicaci\u00F3n en GBIF",
       values = colores_publicacion,
       labels = c(
         "No",
-        "Sí"
+        "S\u00ED"
       )
     ) +
-    
-    # Facet por estado de publicación
-    # facet_wrap(
-    #   vars(publica_en_gbif),
-    #   labeller = as_labeller(
-    #     c(
-    #       `0` = "No publica en GBIF",
-    #       `1` = "Publica en GBIF"
-    #     )
-    #   )
-    # ) +
     
     # Zoom
     coord_sf(

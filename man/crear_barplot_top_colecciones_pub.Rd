@@ -2,7 +2,7 @@
 % Please edit documentation in R/crear_barplot_top_colecciones_pub.R
 \name{crear_barplot_top_colecciones_pub}
 \alias{crear_barplot_top_colecciones_pub}
-\title{Crear gráfico de top colecciones por número de registros}
+\title{Crear grafico de top colecciones por número de registros}
 \usage{
 crear_barplot_top_colecciones_pub(rds_path)
 }
@@ -13,7 +13,7 @@ crear_barplot_top_colecciones_pub(rds_path)
 Un objeto \code{ggplot}.
 }
 \description{
-Genera un gráfico de barras horizontales con las 10 colecciones
-con mayor número de registros que publican en GBIF, a partir
-de un objeto leído desde un archivo \code{.rds} interno de metagesToolkit.
+Genera un grafico de barras horizontales con las 10 colecciones
+con mayor numero de registros que publican en GBIF, a partir
+de un objeto leido desde un archivo \code{.rds} interno de metagesToolkit.
 }
