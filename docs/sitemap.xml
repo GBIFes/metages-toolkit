@@ -1,6 +1,8 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://gbifes.github.io/metages-toolkit/404.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html</loc></url>
+<url><loc>https://gbifes.github.io/metages-toolkit/articles/guia-uso-dev.html</loc></url>
+<url><loc>https://gbifes.github.io/metages-toolkit/articles/guia-uso-usr.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/articles/index.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/authors.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/index.html</loc></url>
