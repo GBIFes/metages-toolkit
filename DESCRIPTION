@@ -1,6 +1,6 @@
 Package: metagesToolkit
 Title: Herramientas internas para METAGES
-Version: 1.0.15
+Version: 1.1.0
 Authors@R: c(
     person("Ruben", 
             "Perez Perez", , 
