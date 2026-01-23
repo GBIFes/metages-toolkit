@@ -5,7 +5,7 @@ ATENCIÓN:
   de R y Github con los de Metages SQL.
   
   Las consultas deben modificarse siempre desde los archivos de Scripts de DBeaver
-  y luego migrarse al repositorio de github usando `actualizar_SQL_scripts.R`
+  y luego migrarse al repositorio de github usando `inst/scripts/actualizar_SQL_scripts.R`
 
 Por qué:
 - DBeaver no tiene un control de versiones automatico, asi que utilizamos github 

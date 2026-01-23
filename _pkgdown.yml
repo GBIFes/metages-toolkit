@@ -16,6 +16,10 @@ navbar:
     articles:
       text: "Artículos"
       menu:
+        - text: "Guia de uso - USUARIOS"
+          href: articles/guia-uso-usr.html
+        - text: "Guia de uso - DESARROLLADORES"
+          href: articles/guia-uso-dev.html
         - text: "Mapas y visualización"
           href: articles/crear-mapas.html
           
@@ -30,8 +34,11 @@ navbar:
       
 
 articles:
-  - title: "Mapas y visualización"
+  - title: All vignettes
+    desc: ~
     contents:
+      - guia-uso-usr
+      - guia-uso-dev
       - crear-mapas
 
 

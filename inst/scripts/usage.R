@@ -1,3 +1,19 @@
+# DEVELOPERS
+# Actualizacion de github pages
+# Actualizacion de datasets, mapas y graficos de metagesToolkit
+# Actualizacion de sql scripts de MetaGES
+
+# USERS
+# Conexion a metages
+# Extraccion de datos
+# Creacion de mapas 
+# Acceso a datasets de metagesToolkit (estaticos)
+# Acceso a mapas y graficos de metagesToolkit (estaticos)
+
+
+
+
+
 # DOCUMENTACION DEL REPO
 install.packages("directotree")
 directotree::directotree("C:/Users/Ruben/Documents/R/metages-toolkit")
@@ -8,31 +24,9 @@ fs::dir_tree(here::here())
 
 
 
-
-
-
-
-
-
-
-
-
 # GENERAR INFORME
 render_informe()
 insertar_tabla_colecciones(keyword = "Anexos")
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
