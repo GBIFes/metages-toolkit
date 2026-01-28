@@ -15,9 +15,9 @@ crear_mapa_simple(
 \arguments{
 \item{tipo_coleccion}{\code{colección}, \verb{base de datos} o \code{NULL}.}
 
-\item{disciplina}{\code{Zoológica}, \code{Botánica}, \code{Paleontológica}, \code{Mixta}, \code{Microbiológica}, \code{Micológica} o \code{NULL}.}
+\item{disciplina}{\code{Zoológica}, \code{Botánica}, \code{Paleontológica}, \code{Mixta}, \code{Microbiológica} o \code{NULL}.}
 
-\item{subdisciplina}{\code{Vertebrados}, \code{Invertebrados}, \verb{Invertebrados y vertebrados}, \code{Plantas}, \code{Hongos}, \code{Algas} o \code{NULL}.}
+\item{subdisciplina}{\code{Vertebrados}, \code{Invertebrados}, \verb{Invertebrados y vertebrados}, \code{Plantas},  \verb{Hongos y l\\u00EDquenes}, \code{Algas}, \verb{Bot\\u00E1nicas mixtas} o \code{NULL}.}
 
 \item{publican}{\code{TRUE}, \code{FALSE} o \code{NULL}.}
 

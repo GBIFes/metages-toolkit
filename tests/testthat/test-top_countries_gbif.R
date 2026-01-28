@@ -41,7 +41,8 @@ test_that("get_top10_countries_rgbif devuelve estructura esperada", {
   
   testthat::local_mocked_bindings(
     occ_count_country = mock_occ_count_country,
-    occ_search        = mock_occ_search
+    occ_search        = mock_occ_search,
+    .env = asNamespace("rgbif")
   )
   
   res <- get_top10_countries_rgbif(years_back = 2)
@@ -58,11 +59,13 @@ test_that("get_top10_countries_rgbif devuelve estructura esperada", {
   ) %in% names(res)))
 })
 
+
 test_that("get_top10_countries_rgbif funciona con distintos years_back", {
   
   testthat::local_mocked_bindings(
     occ_count_country = mock_occ_count_country,
-    occ_search        = mock_occ_search
+    occ_search        = mock_occ_search,
+    .env = asNamespace("rgbif")
   )
   
   res1 <- get_top10_countries_rgbif(years_back = 1)
@@ -72,7 +75,6 @@ test_that("get_top10_countries_rgbif funciona con distintos years_back", {
   expect_equal(nrow(res5), 10)
   
   # Semántica correcta:
-  # algunos países están en el ranking histórico, otros no
   expect_true(any(!is.na(res1$posicion_prev_cum)))
   expect_true(any(is.na(res1$posicion_prev_cum)))
   
@@ -87,7 +89,8 @@ test_that("get_top10_countries_rgbif funciona con distintos years_back", {
 test_that("get_top_publishing_countries_gbif devuelve estructura esperada", {
   
   testthat::local_mocked_bindings(
-    occ_search = mock_occ_search
+    occ_search = mock_occ_search,
+    .env = asNamespace("rgbif")
   )
   
   res <- suppressWarnings(
@@ -109,10 +112,12 @@ test_that("get_top_publishing_countries_gbif devuelve estructura esperada", {
   ) %in% names(res)))
 })
 
+
 test_that("get_top_publishing_countries_gbif respeta el argumento n", {
   
   testthat::local_mocked_bindings(
-    occ_search = mock_occ_search
+    occ_search = mock_occ_search,
+    .env = asNamespace("rgbif")
   )
   
   res <- suppressWarnings(
@@ -121,6 +126,7 @@ test_that("get_top_publishing_countries_gbif respeta el argumento n", {
   
   expect_equal(nrow(res), 2)
 })
+
 
 test_that("get_top_publishing_countries_gbif valida argumentos", {
   

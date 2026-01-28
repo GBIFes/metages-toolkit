@@ -27,9 +27,9 @@ genera automaticamente con \code{extraer_colecciones_mapa()}}
 \item{tipo_coleccion}{Uno de \code{coleccion}, \verb{base de datos} o \code{NULL}.}
 
 \item{disciplina}{Uno de \verb{Zool\\u00F3gica}, \verb{Bot\\u00E1nica}, \verb{Paleontol\\u00F3gica},
-\code{Mixta}, \verb{Microbiol\\u00F3gica}, \verb{Micol\\u00F3gica} o \code{NULL}.}
+\code{Mixta}, \verb{Microbiol\\u00F3gica} o \code{NULL}.}
 
-\item{subdisciplina}{Uno de \code{Vertebrados}, \code{Invertebrados}, \verb{Invertebrados y vertebrados}, \code{Plantas}, \code{Hongos}, \code{Algas} o \code{NULL}.}
+\item{subdisciplina}{Uno de \code{Vertebrados}, \code{Invertebrados}, \verb{Invertebrados y vertebrados}, \code{Plantas}, \verb{Hongos y l\\u00EDquenes}, \code{Algas}, \verb{Bot\\u00E1nicas mixtas} o \code{NULL}.}
 
 \item{publican}{Uno de \code{TRUE}, \code{FALSE} o \code{NULL}.}
 
