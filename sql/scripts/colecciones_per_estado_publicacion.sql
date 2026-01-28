@@ -8,55 +8,65 @@
 -- Vista: colecciones_per_estado_publicacion
 -- ===================================================================
 
-CREATE OR REPLACE VIEW colecciones_per_estado_publicacion AS
+-- CREATE OR REPLACE VIEW colecciones_per_estado_publicacion AS
 WITH estados AS (
     SELECT TRUE AS publica_en_gbif
-    UNION ALL SELECT FALSE
+    UNION ALL
+    SELECT FALSE
 ),
-conteo_disciplina AS (
-    SELECT 
+
+disciplinas AS (
+    SELECT DISTINCT disciplina_def
+    FROM colecciones
+    WHERE disciplina_def IS NOT NULL
+),
+
+conteo AS (
+    SELECT
         d.disciplina_def,
-        CASE 
-            WHEN e.publica_en_gbif = TRUE THEN 'Publica en GBIF'
-            WHEN e.publica_en_gbif = FALSE THEN 'No publica en GBIF'
-        END AS estado_publicacion,
-        COALESCE(COUNT(c.body_id), 0) AS total_colecciones
-    FROM metages_disciplina d
+        e.publica_en_gbif,
+        COUNT(c.body_id) AS total_colecciones
+    FROM disciplinas d
     CROSS JOIN estados e
     LEFT JOIN colecciones c
-        ON c.disciplina_id = d.disciplina_id
-       AND (
-            (c.publica_en_gbif = e.publica_en_gbif)
-            OR (c.publica_en_gbif IS NULL AND e.publica_en_gbif IS NULL)
-       )
-    WHERE d.disciplina_id IN (
-        SELECT DISTINCT disciplina_id FROM colecciones
-    )
-    GROUP BY d.disciplina_def, e.publica_en_gbif
+        ON c.disciplina_def = d.disciplina_def
+       AND c.publica_en_gbif = e.publica_en_gbif
+    GROUP BY
+        d.disciplina_def,
+        e.publica_en_gbif
 )
+
+
 -- ===================================================================
 -- Parte 1: Resultados por disciplina
 -- Parte 2: Totales por estado (sin distinguir disciplina)
 -- ===================================================================
-SELECT 
+
+SELECT
     disciplina_def,
-    estado_publicacion,
+    CASE
+        WHEN publica_en_gbif = TRUE  THEN 'Publica en GBIF'
+        WHEN publica_en_gbif = FALSE THEN 'No publica en GBIF'
+    END AS estado_publicacion,
     total_colecciones
-FROM conteo_disciplina
+FROM conteo
 
 UNION ALL
 
-SELECT 
+SELECT
     'TOTAL GENERAL' AS disciplina_def,
-    estado_publicacion,
-    SUM(total_colecciones) AS total_colecciones
-FROM conteo_disciplina
-GROUP BY estado_publicacion
+    CASE
+        WHEN publica_en_gbif = TRUE  THEN 'Publica en GBIF'
+        WHEN publica_en_gbif = FALSE THEN 'No publica en GBIF'
+    END AS estado_publicacion,
+    SUM(total_colecciones)
+FROM conteo
+GROUP BY publica_en_gbif
 
-ORDER BY 
-    CASE 
-        WHEN disciplina_def = 'TOTAL GENERAL' THEN 2 
-        ELSE 1 
+ORDER BY
+    CASE
+        WHEN disciplina_def = 'TOTAL GENERAL' THEN 2
+        ELSE 1
     END,
     disciplina_def,
     estado_publicacion;

@@ -1,21 +1,20 @@
 -- ===================================================================
 -- Autor: Ruben Perez
--- Fecha de Creación: 2025-12-01
--- Descripción: Numero de registros por disciplina para las bases de datos
+-- Fecha de Creación: 2026-01-27
+-- Descripción: Numero de registros por disciplina
 --              
 -- Base de datos: gbif_wp
--- Vista: registros_por_disciplina_bd
+-- Vista: registros_por_disciplina
 -- ===================================================================
 
 
--- CREATE OR REPLACE VIEW registros_por_disciplina_bd AS
+-- CREATE OR REPLACE VIEW registros_por_disciplina AS
 
 -- Numero total de registros documentados en metages
 WITH total AS (
 
 	SELECT SUM(numberOfRecords) AS total_records
     FROM registros AS r 
-    WHERE r.tipo_body = "base de datos"
 )
     
     
@@ -26,7 +25,6 @@ SELECT r.disciplina_def AS 'Disciplina',
 	   		  '%') AS '% registros publicados'
 FROM registros AS r
 CROSS JOIN total
-WHERE r.tipo_body = "base de datos"
 GROUP BY disciplina_def
 
 UNION ALL
@@ -35,7 +33,3 @@ SELECT 'TOTAL' AS 'Disciplina',
 		MAX(total.total_records) AS 'Nº de registros publicados',
 		'100%' AS '% registros publicados'
 FROM total
-
-
-
-

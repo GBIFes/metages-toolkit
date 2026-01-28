@@ -15,7 +15,7 @@ WITH total AS (
 
 	SELECT SUM(numberOfRecords) AS total_records
     FROM registros AS r 
-    WHERE r.body_type_fk = 3
+    WHERE r.tipo_body = "coleccion"
 )
     
     
@@ -26,7 +26,7 @@ SELECT r.disciplina_def AS 'Disciplina',
 	   		  '%') AS '% registros publicados'
 FROM registros AS r
 CROSS JOIN total
-WHERE r.body_type_fk = 3
+WHERE r.tipo_body = "coleccion"
 GROUP BY disciplina_def
 
 UNION ALL
