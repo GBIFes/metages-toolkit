@@ -91,7 +91,7 @@ crear_mapa_entidades <- function(tipo_coleccion = NULL) {
   
   colores_publicacion <- c(
     `0` = "#bdbdbd",  # No publica en GBIF
-    `1` = "#1b9e77"   # Publica en GBIF
+    `1` = "#2ECC9A"   # Publica en GBIF
   )
   
   # --------------------------------------------------

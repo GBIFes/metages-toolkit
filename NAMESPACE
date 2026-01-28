@@ -2,6 +2,8 @@
 
 export(compute_legend_params)
 export(conectar_metages)
+export(crear_barplot_colecciones_por_anno)
+export(crear_barplot_publicacion)
 export(crear_barplot_top_colecciones_pub)
 export(crear_mapa)
 export(crear_mapa_entidades)

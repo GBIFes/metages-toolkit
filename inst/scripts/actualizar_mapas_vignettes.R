@@ -74,8 +74,53 @@ if (LIMPIAR_DESTINOS) {
 message("==> Rutas de destino definidas y limpias.")
 
 
+# ------------------------------------------------------------
+# 0.3 Preparar funciones de ayuda para guardar mapas y graficos
+# ------------------------------------------------------------
 
-message("==> Iniciando actualización de mapas para vignettes")
+# Parámetros comunes de exportación
+gg_opts_all <- list(
+  width  = 9,
+  height = 6,
+  dpi    = 100
+)
+
+# Función auxiliar para guardar mapas
+save_map <- function(plot, filename, gg_opts = gg_opts_all) {
+  message("   * Guardando ", filename)
+  
+  for (dir in c(dir_fig_maps_inst, dir_fig_maps_vign)) {
+    do.call(
+      ggplot2::ggsave,
+      c(
+        list(
+          filename = file.path(dir, filename),
+          plot     = plot
+        ),
+        gg_opts
+      )
+    )
+  }
+}
+
+
+# Función auxiliar para guardar barplots
+save_plot <- function(plot, filename, width = 10) {
+  message("   * Guardando barplot ", filename)
+  
+  for (dir in c(dir_fig_maps_inst, dir_fig_maps_vign)) {
+    ggplot2::ggsave(
+      filename  = file.path(dir, filename),
+      plot      = plot,
+      width     = width,
+      height    = 6,
+      units     = "in",
+      dpi       = 300,
+      limitsize = FALSE
+    )
+  }
+}
+
 
 # ------------------------------------------------------------
 # 1.1 Extraer y guardar datos de MetaGES (privado)
@@ -106,7 +151,8 @@ vistas_sql <- list(
   colecciones_uso_software_paleo  = "SELECT * FROM colecciones_uso_software_paleo",
   registros_por_disciplina    = "SELECT * FROM registros_por_disciplina",
   registros_por_disciplina_col    = "SELECT * FROM registros_por_disciplina_col",
-  registros_por_disciplina_bd    = "SELECT * FROM registros_por_disciplina_bd"
+  registros_por_disciplina_bd    = "SELECT * FROM registros_por_disciplina_bd",
+  entidades_per_publican    = "SELECT * FROM entidades_per_estado_publicacion"
 )
 
 for (nombre in names(vistas_sql)) {
@@ -258,63 +304,40 @@ df %>% filter(tipo_body == "coleccion") %>%
 
 
 
-
-
-
-
-
 # ------------------------------------------------------------
-# 2. Preparar carpeta de salida para mapas
+# 1.3 Crear y guardar graficos derivados de las vistas SQL
 # ------------------------------------------------------------
 
-# Parámetros comunes de exportación
-gg_opts_all <- list(
-  width  = 9,
-  height = 6,
-  dpi    = 100
-)
-
-# Función auxiliar para guardar mapas
-save_map <- function(plot, filename, gg_opts = gg_opts_all) {
-  message("   * Guardando ", filename)
-  
-  for (dir in c(dir_fig_maps_inst, dir_fig_maps_vign)) {
-    do.call(
-      ggplot2::ggsave,
-      c(
-        list(
-          filename = file.path(dir, filename),
-          plot     = plot
-        ),
-        gg_opts
-      )
-    )
-  }
-}
+message(" - Generando graficas derivadas de vistas SQL")
 
 
-# Función auxiliar para guardar barplots
-save_plot <- function(plot, filename, width = 10) {
-  message("   * Guardando barplot ", filename)
-  
-  for (dir in c(dir_fig_maps_inst, dir_fig_maps_vign)) {
-    ggplot2::ggsave(
-      filename  = file.path(dir, filename),
-      plot      = plot,
-      width     = width,
-      height    = 6,
-      units     = "in",
-      dpi       = 300,
-      limitsize = FALSE
-    )
-  }
-}
+# Entidades por estado de publicacion y disciplina
+save_plot(plot = crear_barplot_publicacion(rdspath = dir_data_sql,
+                                           nivel = "entidades"),
+          filename = "entidades_per_publican.png",
+          width = 12)
+
+
+# Colecciones por estado de publicacion y disciplina
+save_plot(plot = crear_barplot_publicacion(rdspath = dir_data_sql,
+                                           nivel = "colecciones"),
+          filename = "colecciones_per_publican.png",
+          width = 12)
+
+
+# Colecciones por año
+save_plot(plot = crear_barplot_colecciones_por_anno(rdspath = dir_data_sql),
+          filename = "colecciones_per_anno.png",
+          width = 12)
+
 
 
 
 # ------------------------------------------------------------
 # 3.0 Mapa entidades
 # ------------------------------------------------------------
+message("==> Iniciando actualización de mapas y graficos")
+
 message(" - Generando mapa total")
 mapa_entidades <- crear_mapa_entidades()
 
@@ -726,6 +749,51 @@ saveRDS(
   file = fs::path(dir_data_maps, "mapa-colecciones-hong-pub.rds")
 )
 
+# ------------------------------------------------------------
+# 31. Mapa colecciones de botanicas mixtas
+# ------------------------------------------------------------
+message(" - Generando mapa de colecciones de botanicas mixtas")
+res_colecciones <- crear_mapa_simple(
+  tipo_coleccion = "coleccion",
+  subdisciplina = "Botánicas mixtas"
+)
+
+save_map(
+  plot     = res_colecciones$plot,
+  filename = "mapa-colecciones-botmix.png"
+)
+
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-botmix.rds")
+)
+
+save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+                                                          "/mapa-colecciones-botmix.rds")),
+          filename = "barplot-colecciones-botmix.png",
+          width = 12)
+
+
+# ------------------------------------------------------------
+# 32. Mapa colecciones de botanicas mixtas publicadoras
+# ------------------------------------------------------------
+message(" - Generando mapa de colecciones de botanicas mixtas publicadoras")
+res_colecciones <- crear_mapa_simple(
+  tipo_coleccion = "coleccion",
+  subdisciplina = "Botánicas mixtas",
+  publican = T
+)
+
+save_map(
+  plot     = res_colecciones$plot,
+  filename = "mapa-colecciones-botmix-pub.png"
+)
+
+saveRDS(
+  res_colecciones$data_map,
+  file = fs::path(dir_data_maps, "mapa-colecciones-botmix-pub.rds")
+)
+
 
 # ------------------------------------------------------------
 # 20. Mapa colecciones microbiologicas
@@ -774,49 +842,49 @@ saveRDS(
 
 
 # ------------------------------------------------------------
-# 22. Mapa colecciones micologicas
+# 22. Mapa colecciones micologicas (OBSOLETO)
 # ------------------------------------------------------------
-message(" - Generando mapa de colecciones micologicas")
-res_colecciones <- crear_mapa_simple(
-  tipo_coleccion = "coleccion",
-  disciplina = "Mico"
-)
-
-save_map(
-  plot     = res_colecciones$plot,
-  filename = "mapa-colecciones-mico.png"
-)
-
-saveRDS(
-  res_colecciones$data_map,
-  file = fs::path(dir_data_maps, "mapa-colecciones-mico.rds")
-)
-
-save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
-                                                          "/mapa-colecciones-mico.rds")),
-          filename = "barplot-colecciones-mico.png",
-          width = 12)
+# message(" - Generando mapa de colecciones micologicas")
+# res_colecciones <- crear_mapa_simple(
+#   tipo_coleccion = "coleccion",
+#   disciplina = "Mico"
+# )
+# 
+# save_map(
+#   plot     = res_colecciones$plot,
+#   filename = "mapa-colecciones-mico.png"
+# )
+# 
+# saveRDS(
+#   res_colecciones$data_map,
+#   file = fs::path(dir_data_maps, "mapa-colecciones-mico.rds")
+# )
+# 
+# save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps, 
+#                                                           "/mapa-colecciones-mico.rds")),
+#           filename = "barplot-colecciones-mico.png",
+#           width = 12)
 
 
 # ------------------------------------------------------------
-# 23. Mapa colecciones micologicas (publicadoras)
+# 23. Mapa colecciones micologicas (publicadoras) (OBSOLETO)
 # ------------------------------------------------------------
-message(" - Generando mapa de colecciones micologicas publicadoras")
-res_colecciones <- crear_mapa_simple(
-  tipo_coleccion = "coleccion",
-  disciplina = "Mico",
-  publican = T
-)
-
-save_map(
-  plot     = res_colecciones$plot,
-  filename = "mapa-colecciones-mico.png"
-)
-
-saveRDS(
-  res_colecciones$data_map,
-  file = fs::path(dir_data_maps, "mapa-colecciones-mico.rds")
-)
+# message(" - Generando mapa de colecciones micologicas publicadoras")
+# res_colecciones <- crear_mapa_simple(
+#   tipo_coleccion = "coleccion",
+#   disciplina = "Mico",
+#   publican = T
+# )
+# 
+# save_map(
+#   plot     = res_colecciones$plot,
+#   filename = "mapa-colecciones-mico.png"
+# )
+# 
+# saveRDS(
+#   res_colecciones$data_map,
+#   file = fs::path(dir_data_maps, "mapa-colecciones-mico.rds")
+# )
 
 # ------------------------------------------------------------
 # 24. Mapa colecciones Paleontologicas
@@ -1003,6 +1071,6 @@ tryCatch(
 
 
 # ------------------------------------------------------------
-# 31. Fin
+# X. Fin
 # ------------------------------------------------------------
 message("==> Mapas de vignettes actualizados correctamente")

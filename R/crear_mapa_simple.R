@@ -4,8 +4,8 @@
 #' y expone solo filtros y facet.
 #'
 #' @param tipo_coleccion `colección`, `base de datos` o `NULL`.
-#' @param disciplina `Zoológica`, `Botánica`, `Paleontológica`, `Mixta`, `Microbiológica`, `Micológica` o `NULL`.
-#' @param subdisciplina `Vertebrados`, `Invertebrados`, `Invertebrados y vertebrados`, `Plantas`, `Hongos`, `Algas` o `NULL`.
+#' @param disciplina `Zoológica`, `Botánica`, `Paleontológica`, `Mixta`, `Microbiológica` o `NULL`.
+#' @param subdisciplina `Vertebrados`, `Invertebrados`, `Invertebrados y vertebrados`, `Plantas`,  `Hongos y l\u00EDquenes`, `Algas`, `Bot\u00E1nicas mixtas` o `NULL`.
 #' @param publican `TRUE`, `FALSE` o `NULL`.
 #' @param facet Nombre de columna (string) para facetar o `NULL`.
 #'

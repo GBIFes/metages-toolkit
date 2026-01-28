@@ -160,11 +160,31 @@ La información referente a las entidades y proyectos, y a las colecciones biol�
 ~~Hay 229 entidades (instituciones, centros y proyectos) vinculadas al Nodo Nacional de Información en Biodiversidad, referidas y actualizadas hasta diciembre de 2019, de las cuales 104 (el 45 %) publican datos. Con respecto al informe anterior se han incorporado 53 —50 instituciones o centros y 3 proyectos—, es decir, un 23 % más. Estas entidades poseen en conjunto 474 colecciones biológicas o bases de datos y 308 recursos o juegos de datos con un total de 32.367.320 registros en línea, que publican a través de los portales GBIF. Con respecto al informe anterior (diciembre de 2014) se han incorporado 64 colecciones (un 14 % más) y 136 recursos (un 79 % más) a la infraestructura de GBIF, y el número de registros publicados ha crecido en 22.170.677, lo que supone un incremento del 317,42 %, de manera que en este periodo España se mantiene en el décimo país del mundo que más contribuye a GBIF, tal como se puede ver en la tabla 1.a. y gráfica 1.b.~~
 
 ```{r}
-top10 <- get_top10_countries_rgbif()
-ft_tbl(top10, caption = "Registros de datos de biodiversidad publicados en GBIF.ORG.")
+safe_ft_tbl <- function(expr, caption) {
+  tryCatch(
+    {
+      df <- expr
+      ft_tbl(df, caption = caption)
+    },
+    error = function(e) {
+      cat(
+        "\n\n⚠️ **Datos no disponibles temporalmente**\n\n",
+        "La API de GBIF no está accesible en el momento de generar este informe.\n\n"
+      )
+      NULL
+    }
+  )
+}
 
-top10_publishing <- get_top_publishing_countries_gbif()
-ft_tbl(top10_publishing, caption = "Registros de datos de biodiversidad publicados en GBIF.ORG.")
+safe_ft_tbl(
+  get_top10_countries_rgbif(),
+  caption = "Registros de datos de biodiversidad publicados en GBIF.ORG."
+)
+
+safe_ft_tbl(
+  get_top_publishing_countries_gbif(n = 15),
+  caption = "Registros de datos de biodiversidad publicados en GBIF.ORG."
+)
 
 ```
 
@@ -250,10 +270,9 @@ A fecha de `r mes_anno_actual` hay ~~229 entidades~~ (instituciones, centros y p
 
 En la gráfica ~~3.2.1.~~ se enumeran las entidades por categorías. Así mismo, se especifica para una el número de entidades que publican datos en GBIF.
 
-Hay que tener en cuenta que una misma entidad puede albergar colecciones o bases de
-datos que correspondan a más de una categoría, por lo que el número de entidades mixtas es elevado, mientras que, por ejemplo, las exclusivamente microbiológicas es muy reducido. Seobserva también que no hay ninguna entidad exclusivamente microbiológica o paleontológica. Por eso, estas categorías las veremos más adelante mejor diferenciadas y definidas en el 2º nivel, de colecciones biológicas y bases de datos.
+Hay que tener en cuenta que una misma entidad puede albergar colecciones o bases de datos que correspondan a más de una categoría, por lo que el número de entidades mixtas es elevado, mientras que, por ejemplo, las exclusivamente microbiológicas es muy reducido. Seobserva también que no hay ninguna entidad exclusivamente microbiológica o paleontológica. Por eso, estas categorías las veremos más adelante mejor diferenciadas y definidas en el 2º nivel, de colecciones biológicas y bases de datos.
 
-GRAFICA AQUI
+![](assets/images/generated/entidades_per_publican.png)
 
 
 ::: callout-note
@@ -271,7 +290,7 @@ La distribución espacial de las entidades registradas que forman parte del Nodo
 Actualmente hay contabilizadas ~~474 colecciones biológicas y bases de datos
 pertenecientes a 229 entidades~~. Desde 2004, que se tienen datos en el Registro, ha habido un aumento anual constante, tal como refleja la ~~gráfica 3.3.a.~~, donde se indican los totales y el número de nuevas incorporaciones por año. ~~En los últimos cinco años (periodo 2015-2019),~~ desde el anterior informe, se han incrementado en ~~64 el número de~~ colecciones y bases de datos.
 
-GRAFICA AQUI
+![](assets/images/generated/colecciones_per_anno.png)
 ```{r}
 proporcion_col_base <- readRDS("data/vistas_sql/proporcion_col_base.rds")
 
@@ -280,7 +299,7 @@ ft_tbl(
   caption = "Tabla 3.3.b. Número y porcentaje de colecciones biológicas (físicas) y bases de datos (digitales) registradas."
 )
 ```
-GRAFICA AQUI
+![](assets/images/generated/colecciones_per_publican.png)
 PIE CHART AQUI
 
 ### Incorporación de registros a la red de GBIF

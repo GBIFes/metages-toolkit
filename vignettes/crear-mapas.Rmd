@@ -113,7 +113,7 @@ espacial de los recursos del Registro.
 Ejemplo de uso de `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Vertebrados")`, mostrando la distribución
 espacial de los recursos del Registro.
 
-![](figures/mapa-colecciones-zoo-vert.png)
+![](figures/mapa-colecciones-vert.png)
 
 
 ## Mapa colecciones de vertebrados publicadoras
@@ -121,7 +121,7 @@ espacial de los recursos del Registro.
 Ejemplo de uso de `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Vertebrados", publican = T)`, mostrando la distribución
 espacial de los recursos del Registro.
 
-![](figures/mapa-colecciones-zoo-vert-pub.png)
+![](figures/mapa-colecciones-vert-pub.png)
 
 
 ## Mapa colecciones de invertebrados y vertebrados
@@ -203,6 +203,21 @@ espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-hong-pub.png)
 
+## Mapa colecciones de botanicas mixtas
+
+Ejemplo de uso de `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Botánicas mixtas")`, mostrando la distribución
+espacial de los recursos del Registro.
+
+![](figures/mapa-colecciones-botmix.png)
+
+
+## Mapa colecciones de botanicas mixtas publicadoras
+
+Ejemplo de uso de `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Botánicas mixtas", publican = T)`, mostrando la distribución
+espacial de los recursos del Registro.
+
+![](figures/mapa-colecciones-botmix-pub.png)
+
 
 ## Mapa colecciones microbiológicas
 
@@ -219,7 +234,7 @@ espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-micro-pub.png)
 
-
+<!-- (OBSOLETO)
 ## Mapa colecciones micológicas
 
 Ejemplo de uso de `crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Mico")`, mostrando la distribución
@@ -234,7 +249,7 @@ Ejemplo de uso de `crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = 
 espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-mico.png)
-
+-->
 
 ## Mapa colecciones paleontológicas
 

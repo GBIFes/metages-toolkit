@@ -65,7 +65,8 @@ crear_barplot_top_colecciones_pub <- function(rds_path) {
   ) +
     geom_col(
       width = 0.5,
-      fill = "#2ecc71"
+      fill = "#2ECC9A",
+      alpha = 0.8
     ) +
     geom_text(
       aes(

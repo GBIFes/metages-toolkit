@@ -15,9 +15,9 @@
 #'  Uno de `coleccion`, `base de datos` o `NULL`.
 #' @param disciplina 
 #'  Uno de `Zool\u00F3gica`, `Bot\u00E1nica`, `Paleontol\u00F3gica`,
-#'  `Mixta`, `Microbiol\u00F3gica`, `Micol\u00F3gica` o `NULL`.
+#'  `Mixta`, `Microbiol\u00F3gica` o `NULL`.
 #' @param subdisciplina 
-#'  Uno de `Vertebrados`, `Invertebrados`, `Invertebrados y vertebrados`, `Plantas`, `Hongos`, `Algas` o `NULL`.
+#'  Uno de `Vertebrados`, `Invertebrados`, `Invertebrados y vertebrados`, `Plantas`, `Hongos y l\u00EDquenes`, `Algas`, `Bot\u00E1nicas mixtas` o `NULL`.
 #' @param publican
 #'  Uno de `TRUE`, `FALSE` o `NULL`.
 #' @param facet Nombre de columna (string) para facetar o `NULL`.
@@ -57,7 +57,7 @@ crear_mapa <- function(data = data,
   disciplina <- if (!is.null(disciplina)) {
     match.arg(disciplina, c(
       "Zool\u00F3gica", "Bot\u00E1nica", "Paleontol\u00F3gica",
-      "Mixta", "Microbiol\u00F3gica", "Micol\u00F3gica"
+      "Mixta", "Microbiol\u00F3gica"
     )
     )
   } else NULL
@@ -66,7 +66,7 @@ crear_mapa <- function(data = data,
     match.arg(subdisciplina, c(
       "Vertebrados", "Invertebrados",
       "Invertebrados y vertebrados",
-      "Plantas", "Hongos", "Algas"
+      "Plantas", "Hongos y l\u00edquenes", "Algas", "Bot\u00e1nicas mixtas"
     ))
   } else NULL
   
@@ -303,6 +303,7 @@ crear_mapa <- function(data = data,
         facet_wrap(vars(.data[[facet]]))
     }
   }
+  
   
   
   message(

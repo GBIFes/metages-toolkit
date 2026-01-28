@@ -8,6 +8,7 @@ navbar:
     left:  [reference, articles, pkgnet]
     right: [search, github]
 
+
   components:
     reference:
       text: "Funciones"
