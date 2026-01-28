@@ -1,8 +1,11 @@
 # metagesToolkit
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/GBIFes/metages-toolkit/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/GBIFes/metages-toolkit/actions/workflows/R-CMD-check.yaml) 
+[![Project Status: Active – The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental) 
+[![R-CMD-check](https://github.com/GBIFes/metages-toolkit/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/GBIFes/metages-toolkit/actions/workflows/R-CMD-check.yaml) 
 [![Codecov test coverage](https://codecov.io/gh/GBIFes/metages-toolkit/graph/badge.svg)](https://app.codecov.io/gh/GBIFes/metages-toolkit)
 <!-- badges: end -->
 
