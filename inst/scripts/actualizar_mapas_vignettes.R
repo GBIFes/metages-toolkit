@@ -152,6 +152,7 @@ vistas_sql <- list(
   registros_por_disciplina    = "SELECT * FROM registros_por_disciplina",
   registros_por_disciplina_col    = "SELECT * FROM registros_por_disciplina_col",
   registros_por_disciplina_bd    = "SELECT * FROM registros_por_disciplina_bd",
+  registros_por_sector    = "SELECT * FROM registros_por_sector",
   entidades_per_publican    = "SELECT * FROM entidades_per_estado_publicacion"
 )
 
@@ -302,6 +303,15 @@ df %>% filter(tipo_body == "coleccion") %>%
 #   arrange(`Accesibilidad a los datos informatizados`) %>%
 #   saveRDS(file = fs::path(dir_data_sql, "acceso_informatizado.rds"))
 
+
+# Numero de recursos y registros dividido por sector
+rec <- readRDS("inst/reports/data/vistas_sql/registros_por_sector.rds")
+
+rec %>% mutate(Sectores = case_when(Sectores == "Académico (univers., institut., colegios, asociaciones...)" ~ "Académico",
+                                    Sectores == "Ciencia Ciudadana" ~ "Ciencia ciudadana",
+                                    Sectores == "Empresa privada" ~ "Sector privado",
+                                    TRUE ~ Sectores)) %>%
+        saveRDS(file = fs::path(dir_data_sql, "registros_por_sector.rds"))
 
 
 # ------------------------------------------------------------

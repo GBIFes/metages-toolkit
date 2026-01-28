@@ -330,7 +330,17 @@ mientras que por número de registros son las administraciones públicas y las d
 
 Como las entidades y colecciones pueden asignarse a más de un sector, la distribución de datos entre ellas se ve más claramente a nivel de recursos en línea y registros publicados. El desglose de estos datos por sectores se ve en la ~~tabla 3.3.1.c. y en las gráficas 3.3.1.d. y 3.3.1.e.~~
 
-TABLA AQUI
+```{r}
+
+# Ejecuta una llamada para fijar `data_clean_last` con el mismo filtro que el mapa anterior
+df <- readRDS("data/vistas_sql/registros_por_sector.rds")
+
+ft_tbl(
+  df,
+  caption = "Tabla xx. Recursos clasificados por sectores (número de recursos y registros)."
+)
+```
+
 GRAFICA AQUI
 GRAFICA AQUI
 
