@@ -44,12 +44,13 @@ crear_mapa(
 - disciplina:
 
   Uno de `Zool\u00F3gica`, `Bot\u00E1nica`, `Paleontol\u00F3gica`,
-  `Mixta`, `Microbiol\u00F3gica`, `Micol\u00F3gica` o `NULL`.
+  `Mixta`, `Microbiol\u00F3gica` o `NULL`.
 
 - subdisciplina:
 
   Uno de `Vertebrados`, `Invertebrados`, `Invertebrados y vertebrados`,
-  `Plantas`, `Hongos`, `Algas` o `NULL`.
+  `Plantas`, `Hongos y l\u00EDquenes`, `Algas`, `Bot\u00E1nicas mixtas`
+  o `NULL`.
 
 - publican:
 

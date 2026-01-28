@@ -57,6 +57,8 @@ reference:
   - '`crear_mapa_entidades`'
   - '`get_basemap_es`'
   - '`crear_barplot_top_colecciones_pub`'
+  - '`crear_barplot_colecciones_por_anno`'
+  - '`crear_barplot_publicacion`'
 
 - title: Crear y modificar Informe
   contents:

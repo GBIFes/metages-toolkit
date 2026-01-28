@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">metagesToolkit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,7 +106,7 @@ a MetaGES</a>.</p>
 <code>extraer_colecciones_mapa.R</code> filtra MetaGES para proveer
 <strong>registros de calidad</strong>. Por lo tanto no proporciona la
 lista completa de registros de colecciones y bases de datos de MetaGES.
-Para acceder a todos los datos de MetaGES, acceder <a href="https://gbifes.github.io/metages-toolkit/articles/guia-uso-dev.html#mediante-llamadas-sql-a-metages">Mediante
+Para acceder a todos los datos de MetaGES, acceder <a href="https://gbifes.github.io/metages-toolkit/articles/guia-uso-usr.html#mediante-llamadas-sql-a-metages">Mediante
 llamadas SQL a MetaGES</a></p>
 </blockquote>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -184,15 +184,15 @@ entre ellos para generar diferentes tipos de mapas.</p>
 <span></span>
 <span><span class="co"># DISCIPLINA</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">datos</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">disciplina_def</span><span class="op">)</span></span>
-<span><span class="co"># [1] "Microbiológica" "Botánica"       "Mixta"          "Zoológica"  </span></span>
-<span><span class="co"># [5] "Micológica"     "Paleontológica"</span></span>
+<span><span class="co"># [1] "Microbiológica" "Botánica"       "Mixta"  </span></span>
+<span><span class="co"># [5] "Zoológica"     "Paleontológica"</span></span>
 <span></span>
 <span><span class="co"># SUBDISCIPLINA</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">datos</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">disciplina_subtipo_def</span><span class="op">)</span></span>
-<span><span class="co"># [1] NA                            "Plantas"                    </span></span>
+<span><span class="co"># [1] "Botanicas mixtas"            "Plantas"                    </span></span>
 <span><span class="co"># [3] "Vertebrados"                 "Invertebrados"              </span></span>
 <span><span class="co"># [5] "Invertebrados y vertebrados" "Algas"                      </span></span>
-<span><span class="co"># [7] "Hongos"</span></span>
+<span><span class="co"># [7] "Hongos y líquenes"</span></span>
 <span></span>
 <span><span class="co"># PUBLICAN</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">datos</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">publica_en_gbif</span><span class="op">)</span></span>

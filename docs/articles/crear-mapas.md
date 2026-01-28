@@ -81,7 +81,7 @@ Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Vertebrados")`,
 mostrando la distribución espacial de los recursos del Registro.
 
-![](figures/mapa-colecciones-zoo-vert.png)
+![](figures/mapa-colecciones-vert.png)
 
 ## Mapa colecciones de vertebrados publicadoras
 
@@ -89,7 +89,7 @@ Ejemplo de uso de
 `crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Vertebrados", publican = T)`,
 mostrando la distribución espacial de los recursos del Registro.
 
-![](figures/mapa-colecciones-zoo-vert-pub.png)
+![](figures/mapa-colecciones-vert-pub.png)
 
 ## Mapa colecciones de invertebrados y vertebrados
 
@@ -171,6 +171,22 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-hong-pub.png)
 
+## Mapa colecciones de botanicas mixtas
+
+Ejemplo de uso de
+`crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Botánicas mixtas")`,
+mostrando la distribución espacial de los recursos del Registro.
+
+![](figures/mapa-colecciones-botmix.png)
+
+## Mapa colecciones de botanicas mixtas publicadoras
+
+Ejemplo de uso de
+`crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Botánicas mixtas", publican = T)`,
+mostrando la distribución espacial de los recursos del Registro.
+
+![](figures/mapa-colecciones-botmix-pub.png)
+
 ## Mapa colecciones microbiológicas
 
 Ejemplo de uso de
@@ -186,22 +202,6 @@ Ejemplo de uso de
 mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-micro-pub.png)
-
-## Mapa colecciones micológicas
-
-Ejemplo de uso de
-`crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Mico")`,
-mostrando la distribución espacial de los recursos del Registro.
-
-![](figures/mapa-colecciones-mico.png)
-
-## Mapa colecciones micológicas publicadoras
-
-Ejemplo de uso de
-`crear_mapa_simple(tipo_coleccion = "coleccion", disciplina = "Mico", publican = T)`,
-mostrando la distribución espacial de los recursos del Registro.
-
-![](figures/mapa-colecciones-mico.png)
 
 ## Mapa colecciones paleontológicas
 

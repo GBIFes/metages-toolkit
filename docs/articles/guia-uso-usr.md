@@ -40,7 +40,7 @@ MetaGES](https://gbifes.github.io/metages-toolkit/articles/guia-uso-dev.html#con
 > proporciona la lista completa de registros de colecciones y bases de
 > datos de MetaGES. Para acceder a todos los datos de MetaGES, acceder
 > [Mediante llamadas SQL a
-> MetaGES](https://gbifes.github.io/metages-toolkit/articles/guia-uso-dev.html#mediante-llamadas-sql-a-metages)
+> MetaGES](https://gbifes.github.io/metages-toolkit/articles/guia-uso-usr.html#mediante-llamadas-sql-a-metages)
 
 ``` r
 # Cargar el paquete instalado para poder usarlo
@@ -116,15 +116,15 @@ unique(datos$data$tipo_body)
 
 # DISCIPLINA
 unique(datos$data$disciplina_def)
-# [1] "Microbiológica" "Botánica"       "Mixta"          "Zoológica"  
-# [5] "Micológica"     "Paleontológica"
+# [1] "Microbiológica" "Botánica"       "Mixta"  
+# [5] "Zoológica"     "Paleontológica"
 
 # SUBDISCIPLINA
 unique(datos$data$disciplina_subtipo_def)
-# [1] NA                            "Plantas"                    
+# [1] "Botanicas mixtas"            "Plantas"                    
 # [3] "Vertebrados"                 "Invertebrados"              
 # [5] "Invertebrados y vertebrados" "Algas"                      
-# [7] "Hongos"
+# [7] "Hongos y líquenes"
 
 # PUBLICAN
 unique(datos$data$publica_en_gbif)

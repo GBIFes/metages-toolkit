@@ -24,13 +24,14 @@ crear_mapa_simple(
 
 - disciplina:
 
-  `Zoológica`, `Botánica`, `Paleontológica`, `Mixta`, `Microbiológica`,
-  `Micológica` o `NULL`.
+  `Zoológica`, `Botánica`, `Paleontológica`, `Mixta`, `Microbiológica` o
+  `NULL`.
 
 - subdisciplina:
 
   `Vertebrados`, `Invertebrados`, `Invertebrados y vertebrados`,
-  `Plantas`, `Hongos`, `Algas` o `NULL`.
+  `Plantas`, `Hongos y l\u00EDquenes`, `Algas`, `Bot\u00E1nicas mixtas`
+  o `NULL`.
 
 - publican:
 

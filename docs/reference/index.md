@@ -20,6 +20,10 @@
   : Obtener basemap de España (con Canarias desplazadas)
 - [`crear_barplot_top_colecciones_pub()`](https://gbifes.github.io/metages-toolkit/reference/crear_barplot_top_colecciones_pub.md)
   : Crear grafico de top colecciones por número de registros
+- [`crear_barplot_colecciones_por_anno()`](https://gbifes.github.io/metages-toolkit/reference/crear_barplot_colecciones_por_anno.md)
+  : Evolucion anual del numero de colecciones registradas
+- [`crear_barplot_publicacion()`](https://gbifes.github.io/metages-toolkit/reference/crear_barplot_publicacion.md)
+  : Grafico de barras apiladas sobre el estado de publicacion en GBIF
 
 ## Crear y modificar Informe
 
