@@ -5,13 +5,27 @@
 #'
 #' La función depende de variables de entorno previamente configuradas
 #' (por ejemplo, host, claves SSH y credenciales de base de datos).
+#' Para mas informacion sobre la configuracion de las variables de entorno, ver 
+#' \href{https://gbifes.github.io/metages-toolkit/articles/guia-uso-dev.html#configuracion-de--renviron-para-acceder-a-metages}{Documentación técnica de metagesToolkit}
+#'
+#'
+#' @param driver Nombre del driver ODBC a utilizar. Por defecto se usa
+#'   `"MySQL ODBC 9.4 Unicode Driver"`, pero puede variar según el sistema
+#'   operativo y la instalación local. Para listar los drivers disponibles:
+#'   \code{odbc::odbcListDrivers()}.
+#'   
+#' En sistemas donde el driver por defecto no funcione, el usuario
+#' deberá especificar uno alternativo mediante el argumento \code{driver}.
+#'
 #'
 #' @details
 #' La conexión se realiza en dos pasos:
 #' \enumerate{
 #'   \item Apertura de un túnel SSH.
-#'   \item Conexión a la base de datos vía DBI/ODBC.
+#'   \item Conexión a la base de datos vía \pkg{DBI} y \pkg{ODBC}.
 #' }
+#'
+#'
 #'
 #' @return Una lista con dos elementos:
 #' \describe{
@@ -26,7 +40,7 @@
 #'
 #' @export
 
-conectar_metages <- function() {
+conectar_metages <- function(driver = "MySQL ODBC 9.4 Unicode Driver") {
 
   
   required_env <- c(
@@ -49,6 +63,23 @@ conectar_metages <- function() {
   }
   
   
+  # ---------------------------------------------------------------
+  # Comprobar que el driver ODBC existe
+  # ---------------------------------------------------------------
+  available_drivers <- odbc::odbcListDrivers()$name
+  
+  if (!driver %in% available_drivers) {
+    stop(
+      "ODBC driver not found: '", driver, "'.\n",
+      "Available drivers:\n",
+      paste(available_drivers, collapse = ", "),
+      call. = FALSE
+    )
+  }
+  
+  # ---------------------------------------------------------------
+  # Conexión SSH
+  # --------------------------------------------------------------- 
 
 # Credenciales SSH. Ajusta la ruta a tu clave privada
 session <- ssh::ssh_connect(
@@ -64,8 +95,8 @@ session <- ssh::ssh_connect(
 
   # DESDE CMD:
       # Pegar el resultado en CMD y clicar "Enter"
-      Sys.getenv("test_ssh_bridge") # TEST env
-      Sys.getenv("prod_ssh_bridge") # PROD env
+      # Sys.getenv("test_ssh_bridge") # TEST env
+      # Sys.getenv("prod_ssh_bridge") # PROD env
       
       # Dejar tunel abierto mientras trabajas!
       
@@ -100,7 +131,7 @@ con <- dbConnect(odbc(),
   # Subset: subset(odbc::odbcListDrivers(), attribute == "UsageCount") 
   # Lista completa: odbc::odbcListDrivers()
 
-                 Driver   = "MySQL ODBC 9.4 Unicode Driver",
+                 Driver   = driver,
                  Server   = "127.0.0.1",
                  Port     = 3307,          # el puerto del túnel local
                  Database = Sys.getenv("Database"),
