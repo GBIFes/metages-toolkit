@@ -300,7 +300,7 @@ ft_tbl(
 )
 ```
 ![](assets/images/generated/colecciones_per_publican.png)
-PIE CHART AQUI
+![](assets/images/generated/colecciones_por_disciplina.png)
 
 ### Incorporación de registros a la red de GBIF
 
@@ -341,8 +341,8 @@ ft_tbl(
 )
 ```
 
-GRAFICA AQUI
-GRAFICA AQUI
+![](assets/images/generated/recursos_por_sector.png)
+![](assets/images/generated/registros_por_sector.png)
 
 Por último, examinamos los datos publicados en GBIF por parte de entidades españolas desde el punto de vista del tipo de registro de los juegos de datos. En la red de GBIF —de la mano de la especificación “Darwin Core Archive”— se reconocen cuatro tipos:
 
@@ -855,7 +855,7 @@ CREAF (Centro de Investigación Ecológica y Aplicaciones Forestales), ICREA (In
 A finales de ~~diciembre de 2019 se encuentran adscritas al Nodo Nacional de Información en Biodiversidad 127 bases de datos, de las que 68 publican sus datos, con un total de 28.078.500 registros. A continuación, en la tabla 5.2.1.a. y la gráfica 5.2.1.b., se resume la información referente a la cantidad de bases de datos adscritas en función de las categorías establecidas en la tabla 3.1.2.a.,~~ especificando cuántas de ellas publican sus datos a través de los portales GBIF. No hay ninguna base de datos de tipo paleontológico.
 
 TABLA AQUI
-GRAFICA AQUI
+![](assets/images/generated/colecciones_bd_por_disciplina.png)
 
 ### Bases de datos en GBIF
 

@@ -141,6 +141,7 @@ vistas_sql <- list(
   colecciones_informatizacion_ejemplares_paleo = "SELECT * FROM colecciones_informatizacion_ejemplares_paleo",
   colecciones_per_anno        = "SELECT * FROM colecciones_per_anno",
   colecciones_per_publican    = "SELECT * FROM colecciones_per_estado_publicacion",
+  colecciones_bd_por_disciplina  = "SELECT * FROM colecciones_bd_por_disciplina",
   colecciones_por_disciplina  = "SELECT * FROM colecciones_por_disciplina",
   colecciones_por_subdisciplina_botanica  = "SELECT * FROM colecciones_por_subdisciplina_botanica",
   colecciones_por_subdisciplina_zoologica  = "SELECT * FROM colecciones_por_subdisciplina_zoologica",
@@ -338,6 +339,36 @@ save_plot(plot = crear_barplot_publicacion(rdspath = dir_data_sql,
 # Colecciones por año
 save_plot(plot = crear_barplot_colecciones_por_anno(rdspath = dir_data_sql),
           filename = "colecciones_per_anno.png",
+          width = 12)
+
+
+
+# Registros por sector
+save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/registros_por_sector.rds"),
+                                 categoria = "Sectores",
+                                 valor = "Nº registros publicados"),
+          filename = "registros_por_sector.png",
+          width = 12)
+
+# Recursos por sector
+save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/registros_por_sector.rds"),
+                                 categoria = "Sectores",
+                                 valor = "Nº recursos"),
+          filename = "recursos_por_sector.png",
+          width = 12)
+
+# Bases de datos por categoria
+save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/colecciones_bd_por_disciplina.rds"),
+                                 categoria = "disciplina_def",
+                                 valor = "numero_colecciones"),
+          filename = "colecciones_bd_por_disciplina.png",
+          width = 12)
+
+# Colecciones y bases de datos por categoria
+save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/colecciones_por_disciplina.rds"),
+                                 categoria = "disciplina_def",
+                                 valor = "numero_colecciones"),
+          filename = "colecciones_por_disciplina.png",
           width = 12)
 
 
