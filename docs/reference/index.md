@@ -24,6 +24,8 @@
   : Evolucion anual del numero de colecciones registradas
 - [`crear_barplot_publicacion()`](https://gbifes.github.io/metages-toolkit/reference/crear_barplot_publicacion.md)
   : Grafico de barras apiladas sobre el estado de publicacion en GBIF
+- [`crear_piechart()`](https://gbifes.github.io/metages-toolkit/reference/crear_piechart.md)
+  : Crear grafico de sectores (pie chart) a partir de tablas agregadas
 
 ## Crear y modificar Informe
 

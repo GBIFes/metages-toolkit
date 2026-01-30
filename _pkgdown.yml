@@ -59,6 +59,7 @@ reference:
   - '`crear_barplot_top_colecciones_pub`'
   - '`crear_barplot_colecciones_por_anno`'
   - '`crear_barplot_publicacion`'
+  - '`crear_piechart`'
 
 - title: Crear y modificar Informe
   contents:
