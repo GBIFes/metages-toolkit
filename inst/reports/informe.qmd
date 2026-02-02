@@ -146,6 +146,36 @@ mes_anno_informe_anterior <- "diciembre de 2019"
 mes_anno_actual <- format(Sys.Date(), "%B de %Y")
 
 
+## disciplinas numero colecciones
+inf_ant_n_colbd_total <- "474"
+inf_ant_n_colbd_zoo <- "(192)"
+inf_ant_n_colbd_inv <- "103"
+inf_ant_n_colbd_ver <- "70"
+inf_ant_n_colbd_invver <- "19"
+inf_ant_n_colbd_bot <- "(201)"
+inf_ant_n_colbd_pla <- "163"
+inf_ant_n_colbd_alg <- "14"
+inf_ant_n_colbd_hong <- "24"
+inf_ant_n_colbd_botmix <- "NA"
+inf_ant_n_colbd_micro <- "8"
+inf_ant_n_colbd_paleo <- "44"
+inf_ant_n_colbd_mix <- "29"
+
+## disciplinas numero registros
+inf_ant_n_reg_total <- "32.367.320"
+inf_ant_n_reg_zoo <- "(13.331.336)"
+inf_ant_n_reg_inv <- "1.064.701"
+inf_ant_n_reg_ver <- "12.199.676"
+inf_ant_n_reg_invver <- "66.959"
+inf_ant_n_reg_bot <- "(15.893.174)"
+inf_ant_n_reg_pla <- "15.430.831"
+inf_ant_n_reg_alg <- "31.868"
+inf_ant_n_reg_hong <- "430.475"
+inf_ant_n_reg_botmix <- "NA"
+inf_ant_n_reg_micro <- "12.176"
+inf_ant_n_reg_paleo <- "34.637"
+inf_ant_n_reg_mix <- "3.095.997"
+
 
 
 ```
@@ -308,7 +338,38 @@ A fecha de `r mes_anno_actual`, de las ~~474 colecciones biológicas y bases de 
 
 En la tabla 3.3.1.a. se muestra una comparativa entre los registros publicados en 2014 y los de 2019. El incremento de registros en ese periodo ha sido de 22.170.079 (317,42 %).~~
 
-TABLA AQUI
+```{r}
+colbd_comp <- readRDS("data/vistas_sql/colecciones_por_disciplina_y_sub.rds") %>%
+              transmute(Disciplina = disciplina,
+                        !!paste0("Nº colecciones y bases de datos (", 
+                               anno_informe_anterior, 
+                               ")") := c(inf_ant_n_colbd_zoo, inf_ant_n_colbd_inv,
+                                        inf_ant_n_colbd_ver, inf_ant_n_colbd_invver,
+                                        inf_ant_n_colbd_bot, inf_ant_n_colbd_pla,
+                                        inf_ant_n_colbd_alg, inf_ant_n_colbd_hong,
+                                        inf_ant_n_colbd_botmix, inf_ant_n_colbd_micro, 
+                                        inf_ant_n_colbd_mix, inf_ant_n_colbd_paleo,
+                                        inf_ant_n_colbd_total),
+                        !!paste0("Nº registros publicados en GBIF (", 
+                               anno_informe_anterior, 
+                               ")") := c(inf_ant_n_reg_zoo, inf_ant_n_reg_inv,
+                                        inf_ant_n_reg_ver, inf_ant_n_reg_invver,
+                                        inf_ant_n_reg_bot, inf_ant_n_reg_pla,
+                                        inf_ant_n_reg_alg, inf_ant_n_reg_hong,
+                                        inf_ant_n_reg_botmix, inf_ant_n_reg_micro,
+                                        inf_ant_n_reg_mix, inf_ant_n_reg_paleo,
+                                        inf_ant_n_reg_total),
+                        !!paste0("Nº colecciones y bases de datos (", anno_actual, ")") := n_colecciones,
+                        !!paste0("Nº registros publicados en GBIF (", anno_actual, ")") := n_registros_publicados)
+
+
+
+ft_tbl(
+  colbd_comp,
+  caption = "Tabla 3.3.1.a. Comparativa entre ~2014 y 2019~ del número total de colecciones biológicas y bases de datos, con registros publicados y número de registros, según su categoría.
+"
+)
+```
 
 ~~En la gráfica 3.3.1.b. podemos ver la progresión del número de registros publicados en GBIF desde 2005 hasta diciembre de 2019 hasta alcanzar los 32.367.320 registros actuales.~~
 
@@ -456,13 +517,13 @@ A continuación, puede verse representada la manera de acceder a los registros
 informatizados de las colecciones según lo dispuesto por cada entidad responsable, basada en las respuestas proporcionadas por el ~~54,5 %~~ de las colecciones. Una misma colección pudo proporcionar respuestas incluidas en más de una categoría. (Ejemplo: “a través del responsable” y “a través de Intranet”).
 
 ```{r}
-# tabla_medio_acceso_inform <- readRDS("data/vistas_sql/")
-# 
-# ft_tbl(
-#   tabla_medio_acceso_inform,
-#   caption = "Tabla 4.1.4.2.2. Forma de acceso a los datos informatizados de las colecciones biológicas según las
-# categorías propuestas."
-# )
+tabla_medio_acceso_inform <- readRDS("data/vistas_sql/medio_acceso_inform.rds")
+
+ft_tbl(
+  tabla_medio_acceso_inform,
+  caption = "Tabla 4.1.4.2.2. Forma de acceso a los datos informatizados de las colecciones biológicas según las
+categorías propuestas."
+)
 ```
 
 ### Colecciones biológicas que publican en GBIF
@@ -854,7 +915,15 @@ CREAF (Centro de Investigación Ecológica y Aplicaciones Forestales), ICREA (In
 
 A finales de ~~diciembre de 2019 se encuentran adscritas al Nodo Nacional de Información en Biodiversidad 127 bases de datos, de las que 68 publican sus datos, con un total de 28.078.500 registros. A continuación, en la tabla 5.2.1.a. y la gráfica 5.2.1.b., se resume la información referente a la cantidad de bases de datos adscritas en función de las categorías establecidas en la tabla 3.1.2.a.,~~ especificando cuántas de ellas publican sus datos a través de los portales GBIF. No hay ninguna base de datos de tipo paleontológico.
 
-TABLA AQUI
+```{r}
+tabla_bd_disc_subdisc <- readRDS("data/vistas_sql/colecciones_bd_por_disciplina_y_sub.rds")
+
+ft_tbl(
+  tabla_bd_disc_subdisc,
+  caption = "Tabla 5.2.1.a. Número de bases de datos del Registro en función de las disciplinas utilizadas, con indicación de las que publican en GBIF y el número de registros publicados."
+)
+```
+
 ![](assets/images/generated/colecciones_bd_por_disciplina.png)
 
 ### Bases de datos en GBIF

@@ -142,7 +142,9 @@ vistas_sql <- list(
   colecciones_per_anno        = "SELECT * FROM colecciones_per_anno",
   colecciones_per_publican    = "SELECT * FROM colecciones_per_estado_publicacion",
   colecciones_bd_por_disciplina  = "SELECT * FROM colecciones_bd_por_disciplina",
-  colecciones_por_disciplina  = "SELECT * FROM colecciones_por_disciplina",
+  colecciones_bd_por_disciplina_y_sub  = "SELECT * FROM colecciones_bd_por_disciplina_y_sub",
+  colecciones_por_disciplina  = "SELECT * FROM colecciones_por_disciplina", 
+  colecciones_por_disciplina_y_sub  = "SELECT * FROM colecciones_por_disciplina_y_sub",
   colecciones_por_subdisciplina_botanica  = "SELECT * FROM colecciones_por_subdisciplina_botanica",
   colecciones_por_subdisciplina_zoologica  = "SELECT * FROM colecciones_por_subdisciplina_zoologica",
   colecciones_uso_software_bot  = "SELECT * FROM colecciones_uso_software_bot",
@@ -281,28 +283,28 @@ df %>% filter(tipo_body == "coleccion") %>%
 
 
 # Medio de acceso a los datos informatizados de los ejemplares
-# df %>% filter(tipo_body == "coleccion") %>%
-#   mutate(acceso_informatizado = if_else(is.na(acceso_informatizado),
-#                                         "No especificado",
-#                                         acceso_informatizado)) %>%
-#   count(acceso_informatizado, name = "Número de colecciones") %>%
-#   mutate(`%` = paste0(round(
-#     100 * `Número de colecciones` / sum(`Número de colecciones`), 
-#     2),
-#     " %")) %>%
-#   rename(`Accesibilidad a los datos informatizados` = acceso_informatizado) %>%
-#   mutate(`Accesibilidad a los datos informatizados` = factor(
-#     `Accesibilidad a los datos informatizados`,
-#     levels = c(
-#       "Libre acceso",
-#       "Caso por caso",
-#       "Protegido por clave",
-#       "Otros",
-#       "No disponible",
-#       "No especificado"
-#     ))) %>%
-#   arrange(`Accesibilidad a los datos informatizados`) %>%
-#   saveRDS(file = fs::path(dir_data_sql, "acceso_informatizado.rds"))
+df %>% filter(tipo_body == "coleccion") %>%
+  mutate(medio_acceso_estandarizado = if_else(is.na(medio_acceso_estandarizado),
+                                        "No especificado",
+                                        medio_acceso_estandarizado)) %>%
+  count(medio_acceso_estandarizado, name = "Número de colecciones") %>%
+  mutate(`%` = paste0(round(
+    100 * `Número de colecciones` / sum(`Número de colecciones`),
+    2),
+    " %")) %>%
+  rename(`Medio de acceso a los datos informatizados` = medio_acceso_estandarizado) %>%
+  mutate(`Medio de acceso a los datos informatizados` = factor(
+    `Medio de acceso a los datos informatizados`,
+    levels = c(
+      "Libre acceso",
+      "A través de Internet",
+      "A través del responsable",
+      "A través de Intranet",
+      "No disponible",
+      "No especificado"
+    ))) %>%
+  arrange(`Medio de acceso a los datos informatizados`) %>%
+  saveRDS(file = fs::path(dir_data_sql, "medio_acceso_inform.rds"))
 
 
 # Numero de recursos y registros dividido por sector
@@ -313,6 +315,70 @@ rec %>% mutate(Sectores = case_when(Sectores == "Académico (univers., institut.
                                     Sectores == "Empresa privada" ~ "Sector privado",
                                     TRUE ~ Sectores)) %>%
         saveRDS(file = fs::path(dir_data_sql, "registros_por_sector.rds"))
+
+
+# Numero de bases de datos y registros por disciplina y subdisciplina
+bd <- readRDS("inst/reports/data/vistas_sql/colecciones_bd_por_disciplina_y_sub.rds")
+
+orden <- c(
+  "Zoológica",  "Invertebrados",  "Vertebrados",  "Invertebrados y vertebrados",
+  "Botánica",  "Plantas",  "Algas",  "Hongos y líquenes", "Botánicas mixtas",
+  "Microbiológica",  "Mixta", "Paleontológica",
+  "TOTAL"
+)
+padres <- c("Zoológica", "Botánica")
+hijos <- c("Invertebrados",  "Vertebrados",  "Invertebrados y vertebrados",
+           "Plantas",  "Algas",  "Hongos y líquenes", "Botánicas mixtas")
+
+bd %>% mutate(disciplina = factor(disciplina, levels = orden)) %>%
+       arrange(disciplina) %>%
+       mutate(n_bases_datos = as.character(n_bases_datos),
+              n_bases_datos_publican = as.character(n_bases_datos_publican),
+              n_registros_publicados = as.character(format(
+                                              n_registros_publicados, 
+                                              big.mark = ".",
+                                              decimal.mark = ",",
+                                              scientific = FALSE)),
+              disciplina = if_else(disciplina %in% hijos,
+                                   paste0("- ", disciplina),
+                                   disciplina),
+              n_bases_datos = if_else(disciplina %in% padres,
+                                      paste0("(", n_bases_datos, ")"),
+                                      n_bases_datos),
+              n_bases_datos_publican = if_else(disciplina %in% padres,
+                                      paste0("(", n_bases_datos_publican, ")"),
+                                      n_bases_datos_publican),
+              n_registros_publicados = if_else(disciplina %in% padres,
+                                      paste0("(", n_registros_publicados, ")"),
+                                      n_registros_publicados)) %>%
+        rename(Disciplina = disciplina,
+               `Nº bases de datos` = n_bases_datos,
+               `Nº bases de datos que comparten datos en GBIF` = n_bases_datos_publican,
+               `Nº registros publicados` = n_registros_publicados) %>%
+        saveRDS(file = fs::path(dir_data_sql, "colecciones_bd_por_disciplina_y_sub.rds"))
+
+
+# Numero de colecciones, bases de datos y registros por disciplina y subdisciplina
+readRDS("inst/reports/data/vistas_sql/colecciones_por_disciplina_y_sub.rds") %>% 
+          mutate(disciplina = factor(disciplina, levels = orden)) %>%
+          arrange(disciplina) %>%
+          mutate (n_colecciones = as.character(n_colecciones),
+                  n_registros_publicados = as.character(format(
+                                                      n_registros_publicados, 
+                                                      big.mark = ".",
+                                                      decimal.mark = ",",
+                                                      scientific = FALSE)),
+                  disciplina = if_else(disciplina %in% hijos,
+                                       paste0("- ", disciplina),
+                                       disciplina),
+                  n_colecciones = if_else(disciplina %in% padres,
+                                          paste0("(", n_colecciones, ")"),
+                                          n_colecciones),
+                  n_registros_publicados = if_else(disciplina %in% padres,
+                                                   paste0("(", n_registros_publicados, ")"),
+                                                   n_registros_publicados)) %>%
+          saveRDS(file = fs::path(dir_data_sql, "colecciones_por_disciplina_y_sub.rds"))
+
 
 
 # ------------------------------------------------------------
