@@ -80,6 +80,9 @@ credenciales en R es fundamental para usar el paquete tanto como
 ### Flujo recomendado
 
 ``` r
+####### ATENCION ########
+# Correr codigo cada vez que queramos cambiar algo en el .Renviron
+
 # 1. Abrir .Renviron
 usethis::edit_r_environ()
 
@@ -95,7 +98,7 @@ usethis::edit_r_environ()
     UID
     gbif_wp_pass
 
-# 3. Guardar documento. Correr desde la consola con .Renviron abierto
+# 3. Guardar documento. Correr desde la consola con .Renviron abierto (o simplemente clicar en guardar).
 rstudioapi::documentSave()
 
 # 4. Hacer efectivos los cambios reiniciando la sesion de R

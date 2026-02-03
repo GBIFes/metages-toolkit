@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">metagesToolkit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -276,7 +276,45 @@ de datasets, mapas y gráficos del repo</a></p>
 <span><span class="co"># `informe_con tablas_colecciones.docx` que es una version actualizada de `informe.docx`.</span></span>
 <span><span class="co"># El argumento `keyword` debe referenciar una seccion existente del `informe.docx`</span></span>
 <span><span class="co"># generado por `render_informe()`</span></span>
-<span><span class="fu"><a href="../reference/insertar_tabla_colecciones.html">insertar_tabla_colecciones</a></span><span class="op">(</span>keyword <span class="op">=</span> <span class="st">"Anexos"</span><span class="op">)</span> </span></code></pre></div>
+<span><span class="fu"><a href="../reference/insertar_tablas_colecciones.html">insertar_tablas_colecciones</a></span><span class="op">(</span></span>
+<span>   keywords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>     <span class="st">"Colecciones y bases de datos de invertebrados"</span>,</span>
+<span>     <span class="st">"Colecciones y bases de datos de vertebrados"</span>,</span>
+<span>     <span class="st">"Colecciones y bases de datos de invertebrados y vertebrados"</span>,</span>
+<span>     <span class="st">"Colecciones y bases de datos de plantas"</span>,</span>
+<span>     <span class="st">"Colecciones y bases de datos de algas"</span>,</span>
+<span>     <span class="st">"Colecciones y bases de datos de hongos y líquenes"</span>,</span>
+<span>     <span class="st">"Colecciones y bases de datos de botánicas mixtas"</span>,</span>
+<span>     <span class="st">"Colecciones y bases de datos microbiológicas"</span>,</span>
+<span>     <span class="st">"Colecciones y bases de datos paleontológicas"</span>,</span>
+<span>     <span class="st">"Colecciones y bases de datos mixtas"</span></span>
+<span>   <span class="op">)</span>,</span>
+<span>   filtros <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>subdisciplina <span class="op">=</span> <span class="st">"Invertebrados"</span><span class="op">)</span>,</span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>subdisciplina <span class="op">=</span> <span class="st">"Vertebrados"</span><span class="op">)</span>,</span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>subdisciplina <span class="op">=</span> <span class="st">"Invertebrados y vertebrados"</span><span class="op">)</span>,</span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>subdisciplina <span class="op">=</span> <span class="st">"Plantas"</span><span class="op">)</span>,</span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>subdisciplina <span class="op">=</span> <span class="st">"Algas"</span><span class="op">)</span>,</span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>subdisciplina <span class="op">=</span> <span class="st">"Hongos y líquenes"</span><span class="op">)</span>,</span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>subdisciplina <span class="op">=</span> <span class="st">"Botánicas mixtas"</span><span class="op">)</span>,</span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>disciplina <span class="op">=</span> <span class="st">"Microbiológica"</span><span class="op">)</span>,</span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>disciplina <span class="op">=</span> <span class="st">"Paleontológica"</span><span class="op">)</span>,</span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>disciplina <span class="op">=</span> <span class="st">"Mixta"</span><span class="op">)</span></span>
+<span>   <span class="op">)</span></span>
+<span> <span class="op">)</span></span>
+<span></span>
+<span><span class="co">#&gt;&gt;   Insertando tabla de Colecciones y bases de datos de invertebrados</span></span>
+<span><span class="co">#&gt;&gt;   Insertando tabla de Colecciones y bases de datos de vertebrados</span></span>
+<span><span class="co">#&gt;&gt;   Insertando tabla de Colecciones y bases de datos de invertebrados y vertebrados</span></span>
+<span><span class="co">#&gt;&gt;   Insertando tabla de Colecciones y bases de datos de plantas</span></span>
+<span><span class="co">#&gt;&gt;   Insertando tabla de Colecciones y bases de datos de algas</span></span>
+<span><span class="co">#&gt;&gt;   Insertando tabla de Colecciones y bases de datos de hongos y líquenes</span></span>
+<span><span class="co">#&gt;&gt;   Insertando tabla de Colecciones y bases de datos de botánicas mixtas</span></span>
+<span><span class="co">#&gt;&gt;   Insertando tabla de Colecciones y bases de datos microbiológicas</span></span>
+<span><span class="co">#&gt;&gt;   Insertando tabla de Colecciones y bases de datos paleontológicas</span></span>
+<span><span class="co">#&gt;&gt;   Insertando tabla de Colecciones y bases de datos mixtas</span></span>
+<span><span class="co">#&gt;&gt;   Generando documento Word (puede tardar varios minutos)…</span></span>
+<span><span class="co">#&gt;&gt;   Hubo 11 avisos (use warnings() para verlos)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

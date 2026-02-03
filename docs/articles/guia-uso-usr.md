@@ -209,7 +209,45 @@ render_informe()
 # `informe_con tablas_colecciones.docx` que es una version actualizada de `informe.docx`.
 # El argumento `keyword` debe referenciar una seccion existente del `informe.docx`
 # generado por `render_informe()`
-insertar_tabla_colecciones(keyword = "Anexos") 
+insertar_tablas_colecciones(
+   keywords = c(
+     "Colecciones y bases de datos de invertebrados",
+     "Colecciones y bases de datos de vertebrados",
+     "Colecciones y bases de datos de invertebrados y vertebrados",
+     "Colecciones y bases de datos de plantas",
+     "Colecciones y bases de datos de algas",
+     "Colecciones y bases de datos de hongos y líquenes",
+     "Colecciones y bases de datos de botánicas mixtas",
+     "Colecciones y bases de datos microbiológicas",
+     "Colecciones y bases de datos paleontológicas",
+     "Colecciones y bases de datos mixtas"
+   ),
+   filtros = list(
+     list(subdisciplina = "Invertebrados"),
+     list(subdisciplina = "Vertebrados"),
+     list(subdisciplina = "Invertebrados y vertebrados"),
+     list(subdisciplina = "Plantas"),
+     list(subdisciplina = "Algas"),
+     list(subdisciplina = "Hongos y líquenes"),
+     list(subdisciplina = "Botánicas mixtas"),
+     list(disciplina = "Microbiológica"),
+     list(disciplina = "Paleontológica"),
+     list(disciplina = "Mixta")
+   )
+ )
+
+#>>   Insertando tabla de Colecciones y bases de datos de invertebrados
+#>>   Insertando tabla de Colecciones y bases de datos de vertebrados
+#>>   Insertando tabla de Colecciones y bases de datos de invertebrados y vertebrados
+#>>   Insertando tabla de Colecciones y bases de datos de plantas
+#>>   Insertando tabla de Colecciones y bases de datos de algas
+#>>   Insertando tabla de Colecciones y bases de datos de hongos y líquenes
+#>>   Insertando tabla de Colecciones y bases de datos de botánicas mixtas
+#>>   Insertando tabla de Colecciones y bases de datos microbiológicas
+#>>   Insertando tabla de Colecciones y bases de datos paleontológicas
+#>>   Insertando tabla de Colecciones y bases de datos mixtas
+#>>   Generando documento Word (puede tardar varios minutos)…
+#>>   Hubo 11 avisos (use warnings() para verlos)
 ```
 
 ## Acceso a recursos internos de metagesToolkit

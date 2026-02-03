@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">metagesToolkit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -164,7 +164,10 @@ credenciales en R es fundamental para usar el paquete tanto como
 <h3 id="flujo-recomendado">Flujo recomendado<a class="anchor" aria-label="anchor" href="#flujo-recomendado"></a>
 </h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 1. Abrir .Renviron</span></span>
+<code class="sourceCode R"><span><span class="co">####### ATENCION ########</span></span>
+<span><span class="co"># Correr codigo cada vez que queramos cambiar algo en el .Renviron</span></span>
+<span></span>
+<span><span class="co"># 1. Abrir .Renviron</span></span>
 <span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">edit_r_environ</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 2. Modificar el documento que aparece, añadiendo las variables de entorno asi:</span></span>
@@ -179,7 +182,7 @@ credenciales en R es fundamental para usar el paquete tanto como
 <span>    <span class="va">UID</span></span>
 <span>    <span class="va">gbif_wp_pass</span></span>
 <span></span>
-<span><span class="co"># 3. Guardar documento. Correr desde la consola con .Renviron abierto</span></span>
+<span><span class="co"># 3. Guardar documento. Correr desde la consola con .Renviron abierto (o simplemente clicar en guardar).</span></span>
 <span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/rstudioapi/reference/rstudio-documents.html" class="external-link">documentSave</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 4. Hacer efectivos los cambios reiniciando la sesion de R</span></span>

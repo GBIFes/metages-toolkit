@@ -64,7 +64,10 @@ reference:
 - title: Crear y modificar Informe
   contents:
   - '`render_informe`'
-  - '`insertar_tabla_colecciones`'
+  - '`insertar_tablas_colecciones`'
+  - '`crear_tabla_colecciones`'
+  - '`crear_flextable_colecciones`'
+  - '`insertar_tabla_en_doc`'
 
 - title: Extraer datos externos a MetaGES
   contents:

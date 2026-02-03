@@ -31,8 +31,14 @@
 
 - [`render_informe()`](https://gbifes.github.io/metages-toolkit/reference/render_informe.md)
   : Renderiza el informe METAGES
-- [`insertar_tabla_colecciones()`](https://gbifes.github.io/metages-toolkit/reference/insertar_tabla_colecciones.md)
-  : Inserta la tabla de colecciones en el informe Word
+- [`insertar_tablas_colecciones()`](https://gbifes.github.io/metages-toolkit/reference/insertar_tablas_colecciones.md)
+  : Insertar multiples tablas de colecciones en un informe Word
+- [`crear_tabla_colecciones()`](https://gbifes.github.io/metages-toolkit/reference/crear_tabla_colecciones.md)
+  : Crear tabla de colecciones filtrada
+- [`crear_flextable_colecciones()`](https://gbifes.github.io/metages-toolkit/reference/crear_flextable_colecciones.md)
+  : Crear flextable de colecciones
+- [`insertar_tabla_en_doc()`](https://gbifes.github.io/metages-toolkit/reference/insertar_tabla_en_doc.md)
+  : Insertar una tabla en un documento Word
 
 ## Extraer datos externos a MetaGES
 

@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">metagesToolkit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,7 +104,7 @@
 <h2 id="uso">Uso<a class="anchor" aria-label="anchor" href="#uso"></a>
 </h2>
 <p>Actualmente, el flujo principal del paquete se articula en torno a la función <code><a href="reference/render_informe.html">render_informe()</a></code>, que orquesta internamente la conexión a MetaGES, la extracción de datos, el procesamiento, la creación de mapas y la generación de un informe final como archivo <code>.docx</code>.</p>
-<p>El paquete expone además dos funciones útiles para la exploración <code><a href="reference/crear_mapa_simple.html">crear_mapa_simple()</a></code> y el post-procesado del informe <code><a href="reference/insertar_tabla_colecciones.html">insertar_tabla_colecciones()</a></code>. Sin embargo, para usar estas funciones <strong><em>es imprescindible tener credenciales para acceder a MetaGES:</em></strong> <br><br></p>
+<p>El paquete expone además dos funciones útiles para la exploración <code><a href="reference/crear_mapa_simple.html">crear_mapa_simple()</a></code> y el post-procesado del informe <code><a href="reference/insertar_tablas_colecciones.html">insertar_tablas_colecciones()</a></code>. Sin embargo, para usar estas funciones <strong><em>es imprescindible tener credenciales para acceder a MetaGES:</em></strong> <br><br></p>
 <div class="section level5">
 <h5 id="warningañadir-credencialeswarning">⚠️Añadir credenciales:⚠️<a class="anchor" aria-label="anchor" href="#warninga%C3%B1adir-credencialeswarning"></a>
 </h5>
@@ -117,22 +117,15 @@
 <li><code>UID</code></li>
 <li><code>gbif_wp_pass</code></li>
 </ul>
-<p><strong><a href="https://github.com/GBIFes/metages-toolkit/blob/main/inst/scripts/actualizar_Renviron.R" class="external-link">Instrucciones para editar y guardar credenciales</a></strong></p>
+<p>👉 <strong>Consulta el artículo <a href="https://gbifes.github.io/metages-toolkit/articles/guia-uso-dev.html#configuracion-de--renviron-para-acceder-a-metages">Configuracion de .Renviron para acceder a MetaGES</a></strong> para encontrar las Instrucciones para editar y guardar credenciales</p>
 <hr>
 </div>
 <div class="section level3">
 <h3 id="generar-informe">Generar informe<a class="anchor" aria-label="anchor" href="#generar-informe"></a>
 </h3>
 <p>Genera un archivo <code>.docx</code> en el <code>working directory</code> actual basado en <a href="https://github.com/GBIFes/metages-toolkit/blob/main/inst/reports/informe.qmd" class="external-link">Informe Quarto</a>.<br>
-El informe contiene información detallada sobre el contenido de la base de datos MetaGES</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Función principal del paquete. Ejecuta el flujo completo de trabajo: conexión a MetaGES, extracción y procesamiento de datos, generación de mapas y renderizado del informe base.</span></span>
-<span><span class="co"># Genera `informe.docx`</span></span>
-<span><span class="fu"><a href="reference/render_informe.html">render_informe</a></span><span class="op">(</span><span class="op">)</span>      </span>
-<span></span>
-<span><span class="co"># Función de post-procesado que añade tablas adicionales al documento generado por `render_informe()`.</span></span>
-<span><span class="co"># Genera `informe_con_tablas_colecciones.docx`. `keyword` debe coincidir con una Sección existente de informe.docx. </span></span>
-<span><span class="fu"><a href="reference/insertar_tabla_colecciones.html">insertar_tabla_colecciones</a></span><span class="op">(</span>keyword <span class="op">=</span> <span class="st">"Anexo X"</span><span class="op">)</span> </span></code></pre></div>
+El informe contiene información detallada sobre el contenido de la base de datos MetaGES.</p>
+<p>👉 <strong>Consulta el artículo <a href="https://gbifes.github.io/metages-toolkit/articles/guia-uso-usr.html#generacion-del-informe-de-colecciones">Generacion del Informe de Colecciones con metagesToolkit</a></strong></p>
 <hr>
 </div>
 <div class="section level3">
@@ -144,7 +137,7 @@ Permite filtrar por <code>tipo_coleccion</code>, <code>disciplina</code>, <code>
 <ul>
 <li><em><strong>Mapa de las colecciones de invertebrados publicadoras</strong></em></li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/crear_mapa_simple.html">crear_mapa_simple</a></span><span class="op">(</span>tipo_coleccion <span class="op">=</span> <span class="st">"coleccion"</span>,</span>
 <span>                          subdisciplina <span class="op">=</span> <span class="st">"Invertebrados"</span>, </span>
 <span>                          publican <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">plot</span></span></code></pre></div>
@@ -152,7 +145,7 @@ Permite filtrar por <code>tipo_coleccion</code>, <code>disciplina</code>, <code>
 <ul>
 <li><em><strong>Mapa de las bases de datos publicadoras faceteado por disciplina</strong></em></li>
 </ul>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/crear_mapa_simple.html">crear_mapa_simple</a></span><span class="op">(</span>tipo_coleccion <span class="op">=</span> <span class="st">"base de datos"</span>,</span>
 <span>                          facet <span class="op">=</span> <span class="st">"disciplina_def"</span>,</span>
 <span>                          publican <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">plot</span>                       </span></code></pre></div>
@@ -202,7 +195,7 @@ Permite filtrar por <code>tipo_coleccion</code>, <code>disciplina</code>, <code>
 │   ├── crear_mapa.R                                : Funcion compleja para crear mapas con los datos de extraer_colecciones_mapa.R
 │   ├── crear_mapa_simple.R                         : Wrapper simplificado de crear_mapa.R. Opción recomendada para crear mapas.
 │   ├── render_informe.R                            : Crea una carpeta con el contenido del output de informe.qmd
-│   ├── insertar_tabla_colecciones.R                : Añade la gran tabla final al output de render_informe.R, generando informe_con_tablas_colecciones.docx
+│   ├── insertar_tablas_colecciones.R               : Añade las grandes tablas finales al output de render_informe.R, generando informe_con_tablas_colecciones.docx
 │   ├── ...
 │
 ├── README.md                                       : Descripción del repositorio.
