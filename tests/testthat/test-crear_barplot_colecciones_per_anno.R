@@ -70,10 +70,16 @@ test_that("el eje X contiene solo años múltiplos de 5 en los breaks", {
   
   p <- crear_barplot_colecciones_por_anno(rdspath = tmp)
   
-  x_breaks <- p$scales$get_scales("x")$breaks(levels(p$data$x))
+  scale_x <- p$scales$get_scales("x")
   
-  expect_true(all(as.numeric(x_breaks) %% 5 == 0))
+  # usar la variable REAL del eje X
+  x_range <- range(p$data$fecha_alta_coleccion, na.rm = TRUE)
+  
+  x_breaks <- scale_x$breaks(x_range)
+  
+  expect_true(all(x_breaks %% 5 == 0))
 })
+
 
 
 test_that("el gráfico contiene exactamente dos series", {

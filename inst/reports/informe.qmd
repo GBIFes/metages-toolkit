@@ -146,7 +146,7 @@ mes_anno_informe_anterior <- "diciembre de 2019"
 mes_anno_actual <- format(Sys.Date(), "%B de %Y")
 
 
-## disciplinas numero colecciones
+## disciplinas numero colecciones 
 inf_ant_n_colbd_total <- "474"
 inf_ant_n_colbd_zoo <- "(192)"
 inf_ant_n_colbd_inv <- "103"
@@ -373,7 +373,7 @@ ft_tbl(
 
 ~~En la gráfica 3.3.1.b. podemos ver la progresión del número de registros publicados en GBIF desde 2005 hasta diciembre de 2019 hasta alcanzar los 32.367.320 registros actuales.~~
 
-GRAFICA AQUI
+GRAFICA AQUI (Katia la hace con sus tabla de datos)
 
 Otro punto de vista bajo el que analizar las entidades, colecciones y datos de
 biodiversidad del Registro, es el ámbito o sector en el que se enmarcan las mismas, y así se han distinguido los siguientes:
@@ -1073,11 +1073,46 @@ TABLA AQUI (LEYENDA TABLAS)
 
 ## Colecciones y bases de datos zoológicas
 
+### Colecciones y bases de datos de invertebrados
+
+### Colecciones y bases de datos de vertebrados
+
+### Colecciones y bases de datos de invertebrados y vertebrados
+
+## Colecciones y bases de datos botánicas
+
+### Colecciones y bases de datos de plantas
+
+### Colecciones y bases de datos de algas
+
+### Colecciones y bases de datos de hongos y líquenes
+
+### Colecciones y bases de datos de botánicas mixtas
+
+## Colecciones y bases de datos microbiológicas
+
+## Colecciones y bases de datos paleontológicas
+
+## Colecciones y bases de datos mixtas
 
 
 
 
 # ANEXO II
+
+
+Si eres responsable de una colección biológica o de una base de datos no representada
+en este informe, y quieres que la información referente a dicho recurso sea recogida en la
+próxima edición, por favor, rellena los formularios disponibles:
+
+- Para entidad, institución o proyecto: [institución](https://gbif.es/datos-biodiversidad/accede-a-los-datos/registro/cuestionario-para-instituciones-y-proyectos/institucion/)/[proyecto](https://gbif.es/datos-biodiversidad/accede-a-los-datos/registro/cuestionario-para-instituciones-y-proyectos/proyecto/).
+- Para colecciones biológicas (biológica) o base de datos: [colección/BBDD](https://gbif.es/datos-biodiversidad/accede-a-los-datos/registro/cuestionario-para-colecciones-biologicas-y-bases-de-datos/).
+
+Asimismo, para cualquier duda, información o consulta, o si tienes correcciones o
+sugerencias sobre este informe o sobre los datos presentados, por favor, contáctanos en
+[info@gbif.es](mailto:info@gbif.es).
+Para consultar la información acerca de colecciones europeas incluidas en la base de
+datos de BioCASE, visite [http://www.biocase.org/products/portals/simple_ui/](http://www.biocase.org/products/portals/simple_ui/).
 
 
 

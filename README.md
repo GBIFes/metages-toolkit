@@ -57,7 +57,7 @@ Actualmente, el flujo principal del paquete se articula en torno a la función
 procesamiento, la creación de mapas y la generación de un informe final como archivo `.docx`.
 
 El paquete expone además dos funciones útiles para la exploración `crear_mapa_simple()` y el
-post-procesado del informe `insertar_tabla_colecciones()`. 
+post-procesado del informe `insertar_tablas_colecciones()`. 
 Sin embargo, para usar estas funciones **_es imprescindible tener credenciales para acceder a MetaGES:_** 
 <br/><br/>
 
@@ -74,26 +74,19 @@ y se cargarán automáticamente al iniciar una sesión de R:
 * `UID`
 * `gbif_wp_pass`
 
-**[Instrucciones para editar y guardar credenciales](https://github.com/GBIFes/metages-toolkit/blob/main/inst/scripts/actualizar_Renviron.R)**
-
+👉 **Consulta el artículo [Configuracion de .Renviron para acceder a MetaGES](https://gbifes.github.io/metages-toolkit/articles/guia-uso-dev.html#configuracion-de--renviron-para-acceder-a-metages)**
+ para encontrar las Instrucciones para editar y guardar credenciales
 
 *** 
 
 ### Generar informe
 
 Genera un archivo `.docx` en el `working directory` actual basado en [Informe Quarto](https://github.com/GBIFes/metages-toolkit/blob/main/inst/reports/informe.qmd).  
-El informe contiene información detallada sobre el contenido de la base de datos MetaGES
+El informe contiene información detallada sobre el contenido de la base de datos MetaGES.
 
-```r
-# Función principal del paquete. Ejecuta el flujo completo de trabajo: conexión a MetaGES, extracción y procesamiento de datos, generación de mapas y renderizado del informe base.
-# Genera `informe.docx`
-render_informe()      
+👉 **Consulta el artículo [Generacion del Informe de Colecciones con metagesToolkit](https://gbifes.github.io/metages-toolkit/articles/guia-uso-usr.html#generacion-del-informe-de-colecciones)**
 
-# Función de post-procesado que añade tablas adicionales al documento generado por `render_informe()`.
-# Genera `informe_con_tablas_colecciones.docx`. `keyword` debe coincidir con una Sección existente de informe.docx. 
-insertar_tabla_colecciones(keyword = "Anexo X") 
 
-```
 
 *** 
 
@@ -167,7 +160,7 @@ metages-toolkit/
 │   ├── crear_mapa.R                                : Funcion compleja para crear mapas con los datos de extraer_colecciones_mapa.R
 │   ├── crear_mapa_simple.R                         : Wrapper simplificado de crear_mapa.R. Opción recomendada para crear mapas.
 │   ├── render_informe.R                            : Crea una carpeta con el contenido del output de informe.qmd 
-│   ├── insertar_tabla_colecciones.R                : Añade la gran tabla final al output de render_informe.R, generando informe_con_tablas_colecciones.docx
+│   ├── insertar_tablas_colecciones.R               : Añade las grandes tablas finales al output de render_informe.R, generando informe_con_tablas_colecciones.docx
 │   ├── ...
 │
 ├── README.md                                       : Descripción del repositorio.

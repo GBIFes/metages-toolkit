@@ -1,29 +1,38 @@
-#' Inserta la tabla de colecciones en el informe Word
+#' Crear tabla de colecciones filtrada
 #'
-#' Genera los datos actualizados, aplica el formateo de valores,
-#' construye la flextable con hipervinculos e inserta la tabla
-#' en el informe Word generado previamente.
+#' Construye una tabla de colecciones y bases de datos a partir de los datos
+#' devueltos por \code{extraer_colecciones_mapa()}, aplicando filtros opcionales
+#' por disciplina y/o subdisciplina. La tabla resultante está preparada para
+#' su uso posterior en una \code{flextable}.
 #'
-#' @param keyword Texto exacto del encabezado donde insertar la tabla.
+#' @param filtro Lista con criterios de filtrado. Puede contener los elementos
+#'   \code{disciplina} y/o \code{subdisciplina}, cuyos valores deben coincidir
+#'   exactamente con los existentes en los datos.
 #'
-#' @return Ruta al archivo .docx modificado.
-#' @import officer flextable dplyr scales
+#' @return Un \code{data.frame} con las columnas transformadas, formateadas
+#'   y listas para su visualización en una tabla.
+#'
+#' @details
+#' Esta función no realiza ninguna operación de entrada/salida ni modifica
+#' documentos Word. Su única responsabilidad es la preparación de los datos.
+#'
+#' @import dplyr
+#' @import scales 
+#'
 #' @export
-insertar_tabla_colecciones <- function(keyword) {
+crear_tabla_colecciones <- function(filtro = list()) {
   
-  # 1. Localizar el docx generado por render_informe()
-  docx_path <- getOption("metagesToolkit.last_docx")
-  if (is.null(docx_path) || !file.exists(docx_path)) {
-    stop(
-      "No se encuentra un informe renderizado. ",
-      "Ejecute primero render_informe().",
-      call. = FALSE
-    )
+  datos <- extraer_colecciones_mapa()$data
+  
+  if (!is.null(filtro$disciplina)) {
+    datos <- dplyr::filter(datos, disciplina_def == filtro$disciplina)
   }
   
-  # 2. Construir los datos actualizados
-  tabla <- extraer_colecciones_mapa()$data |>
-    # Hay que anhadir filtro para disciplinas y subdisciplinas
+  if (!is.null(filtro$subdisciplina)) {
+    datos <- dplyr::filter(datos, disciplina_subtipo_def == filtro$subdisciplina)
+  }
+  
+  datos |>
     dplyr::transmute(
       institucion_proyecto,
       url_institucion,
@@ -31,18 +40,15 @@ insertar_tabla_colecciones <- function(keyword) {
       coleccion_url,
       codigo = collection_code,
       `Localidad (provincia)` = dplyr::if_else(
-        town != region,
-        paste0(as.character(town), " (", region, ")"),
+        as.character(town) != as.character(region),
+        paste0(as.character(town), " (", as.character(region), ")"),
         as.character(town)
       ),
-      `ejemplares_registros_ano` = dplyr::if_else(
+      `Ejemplares/Registros (año)` = dplyr::if_else(
         number_of_subunits == 0,
         "-",
         paste0(
-          scales::number(
-            number_of_subunits,
-            big.mark = ".", decimal.mark = ","
-          ),
+          scales::number(number_of_subunits, big.mark = ".", decimal.mark = ","),
           " (",
           pmax(
             ultima_actualizacion_coleccion,
@@ -52,14 +58,11 @@ insertar_tabla_colecciones <- function(keyword) {
           ")"
         )
       ),
-      registros_gbif_ano = dplyr::if_else(
+      `Registros publicados en GBIF (año)` = dplyr::if_else(
         is.na(numberOfRecords),
         "-",
         paste0(
-          scales::number(
-            numberOfRecords,
-            big.mark = ".", decimal.mark = ","
-          ),
+          scales::number(numberOfRecords, big.mark = ".", decimal.mark = ","),
           " (",
           ultima_actualizacion_recursos,
           ")"
@@ -76,18 +79,32 @@ insertar_tabla_colecciones <- function(keyword) {
         paste0(percent_georref, "%")
       ),
       Tipo = dplyr::case_when(
-        tipo_body == "coleccion" ~ "CB",
-        tipo_body == "base de datos" ~ "BD",
-        TRUE ~ NA_character_
+        tipo_body == "coleccion"     ~ "CB",
+        tipo_body == "base de datos" ~ "BD"
       )
     ) |>
-    dplyr::rename("C\u00F3digo" = codigo,
-                  "Ejemplares/Registros (a\u00F1o)" = ejemplares_registros_ano,
-                  "Registros publicados en GBIF (a\u00F1o)" = registros_gbif_ano) |>
-    dplyr::distinct() |> head()
+    dplyr::distinct()
+}
+
+
+
+#' Crear flextable de colecciones
+#'
+#' Convierte una tabla de colecciones en un objeto \code{flextable}, añadiendo
+#' hipervínculos en las columnas de institución y colección, ajustando las
+#' cabeceras y eliminando columnas auxiliares no visibles.
+#'
+#' @param tabla Un \code{data.frame} devuelto por
+#'   \code{crear_tabla_colecciones()}.
+#'
+#' @return Un objeto \code{flextable} listo para ser insertado en un documento Word.
+#'
+#' @import flextable 
+#' @import officer 
+#'
+#' @export
+crear_flextable_colecciones <- function(tabla) {
   
-  
-  # 3. Crear la flextable para que funciones los hipervinculos
   ft <- flextable::flextable(tabla)
   
   ft <- flextable::compose(
@@ -98,10 +115,7 @@ insertar_tabla_colecciones <- function(keyword) {
       flextable::hyperlink_text(
         x   = institucion_proyecto,
         url = url_institucion,
-        style = fp_text(
-          color = "blue",
-          underlined = TRUE
-        )
+        style = officer::fp_text(color = "blue", underlined = TRUE)
       )
     )
   )
@@ -114,42 +128,41 @@ insertar_tabla_colecciones <- function(keyword) {
       flextable::hyperlink_text(
         x   = coleccion_base,
         url = coleccion_url,
-        style = fp_text(
-          color = "blue",
-          underlined = TRUE
-        )
+        style = officer::fp_text(color = "blue", underlined = TRUE)
       )
     )
   )
   
-  ft <- flextable::set_header_labels(
-    ft,
-    institucion_proyecto = "Instituci\u00F3n / Proyecto",
-    coleccion_base       = "Colecci\u00F3n / Base de datos"
-  )
-  
-  ft <- flextable::delete_columns(ft, j = c("url_institucion", "coleccion_url"))
-  
-  
-  
+  ft |>
+    flextable::set_header_labels(
+      institucion_proyecto = "Institución / Proyecto",
+      coleccion_base       = "Colección / Base de datos"
+    ) |>
+    flextable::delete_columns(c("url_institucion", "coleccion_url"))
+}
 
+
+
+#' Insertar una tabla en un documento Word
+#'
+#' Inserta una flextable en un documento Word ya cargado, posicionándola en el
+#' encabezado indicado y gestionando el cambio de secciones entre orientación
+#' vertical y horizontal.
+#'
+#' @param doc Objeto \code{rdocx} de \pkg{officer}.
+#' @param keyword Texto exacto del encabezado donde se insertará la tabla.
+#' @param ft Objeto \code{flextable} a insertar.
+#'
+#' @return El objeto \code{rdocx} modificado.
+#'
+#' @import officer 
+#' @import flextable 
+#'
+#' @export
+insertar_tabla_en_doc <- function(doc, keyword, ft) {
   
-  
-  #flextable::save_as_docx(ft, path = "test.docx")
-  
-  
-  # 4. Insertar la tabla en el Word final
-  
-  
-  doc <- officer::read_docx(docx_path)
   doc <- officer::cursor_reach(doc, keyword = keyword)
-  
-
-  
-  # Empezar seccion landscape
   doc <- officer::body_end_section_portrait(doc)
-  
-
   
   doc <- flextable::body_add_flextable(
     doc,
@@ -157,12 +170,89 @@ insertar_tabla_colecciones <- function(keyword) {
     align = "center"
   )
   
-  # Continuar seccion vertical
-  doc <- officer::body_end_section_landscape(doc)
-  
-  # Guardar
-  out_path <- sub("\\.docx$", "_con_tablas_colecciones.docx", docx_path)
-  print(doc, target = out_path)
-  invisible(out_path)
-  
+  officer::body_end_section_landscape(doc)
 }
+
+
+
+#' Insertar múltiples tablas de colecciones en un informe Word
+#'
+#' Inserta secuencialmente varias tablas de colecciones en un informe Word
+#' previamente generado mediante \code{render_informe()}, utilizando distintos
+#' encabezados y filtros para cada sección.
+#'
+#' @param keywords Vector de caracteres con los encabezados exactos del documento
+#'   Word donde se insertará cada tabla.
+#' @param filtros Lista de listas con los criterios de filtrado asociados a cada
+#'   encabezado. Cada elemento debe corresponder a uno de \code{keywords}.
+#'
+#' @return Ruta al archivo \code{.docx} final generado.
+#'
+#' @details
+#' El documento Word se escribe únicamente al final del proceso. La generación
+#' del archivo puede tardar varios minutos en documentos grandes, debido a la
+#' serialización completa del contenido.
+#'
+#'
+#' @examples
+#' \dontrun{
+#' insertar_tablas_colecciones(
+#'   keywords = c(
+#'     "Colecciones y bases de datos de invertebrados",
+#'     "Colecciones y bases de datos de vertebrados",
+#'     "Colecciones y bases de datos de invertebrados y vertebrados",
+#'     "Colecciones y bases de datos de plantas",
+#'     "Colecciones y bases de datos de algas",
+#'     "Colecciones y bases de datos de hongos y líquenes",
+#'     "Colecciones y bases de datos de botánicas mixtas",
+#'     "Colecciones y bases de datos microbiológicas",
+#'     "Colecciones y bases de datos paleontológicas",
+#'     "Colecciones y bases de datos mixtas"
+#'   ),
+#'   filtros = list(
+#'     list(subdisciplina = "Invertebrados"),
+#'     list(subdisciplina = "Vertebrados"),
+#'     list(subdisciplina = "Invertebrados y vertebrados"),
+#'     list(subdisciplina = "Plantas"),
+#'     list(subdisciplina = "Algas"),
+#'     list(subdisciplina = "Hongos y líquenes"),
+#'     list(subdisciplina = "Botánicas mixtas"),
+#'     list(disciplina = "Microbiológica"),
+#'     list(disciplina = "Paleontológica"),
+#'     list(disciplina = "Mixta")
+#'   )
+#' )}
+#'
+#'
+#' @import officer 
+#'
+#' @export
+insertar_tablas_colecciones <- function(keywords, filtros) {
+  
+  stopifnot(length(keywords) == length(filtros))
+  
+  docx_path <- getOption("metagesToolkit.last_docx")
+  if (is.null(docx_path) || !file.exists(docx_path)) {
+    stop("Ejecute primero render_informe()", call. = FALSE)
+  }
+  
+  doc <- officer::read_docx(docx_path)
+  
+  for (i in seq_along(keywords)) {
+    message(paste0("Insertando tabla de ", keywords[[i]]))
+    
+    tabla <- crear_tabla_colecciones(filtros[[i]])
+    if (nrow(tabla) == 0) next
+    
+    ft  <- crear_flextable_colecciones(tabla)
+    doc <- insertar_tabla_en_doc(doc, keywords[[i]], ft)
+  }
+  
+  out_path <- sub("\\.docx$", "_tablas_colecciones.docx", docx_path)
+  
+  message("Generando documento Word (puede tardar varios minutos)…")
+  print(doc, target = out_path)
+  
+  invisible(out_path)
+}
+
