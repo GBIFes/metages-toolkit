@@ -74,9 +74,15 @@ crear_barplot_colecciones_por_anno <- function(rdspath) {
       size = 4
     ) +
     scale_x_continuous(
-      breaks = function(x) x[as.numeric(x) %% 5 == 0],
+      breaks = function(x) {
+        seq(
+          from = floor(min(x, na.rm = TRUE) / 5) * 5,
+          to   = ceiling(max(x, na.rm = TRUE) / 5) * 5,
+          by   = 5
+        )
+      },
       expand = expansion(mult = c(0, 0))
-    )+
+    ) +
     scale_fill_manual(
       values = c(
         "acumulado" = "#2ECC9A",
@@ -96,6 +102,7 @@ crear_barplot_colecciones_por_anno <- function(rdspath) {
     theme(
       legend.position = "bottom",
       panel.grid.major.x = element_blank(),
+      panel.grid.minor.x = element_blank(),
       axis.text.x = element_text(
         angle = 45,
         hjust = 1,
