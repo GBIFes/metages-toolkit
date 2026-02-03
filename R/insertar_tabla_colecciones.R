@@ -2,7 +2,7 @@
 #'
 #' Construye una tabla de colecciones y bases de datos a partir de los datos
 #' devueltos por \code{extraer_colecciones_mapa()}, aplicando filtros opcionales
-#' por disciplina y/o subdisciplina. La tabla resultante está preparada para
+#' por disciplina y/o subdisciplina. La tabla resultante esta preparada para
 #' su uso posterior en una \code{flextable}.
 #'
 #' @param filtro Lista con criterios de filtrado. Puede contener los elementos
@@ -10,11 +10,11 @@
 #'   exactamente con los existentes en los datos.
 #'
 #' @return Un \code{data.frame} con las columnas transformadas, formateadas
-#'   y listas para su visualización en una tabla.
+#'   y listas para su visualizacion en una tabla.
 #'
 #' @details
-#' Esta función no realiza ninguna operación de entrada/salida ni modifica
-#' documentos Word. Su única responsabilidad es la preparación de los datos.
+#' Esta funcion no realiza ninguna operacion de entrada/salida ni modifica
+#' documentos Word. Su unica responsabilidad es la preparacion de los datos.
 #'
 #' @import dplyr
 #' @import scales 
@@ -44,7 +44,7 @@ crear_tabla_colecciones <- function(filtro = list()) {
         paste0(as.character(town), " (", as.character(region), ")"),
         as.character(town)
       ),
-      `Ejemplares/Registros (año)` = dplyr::if_else(
+      ejemplares_registros_ano = dplyr::if_else(
         number_of_subunits == 0,
         "-",
         paste0(
@@ -58,7 +58,7 @@ crear_tabla_colecciones <- function(filtro = list()) {
           ")"
         )
       ),
-      `Registros publicados en GBIF (año)` = dplyr::if_else(
+      registros_gbif_ano = dplyr::if_else(
         is.na(numberOfRecords),
         "-",
         paste0(
@@ -83,6 +83,10 @@ crear_tabla_colecciones <- function(filtro = list()) {
         tipo_body == "base de datos" ~ "BD"
       )
     ) |>
+    dplyr::rename_with(~ c("Ejemplares/Registros (a\u00F1o)",
+                           "Registros publicados en GBIF (a\u00F1o)"),
+                       .cols = c(ejemplares_registros_ano,
+                                 registros_gbif_ano)) |>
     dplyr::distinct()
 }
 
@@ -90,8 +94,8 @@ crear_tabla_colecciones <- function(filtro = list()) {
 
 #' Crear flextable de colecciones
 #'
-#' Convierte una tabla de colecciones en un objeto \code{flextable}, añadiendo
-#' hipervínculos en las columnas de institución y colección, ajustando las
+#' Convierte una tabla de colecciones en un objeto \code{flextable}, adicionando
+#' hipervinculos en las columnas de institucion y coleccion, ajustando las
 #' cabeceras y eliminando columnas auxiliares no visibles.
 #'
 #' @param tabla Un \code{data.frame} devuelto por
@@ -135,8 +139,8 @@ crear_flextable_colecciones <- function(tabla) {
   
   ft |>
     flextable::set_header_labels(
-      institucion_proyecto = "Institución / Proyecto",
-      coleccion_base       = "Colección / Base de datos"
+      institucion_proyecto = "Instituci\u00F3n / Proyecto",
+      coleccion_base       = "Colecci\u00F3n / Base de datos"
     ) |>
     flextable::delete_columns(c("url_institucion", "coleccion_url"))
 }
@@ -145,12 +149,12 @@ crear_flextable_colecciones <- function(tabla) {
 
 #' Insertar una tabla en un documento Word
 #'
-#' Inserta una flextable en un documento Word ya cargado, posicionándola en el
-#' encabezado indicado y gestionando el cambio de secciones entre orientación
+#' Inserta una flextable en un documento Word ya cargado, posicionandola en el
+#' encabezado indicado y gestionando el cambio de secciones entre orientacion
 #' vertical y horizontal.
 #'
 #' @param doc Objeto \code{rdocx} de \pkg{officer}.
-#' @param keyword Texto exacto del encabezado donde se insertará la tabla.
+#' @param keyword Texto exacto del encabezado donde se insertara la tabla.
 #' @param ft Objeto \code{flextable} a insertar.
 #'
 #' @return El objeto \code{rdocx} modificado.
@@ -175,23 +179,23 @@ insertar_tabla_en_doc <- function(doc, keyword, ft) {
 
 
 
-#' Insertar múltiples tablas de colecciones en un informe Word
+#' Insertar multiples tablas de colecciones en un informe Word
 #'
 #' Inserta secuencialmente varias tablas de colecciones en un informe Word
 #' previamente generado mediante \code{render_informe()}, utilizando distintos
-#' encabezados y filtros para cada sección.
+#' encabezados y filtros para cada seccion.
 #'
 #' @param keywords Vector de caracteres con los encabezados exactos del documento
-#'   Word donde se insertará cada tabla.
+#'   Word donde se insertara cada tabla.
 #' @param filtros Lista de listas con los criterios de filtrado asociados a cada
 #'   encabezado. Cada elemento debe corresponder a uno de \code{keywords}.
 #'
 #' @return Ruta al archivo \code{.docx} final generado.
 #'
 #' @details
-#' El documento Word se escribe únicamente al final del proceso. La generación
+#' El documento Word se escribe unicamente al final del proceso. La generacion
 #' del archivo puede tardar varios minutos en documentos grandes, debido a la
-#' serialización completa del contenido.
+#' serializacion completa del contenido.
 #'
 #'
 #' @examples
@@ -203,10 +207,10 @@ insertar_tabla_en_doc <- function(doc, keyword, ft) {
 #'     "Colecciones y bases de datos de invertebrados y vertebrados",
 #'     "Colecciones y bases de datos de plantas",
 #'     "Colecciones y bases de datos de algas",
-#'     "Colecciones y bases de datos de hongos y líquenes",
-#'     "Colecciones y bases de datos de botánicas mixtas",
-#'     "Colecciones y bases de datos microbiológicas",
-#'     "Colecciones y bases de datos paleontológicas",
+#'     "Colecciones y bases de datos de hongos y l\u00EDquenes",
+#'     "Colecciones y bases de datos de bot\u00E1nicas mixtas",
+#'     "Colecciones y bases de datos microbiol\u00F3gicas",
+#'     "Colecciones y bases de datos paleontol\u00F3gicas",
 #'     "Colecciones y bases de datos mixtas"
 #'   ),
 #'   filtros = list(
@@ -215,10 +219,10 @@ insertar_tabla_en_doc <- function(doc, keyword, ft) {
 #'     list(subdisciplina = "Invertebrados y vertebrados"),
 #'     list(subdisciplina = "Plantas"),
 #'     list(subdisciplina = "Algas"),
-#'     list(subdisciplina = "Hongos y líquenes"),
-#'     list(subdisciplina = "Botánicas mixtas"),
-#'     list(disciplina = "Microbiológica"),
-#'     list(disciplina = "Paleontológica"),
+#'     list(subdisciplina = "Hongos y l\u00EDquenes"),
+#'     list(subdisciplina = "Bot\u00E1nicas mixtas"),
+#'     list(disciplina = "Microbiol\u00F3gica"),
+#'     list(disciplina = "Paleontol\u00F3gica"),
 #'     list(disciplina = "Mixta")
 #'   )
 #' )}
@@ -250,7 +254,7 @@ insertar_tablas_colecciones <- function(keywords, filtros) {
   
   out_path <- sub("\\.docx$", "_tablas_colecciones.docx", docx_path)
   
-  message("Generando documento Word (puede tardar varios minutos)…")
+  message("Generando documento Word (puede tardar varios minutos)...")
   print(doc, target = out_path)
   
   invisible(out_path)

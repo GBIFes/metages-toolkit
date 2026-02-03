@@ -226,7 +226,7 @@ insertar_tablas_colecciones(
      list(disciplina = "Paleontológica"),
      list(disciplina = "Mixta")
    )
- )} 
+ )
 
 #>>   Insertando tabla de Colecciones y bases de datos de invertebrados
 #>>   Insertando tabla de Colecciones y bases de datos de vertebrados

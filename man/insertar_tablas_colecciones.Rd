@@ -2,13 +2,13 @@
 % Please edit documentation in R/insertar_tabla_colecciones.R
 \name{insertar_tablas_colecciones}
 \alias{insertar_tablas_colecciones}
-\title{Insertar múltiples tablas de colecciones en un informe Word}
+\title{Insertar multiples tablas de colecciones en un informe Word}
 \usage{
 insertar_tablas_colecciones(keywords, filtros)
 }
 \arguments{
 \item{keywords}{Vector de caracteres con los encabezados exactos del documento
-Word donde se insertará cada tabla.}
+Word donde se insertara cada tabla.}
 
 \item{filtros}{Lista de listas con los criterios de filtrado asociados a cada
 encabezado. Cada elemento debe corresponder a uno de \code{keywords}.}
@@ -19,12 +19,12 @@ Ruta al archivo \code{.docx} final generado.
 \description{
 Inserta secuencialmente varias tablas de colecciones en un informe Word
 previamente generado mediante \code{render_informe()}, utilizando distintos
-encabezados y filtros para cada sección.
+encabezados y filtros para cada seccion.
 }
 \details{
-El documento Word se escribe únicamente al final del proceso. La generación
+El documento Word se escribe unicamente al final del proceso. La generacion
 del archivo puede tardar varios minutos en documentos grandes, debido a la
-serialización completa del contenido.
+serializacion completa del contenido.
 }
 \examples{
 \dontrun{
@@ -35,10 +35,10 @@ insertar_tablas_colecciones(
     "Colecciones y bases de datos de invertebrados y vertebrados",
     "Colecciones y bases de datos de plantas",
     "Colecciones y bases de datos de algas",
-    "Colecciones y bases de datos de hongos y líquenes",
-    "Colecciones y bases de datos de botánicas mixtas",
-    "Colecciones y bases de datos microbiológicas",
-    "Colecciones y bases de datos paleontológicas",
+    "Colecciones y bases de datos de hongos y l\u00EDquenes",
+    "Colecciones y bases de datos de bot\u00E1nicas mixtas",
+    "Colecciones y bases de datos microbiol\u00F3gicas",
+    "Colecciones y bases de datos paleontol\u00F3gicas",
     "Colecciones y bases de datos mixtas"
   ),
   filtros = list(
@@ -47,10 +47,10 @@ insertar_tablas_colecciones(
     list(subdisciplina = "Invertebrados y vertebrados"),
     list(subdisciplina = "Plantas"),
     list(subdisciplina = "Algas"),
-    list(subdisciplina = "Hongos y líquenes"),
-    list(subdisciplina = "Botánicas mixtas"),
-    list(disciplina = "Microbiológica"),
-    list(disciplina = "Paleontológica"),
+    list(subdisciplina = "Hongos y l\u00EDquenes"),
+    list(subdisciplina = "Bot\u00E1nicas mixtas"),
+    list(disciplina = "Microbiol\u00F3gica"),
+    list(disciplina = "Paleontol\u00F3gica"),
     list(disciplina = "Mixta")
   )
 )}

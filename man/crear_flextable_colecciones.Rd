@@ -14,7 +14,7 @@ crear_flextable_colecciones(tabla)
 Un objeto \code{flextable} listo para ser insertado en un documento Word.
 }
 \description{
-Convierte una tabla de colecciones en un objeto \code{flextable}, añadiendo
-hipervínculos en las columnas de institución y colección, ajustando las
+Convierte una tabla de colecciones en un objeto \code{flextable}, adicionando
+hipervinculos en las columnas de institucion y coleccion, ajustando las
 cabeceras y eliminando columnas auxiliares no visibles.
 }

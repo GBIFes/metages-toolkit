@@ -1,0 +1,30 @@
+## INSTRUCCIONES PARA RECOPILAR LAS IMAGENES
+
+# La actualizacion de algunas de las imagenes en la carpeta 
+metagesToolkit/inst/reports/assets/images/external/ no ha podido automatizarse,
+por lo que deben regenerarse manualmente descargandolas de nuevo en la fecha 
+deseada.
+
+# Aqui se recopilan las instrucciones para regenerar esas imagenes.
+
+## IMPORTANTE:
+# Los nombres de los archivos regenerados debe coincidir con el antiguo nombre 
+del archivo ya que son necesarios para ser llamados desde informes y dashboards.
+
+
+- esquema_flujo_metages.jpg
+ESTATICA. Original GBIF.ES, puede vivir en metagesToolkit, no es necesario regenerarlo.
+
+- ranking_occurrences.png
+Se descarga desde los powerpoints de https://www.gbif.org/document/81771/gbif-overview-powerpoint-slides
+y hace referencia a los records publicados en un periodo de tiempo especifico.
+
+- taxonomy_sum_obs.png
+Se descarga desde https://www.gbif.org/occurrence/taxonomy?basis_of_record=HUMAN_OBSERVATION&publishing_country=ES&advanced=1&occurrence_status=present
+
+- taxonomy_sum_spec.png
+Se descarga desde https://www.gbif.org/occurrence/taxonomy?basis_of_record=PRESERVED_SPECIMEN&publishing_country=ES&advanced=1&occurrence_status=present
+
+- evolucion_registros_publicados.png
+Generada por Katia Cezon anualmente desde su tabla de datos personal.
+

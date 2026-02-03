@@ -9,7 +9,7 @@ insertar_tabla_en_doc(doc, keyword, ft)
 \arguments{
 \item{doc}{Objeto \code{rdocx} de \pkg{officer}.}
 
-\item{keyword}{Texto exacto del encabezado donde se insertará la tabla.}
+\item{keyword}{Texto exacto del encabezado donde se insertara la tabla.}
 
 \item{ft}{Objeto \code{flextable} a insertar.}
 }
@@ -17,7 +17,7 @@ insertar_tabla_en_doc(doc, keyword, ft)
 El objeto \code{rdocx} modificado.
 }
 \description{
-Inserta una flextable en un documento Word ya cargado, posicionándola en el
-encabezado indicado y gestionando el cambio de secciones entre orientación
+Inserta una flextable en un documento Word ya cargado, posicionandola en el
+encabezado indicado y gestionando el cambio de secciones entre orientacion
 vertical y horizontal.
 }

@@ -13,15 +13,15 @@ exactamente con los existentes en los datos.}
 }
 \value{
 Un \code{data.frame} con las columnas transformadas, formateadas
-y listas para su visualización en una tabla.
+y listas para su visualizacion en una tabla.
 }
 \description{
 Construye una tabla de colecciones y bases de datos a partir de los datos
 devueltos por \code{extraer_colecciones_mapa()}, aplicando filtros opcionales
-por disciplina y/o subdisciplina. La tabla resultante está preparada para
+por disciplina y/o subdisciplina. La tabla resultante esta preparada para
 su uso posterior en una \code{flextable}.
 }
 \details{
-Esta función no realiza ninguna operación de entrada/salida ni modifica
-documentos Word. Su única responsabilidad es la preparación de los datos.
+Esta funcion no realiza ninguna operacion de entrada/salida ni modifica
+documentos Word. Su unica responsabilidad es la preparacion de los datos.
 }
