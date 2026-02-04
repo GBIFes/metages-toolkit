@@ -10,12 +10,12 @@
 #'
 #'
 #' @param driver Nombre del driver ODBC a utilizar. Por defecto se usa
-#'   `"MySQL ODBC 9.4 Unicode Driver"`, pero puede variar según el sistema
-#'   operativo y la instalación local. Para listar los drivers disponibles:
-#'   \code{odbc::odbcListDrivers()}.
-#'   
-#' En sistemas donde el driver por defecto no funcione, el usuario
-#' deberá especificar uno alternativo mediante el argumento \code{driver}.
+#'   `"MySQL ODBC 9.4 Unicode Driver"`, pero puede variar segun el sistema
+#'   operativo y la instalacion local. 
+#'   **Solo se admiten drivers ODBC Unicode**. Los drivers ANSI no estan soportados. 
+#'   Para listar los drivers disponibles desde R: \code{odbc::odbcListDrivers()}.
+#'   En sistemas donde el driver por defecto no funcione, el usuario 
+#'   deberá especificar uno alternativo mediante el argumento \code{driver}.
 #'
 #'
 #' @details
@@ -24,7 +24,19 @@
 #'   \item Apertura de un túnel SSH.
 #'   \item Conexión a la base de datos vía \pkg{DBI} y \pkg{ODBC}.
 #' }
+#' La base de datos MetaGES utiliza codificacion UTF-8 y contiene caracteres
+#' internacionales (acentos, caracteres cientificos, etc.).
 #'
+#' Por este motivo, \code{conectar_metages()} **solo permite el uso de drivers ODBC Unicode**. 
+#' Los drivers ODBC ANSI no soportan correctamente UTF-8 y pueden
+#' provocar errores silenciosos o corrupcion de texto.
+#'
+#' Si no se especifica un driver, la función utiliza el driver Unicode por
+#' defecto. Si dicho driver no está instalado en el sistema, la conexión
+#' fallará.
+#'
+#' Para instalar un driver ODBC Unicode para MySQL, consulte la página oficial:
+#' \url{https://dev.mysql.com/downloads/connector/odbc/}
 #'
 #'
 #' @return Una lista con dos elementos:

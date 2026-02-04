@@ -93,7 +93,7 @@ library(processx)
 # --------------------------------------------------
 # 1. Dominio de datos (una sola vez)
 # --------------------------------------------------
-dom <- extraer_colecciones_mapa()
+dom <- extraer_colecciones_mapa(odbc_driver = params$odbc_driver)
 data <- dom$data
 
 # --------------------------------------------------
