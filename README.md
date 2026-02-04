@@ -86,6 +86,10 @@ El informe contiene información detallada sobre el contenido de la base de dato
 
 👉 **Consulta el artículo [Generacion del Informe de Colecciones con metagesToolkit](https://gbifes.github.io/metages-toolkit/articles/guia-uso-usr.html#generacion-del-informe-de-colecciones)**
 
+```r
+render_informe()
+```
+![](man/figures/informe_pantallazo.png)
 
 
 *** 
