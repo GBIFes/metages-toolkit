@@ -7,7 +7,8 @@
 extraer_colecciones_mapa(
   shift = c(5, 6),
   cerrar_conexion = FALSE,
-  cerrar_tunel = FALSE
+  cerrar_tunel = FALSE,
+  odbc_driver = NULL
 )
 }
 \arguments{
@@ -17,6 +18,10 @@ desplazar los datos de canarias y coincidir con \code{get_basemap_es()}.}
 \item{cerrar_conexion}{Si \code{TRUE}, cierra la conexión DB al finalizar.}
 
 \item{cerrar_tunel}{Si \code{TRUE}, cierra el túnel/proceso al finalizar.}
+
+\item{odbc_driver}{Driver ODBC alternativo para la conexión a METAGES.
+Si es \code{NULL} (valor por defecto), se usa el driver por defecto
+definido en \code{conectar_metages()}.}
 }
 \value{
 Invisiblemente, un data.frame/tibble con los datos de colecciones

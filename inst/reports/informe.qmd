@@ -6,6 +6,8 @@ author:
 date: last-modified
 lang: es
 
+params:
+  odbc_driver: null
 
 prefer-html: true
 
@@ -132,7 +134,10 @@ ft_tbl <- function(x, caption = NULL) {
 
 
 # SQL Views
-con <- conectar_metages()$con
+con <- conectar_metages(
+  driver = params$odbc_driver
+)$con
+
 
 
 # data

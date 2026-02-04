@@ -4,12 +4,16 @@
 \alias{render_informe}
 \title{Renderiza el informe METAGES}
 \usage{
-render_informe(overwrite = TRUE)
+render_informe(overwrite = TRUE, odbc_driver = NULL)
 }
 \arguments{
 \item{overwrite}{Si \code{TRUE}, elimina y vuelve a crear el directorio
 \code{informe_output} si ya existe en el directorio de trabajo.
 Si \code{FALSE} y el directorio existe, la funcion lanza un error.}
+
+\item{odbc_driver}{Driver ODBC alternativo para la conexión a METAGES.
+Si es \code{NULL} (valor por defecto), se utilizará el driver por
+defecto definido en \code{conectar_metages()}.}
 }
 \value{
 Crea varias carpetas y archivos de cache, figuras y un documento (\code{.docx}).

@@ -27,6 +27,7 @@ test_that("conectar_metages falla si faltan variables de entorno", {
 })
 
 
+
 test_that("conectar_metages falla si el driver ODBC no existe", {
   
   Sys.setenv(
@@ -38,18 +39,21 @@ test_that("conectar_metages falla si el driver ODBC no existe", {
     gbif_wp_pass = "dummy"
   )
   
-  testthat::with_mocked_bindings(
+  testthat::local_mocked_bindings(
     
-    odbcListDrivers = function() {
+    odbcListDrivers = function(...) {
       data.frame(name = c("Driver A", "Driver B"))
     },
     
-    expect_error(
-      conectar_metages(driver = "Driver inexistente"),
-      "ODBC driver not found"
-    )
+    .package = "odbc"
+  )
+  
+  expect_error(
+    conectar_metages(driver = "Driver inexistente"),
+    "ODBC driver not found"
   )
 })
+
 
 
 test_that("conectar_metages no intenta abrir SSH si falla antes", {
@@ -63,15 +67,17 @@ test_that("conectar_metages no intenta abrir SSH si falla antes", {
     gbif_wp_pass = ""
   )
   
-  testthat::with_mocked_bindings(
+  testthat::local_mocked_bindings(
     
     ssh_connect = function(...) {
       stop("ssh_connect no debería ser llamado")
     },
     
-    expect_error(
-      conectar_metages(),
-      "Missing required environment variables"
-    )
+    .package = "ssh"
+  )
+  
+  expect_error(
+    conectar_metages(),
+    "Missing required environment variables"
   )
 })

@@ -4,7 +4,7 @@
 \alias{conectar_metages}
 \title{Conectar con la base de datos METAGES}
 \usage{
-conectar_metages(driver = "MySQL ODBC 9.4 Unicode Driver")
+conectar_metages(driver = NULL)
 }
 \arguments{
 \item{driver}{Nombre del driver ODBC a utilizar. Por defecto se usa

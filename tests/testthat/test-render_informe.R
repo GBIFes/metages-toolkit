@@ -6,7 +6,7 @@ test_that("render_informe crea informe_output con reports/informe.docx", {
   on.exit(setwd(old_wd), add = TRUE)
   
   testthat::local_mocked_bindings(
-    quarto_render = function(input, output_format) {
+    quarto_render = function(input, output_format, ...) {
       writeLines(
         "docx fake",
         file.path(dirname(input), "informe.docx")
@@ -38,7 +38,7 @@ test_that("render_informe falla si informe_output existe y overwrite = FALSE", {
   dir.create("informe_output")
   
   testthat::local_mocked_bindings(
-    quarto_render = function(input, output_format) {
+    quarto_render = function(input, output_format, ...) {
       writeLines(
         "docx fake",
         file.path(dirname(input), "informe.docx")
@@ -65,7 +65,7 @@ test_that("render_informe llama a quarto_render con informe.qmd", {
   called_input <- NULL
   
   testthat::local_mocked_bindings(
-    quarto_render = function(input, output_format) {
+    quarto_render = function(input, output_format, ...) {
       called_input <<- input
       writeLines(
         "docx fake",

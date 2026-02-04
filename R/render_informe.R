@@ -12,6 +12,9 @@
 #' @param overwrite Si \code{TRUE}, elimina y vuelve a crear el directorio
 #'   \code{informe_output} si ya existe en el directorio de trabajo.
 #'   Si \code{FALSE} y el directorio existe, la funcion lanza un error.
+#' @param odbc_driver Driver ODBC alternativo para la conexión a METAGES.
+#'   Si es \code{NULL} (valor por defecto), se utilizará el driver por
+#'   defecto definido en \code{conectar_metages()}.
 #'
 #' @return Crea varias carpetas y archivos de cache, figuras y un documento (`.docx`).
 #' 
@@ -19,7 +22,7 @@
 #' 
 #' @export
 
-render_informe <- function(overwrite = TRUE) {
+render_informe <- function(overwrite = TRUE, odbc_driver = NULL) {
   
   # 1. Localizar reports del paquete
   reports_src <- system.file("reports", package = "metagesToolkit")
@@ -45,7 +48,8 @@ render_informe <- function(overwrite = TRUE) {
   # 3. Renderizar (TODO se genera dentro de reports_tmp)
   quarto::quarto_render(
     input = qmd_tmp,
-    output_format = "docx"
+    output_format = "docx",
+    execute_params = list(odbc_driver = odbc_driver)
   )
   
   # 4. Copiar reports completo a getwd(), sin aplanar

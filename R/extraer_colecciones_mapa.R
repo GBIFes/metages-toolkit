@@ -7,6 +7,9 @@
 #'    desplazar los datos de canarias y coincidir con \code{get_basemap_es()}.
 #' @param cerrar_conexion Si `TRUE`, cierra la conexión DB al finalizar.
 #' @param cerrar_tunel Si `TRUE`, cierra el túnel/proceso al finalizar.
+#' @param odbc_driver Driver ODBC alternativo para la conexión a METAGES.
+#'   Si es \code{NULL} (valor por defecto), se usa el driver por defecto
+#'   definido en \code{conectar_metages()}.
 #'
 #' @return Invisiblemente, un data.frame/tibble con los datos de colecciones
 #'   listos para usar en \code{crear_mapa()}.
@@ -17,10 +20,11 @@
 
 extraer_colecciones_mapa <- function(shift = c(5, 6),
                                  cerrar_conexion = FALSE,
-                                 cerrar_tunel = FALSE) {
+                                 cerrar_tunel = FALSE,
+                                 odbc_driver = NULL) {
   
   # 1. Abrir conexión + túnel
-  cm <- conectar_metages()
+  cm <- conectar_metages(driver = odbc_driver)
   
   con <- cm$con
   tunnel <- cm$tunnel

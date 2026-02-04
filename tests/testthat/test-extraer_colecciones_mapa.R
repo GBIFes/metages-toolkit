@@ -1,7 +1,7 @@
 test_that("extraer_colecciones_mapa devuelve data, con y tunnel", {
   
-  local_mocked_bindings(
-    conectar_metages = function() {
+  testthat::local_mocked_bindings(
+    conectar_metages = function(driver = NULL, ...) {
       list(con = "fake_con", tunnel = NULL)
     },
     dbGetQuery = function(con, query) {
@@ -21,8 +21,10 @@ test_that("extraer_colecciones_mapa devuelve data, con y tunnel", {
 
 test_that("extraer_colecciones_mapa elimina town NA o vacíos", {
   
-  local_mocked_bindings(
-    conectar_metages = function() list(con = "fake", tunnel = NULL),
+  testthat::local_mocked_bindings(
+    conectar_metages = function(driver = NULL, ...) {
+      list(con = "fake", tunnel = NULL)
+    },
     dbGetQuery = function(con, query) test_data,
     .package = "metagesToolkit"
   )
@@ -37,8 +39,10 @@ test_that("extraer_colecciones_mapa elimina town NA o vacíos", {
 
 test_that("extraer_colecciones_mapa convierte latitude y longitude a numeric", {
   
-  local_mocked_bindings(
-    conectar_metages = function() list(con = "fake", tunnel = NULL),
+  testthat::local_mocked_bindings(
+    conectar_metages = function(driver = NULL, ...) {
+      list(con = "fake", tunnel = NULL)
+    },
     dbGetQuery = function(con, query) test_data,
     .package = "metagesToolkit"
   )
@@ -53,8 +57,10 @@ test_that("extraer_colecciones_mapa convierte latitude y longitude a numeric", {
 
 test_that("extraer_colecciones_mapa aplica shift a Canarias", {
   
-  local_mocked_bindings(
-    conectar_metages = function() list(con = "fake", tunnel = NULL),
+  testthat::local_mocked_bindings(
+    conectar_metages = function(driver = NULL, ...) {
+      list(con = "fake", tunnel = NULL)
+    },
     dbGetQuery = function(con, query) test_data,
     .package = "metagesToolkit"
   )
@@ -74,8 +80,8 @@ test_that("extraer_colecciones_mapa no cierra la conexión por defecto", {
   
   closed <- FALSE
   
-  local_mocked_bindings(
-    conectar_metages = function() {
+  testthat::local_mocked_bindings(
+    conectar_metages = function(driver = NULL, ...) {
       list(con = "fake_con", tunnel = NULL)
     },
     dbGetQuery = function(con, query) test_data,
@@ -96,8 +102,8 @@ test_that("extraer_colecciones_mapa cierra la conexión si cerrar_conexion = TRU
   
   closed <- FALSE
   
-  local_mocked_bindings(
-    conectar_metages = function() {
+  testthat::local_mocked_bindings(
+    conectar_metages = function(driver = NULL, ...) {
       list(con = "fake_con", tunnel = NULL)
     },
     dbGetQuery = function(con, query) test_data,

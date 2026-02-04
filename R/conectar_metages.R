@@ -40,9 +40,12 @@
 #'
 #' @export
 
-conectar_metages <- function(driver = "MySQL ODBC 9.4 Unicode Driver") {
+conectar_metages <- function(driver = NULL) {
 
   
+  # ---------------------------------------------------------------
+  # Comprobar que las variables de ambiente necesarias existen.
+  # ---------------------------------------------------------------
   required_env <- c(
     "host_prod",
     "keyfile",
@@ -61,6 +64,25 @@ conectar_metages <- function(driver = "MySQL ODBC 9.4 Unicode Driver") {
       call. = FALSE
     )
   }
+  
+  
+  # ---------------------------------------------------------------
+  # Usar driver ODBC por defecto si no se especifica.
+  # ---------------------------------------------------------------
+  default_driver <- "MySQL ODBC 9.4 Unicode Driver"
+  
+  if (is.null(driver) || identical(driver, "")) {
+    driver <- default_driver
+  }
+  
+  # Comprobacion de seguridad
+  if (!is.character(driver) || length(driver) != 1) {
+    stop(
+      "`driver` debe ser una cadena de texto de longitud 1.",
+      call. = FALSE
+    )
+  }
+  
   
   
   # ---------------------------------------------------------------
