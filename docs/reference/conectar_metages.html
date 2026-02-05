@@ -9,7 +9,7 @@ túnel SSH y una conexión ODBC."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">metagesToolkit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +48,7 @@ túnel SSH y una conexión ODBC.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">conectar_metages</span><span class="op">(</span>driver <span class="op">=</span> <span class="st">"MySQL ODBC 9.4 Unicode Driver"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">conectar_metages</span><span class="op">(</span>driver <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -57,10 +57,11 @@ túnel SSH y una conexión ODBC.</p>
 
 <dl><dt id="arg-driver">driver<a class="anchor" aria-label="anchor" href="#arg-driver"></a></dt>
 <dd><p>Nombre del driver ODBC a utilizar. Por defecto se usa
-<code>"MySQL ODBC 9.4 Unicode Driver"</code>, pero puede variar según el sistema
-operativo y la instalación local. Para listar los drivers disponibles:
-<code><a href="https://odbc.r-dbi.org/reference/odbcListDrivers.html" class="external-link">odbc::odbcListDrivers()</a></code>.</p>
-<p>En sistemas donde el driver por defecto no funcione, el usuario
+<code>"MySQL ODBC 9.4 Unicode Driver"</code>, pero puede variar segun el sistema
+operativo y la instalacion local.
+<strong>Solo se admiten drivers ODBC Unicode</strong>. Los drivers ANSI no estan soportados.
+Para listar los drivers disponibles desde R: <code><a href="https://odbc.r-dbi.org/reference/odbcListDrivers.html" class="external-link">odbc::odbcListDrivers()</a></code>.
+En sistemas donde el driver por defecto no funcione, el usuario
 deberá especificar uno alternativo mediante el argumento <code>driver</code>.</p></dd>
 
 </dl></div>
@@ -82,7 +83,17 @@ Para mas informacion sobre la configuracion de las variables de entorno, ver
 <a href="https://gbifes.github.io/metages-toolkit/articles/guia-uso-dev.html#configuracion-de--renviron-para-acceder-a-metages">Documentación técnica de metagesToolkit</a></p>
 <p>La conexión se realiza en dos pasos:</p><ol><li><p>Apertura de un túnel SSH.</p></li>
 <li><p>Conexión a la base de datos vía <span class="pkg">DBI</span> y <span class="pkg">ODBC</span>.</p></li>
-</ol></div>
+</ol><p>La base de datos MetaGES utiliza codificacion UTF-8 y contiene caracteres
+internacionales (acentos, caracteres cientificos, etc.).</p>
+<p>Por este motivo, <code>conectar_metages()</code> <strong>solo permite el uso de drivers ODBC Unicode</strong>.
+Los drivers ODBC ANSI no soportan correctamente UTF-8 y pueden
+provocar errores silenciosos o corrupcion de texto.</p>
+<p>Si no se especifica un driver, la función utiliza el driver Unicode por
+defecto. Si dicho driver no está instalado en el sistema, la conexión
+fallará.</p>
+<p>Para instalar un driver ODBC Unicode para MySQL, consulte la página oficial:
+<a href="https://dev.mysql.com/downloads/connector/odbc/" class="external-link">https://dev.mysql.com/downloads/connector/odbc/</a></p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

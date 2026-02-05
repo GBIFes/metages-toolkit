@@ -57,31 +57,15 @@ que orquesta internamente la conexión a MetaGES, la extracción de datos,
 el procesamiento, la creación de mapas y la generación de un informe
 final como archivo `.docx`.
 
-El paquete expone además dos funciones útiles para la exploración
-[`crear_mapa_simple()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa_simple.md)
-y el post-procesado del informe
-[`insertar_tablas_colecciones()`](https://gbifes.github.io/metages-toolkit/reference/insertar_tablas_colecciones.md).
-Sin embargo, para usar estas funciones ***es imprescindible tener
-credenciales para acceder a MetaGES:***  
+El paquete expone además varias funciones útiles para la exploración
+visual de los datos y el post-procesado del informe. Sin embargo, para
+usar estas funciones ***es imprescindible tener drivers instalados y
+credenciales adecuadas para acceder a MetaGES***  
   
 
-##### ⚠️Añadir credenciales:⚠️
-
-Para extraer datos de MetaGES es necesario tener acceso a la Base de
-Datos. Los siguientes variables de entorno deben estar definidas en el
-archivo `.Renviron` antes de usar el paquete; y se cargarán
-automáticamente al iniciar una sesión de R:
-
-- `host_prod`
-- `keyfile`
-- `prod_ssh_bridge_R`
-- `Database`
-- `UID`
-- `gbif_wp_pass`
-
-👉 **Consulta el artículo [Configuracion de .Renviron para acceder a
-MetaGES](https://gbifes.github.io/metages-toolkit/articles/guia-uso-dev.html#configuracion-de--renviron-para-acceder-a-metages)**
-para encontrar las Instrucciones para editar y guardar credenciales
+👉 **Consulta el artículo [Guia de uso de metagesToolkit -
+USUARIOS](https://gbifes.github.io/metages-toolkit/articles/guia-uso-usr.html)**
+para acceder a todas las funcionalidades del paquete.
 
 ------------------------------------------------------------------------
 
@@ -95,6 +79,12 @@ de datos MetaGES.
 
 👉 **Consulta el artículo [Generacion del Informe de Colecciones con
 metagesToolkit](https://gbifes.github.io/metages-toolkit/articles/guia-uso-usr.html#generacion-del-informe-de-colecciones)**
+
+``` r
+render_informe()
+```
+
+![](reference/figures/informe_pantallazo.png)
 
 ------------------------------------------------------------------------
 

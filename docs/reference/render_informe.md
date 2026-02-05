@@ -7,7 +7,7 @@ archivos auxiliares producidos por Quarto.
 ## Usage
 
 ``` r
-render_informe(overwrite = TRUE)
+render_informe(overwrite = TRUE, odbc_driver = NULL)
 ```
 
 ## Arguments
@@ -17,6 +17,12 @@ render_informe(overwrite = TRUE)
   Si `TRUE`, elimina y vuelve a crear el directorio `informe_output` si
   ya existe en el directorio de trabajo. Si `FALSE` y el directorio
   existe, la funcion lanza un error.
+
+- odbc_driver:
+
+  Driver ODBC alternativo para la conexión a METAGES. Si es `NULL`
+  (valor por defecto), se utilizará el driver por defecto definido en
+  [`conectar_metages()`](https://gbifes.github.io/metages-toolkit/reference/conectar_metages.md).
 
 ## Value
 

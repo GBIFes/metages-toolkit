@@ -71,15 +71,20 @@ vivo y referencia operativa.
 
 ------------------------------------------------------------------------
 
-## Configuracion de `.Renviron` para acceder a MetaGES
+## Configuracion de credenciales y drivers para acceder a MetaGES
 
 El acceso a MetaGES esta protegido por credenciales. Configurar estas
 credenciales en R es fundamental para usar el paquete tanto como
 `DESARROLLADOR` como como `USUARIO`
 
-### Flujo recomendado
+### Configuracion del `.Renviron`
 
 ``` r
+# Para extraer datos de MetaGES es necesario tener acceso a la Base de Datos.
+# Las variables de entorno que se muestran a continuacion deben estar definidas
+# en el archivo `.Renviron` antes de usar el paquete y se cargarán automáticamente 
+# al iniciar una sesión de R.
+
 ####### ATENCION ########
 # Correr codigo cada vez que queramos cambiar algo en el .Renviron
 
@@ -104,6 +109,11 @@ rstudioapi::documentSave()
 # 4. Hacer efectivos los cambios reiniciando la sesion de R
 rstudioapi::restartSession()
 ```
+
+### Configuracion de SQL Drivers
+
+👉 **Consulta la documentacion de
+[`conectar_metages()`](https://gbifes.github.io/metages-toolkit/reference/conectar_metages.md)**
 
 ------------------------------------------------------------------------
 

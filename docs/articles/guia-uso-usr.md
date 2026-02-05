@@ -6,10 +6,15 @@ referencia operativa.
 
 ------------------------------------------------------------------------
 
-## Configuracion de `.Renviron`
+## Configuracion de credenciales y drivers
 
-👉 Consulta el artículo [Configuracion de `.Renviron` para acceder a
-MetaGES](https://gbifes.github.io/metages-toolkit/articles/guia-uso-dev.html#configuracion-de--renviron-para-acceder-a-metages)
+Para usar las funciones de metagesToolkit ***es imprescindible tener
+drivers instalados y credenciales adecuadas para acceder a MetaGES*** ⚠️
+
+👉 Consulta el artículo [Configuracion de credenciales y drivers para
+acceder a
+MetaGES](https://gbifes.github.io/metages-toolkit/articles/guia-uso-dev.html#configuracion-de-credenciales-y-drivers-para-acceder-a-metages)
+si aun no has configurado la credenciales y drivers para tu sesion.
 
 ------------------------------------------------------------------------
 

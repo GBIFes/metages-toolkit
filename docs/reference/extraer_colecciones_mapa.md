@@ -11,7 +11,8 @@ data.frame depurado para mapas.
 extraer_colecciones_mapa(
   shift = c(5, 6),
   cerrar_conexion = FALSE,
-  cerrar_tunel = FALSE
+  cerrar_tunel = FALSE,
+  odbc_driver = NULL
 )
 ```
 
@@ -30,6 +31,12 @@ extraer_colecciones_mapa(
 - cerrar_tunel:
 
   Si `TRUE`, cierra el túnel/proceso al finalizar.
+
+- odbc_driver:
+
+  Driver ODBC alternativo para la conexión a METAGES. Si es `NULL`
+  (valor por defecto), se usa el driver por defecto definido en
+  [`conectar_metages()`](https://gbifes.github.io/metages-toolkit/reference/conectar_metages.md).
 
 ## Value
 

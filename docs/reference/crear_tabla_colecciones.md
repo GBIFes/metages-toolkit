@@ -9,7 +9,7 @@ resultante esta preparada para su uso posterior en una `flextable`.
 ## Usage
 
 ``` r
-crear_tabla_colecciones(filtro = list())
+crear_tabla_colecciones(filtro = list(), driver = NULL)
 ```
 
 ## Arguments
@@ -19,6 +19,11 @@ crear_tabla_colecciones(filtro = list())
   Lista con criterios de filtrado. Puede contener los elementos
   `disciplina` y/o `subdisciplina`, cuyos valores deben coincidir
   exactamente con los existentes en los datos.
+
+- driver:
+
+  Nombre del driver ODBC Unicode a utilizar. Se pasa internamente a las
+  funciones de acceso a METAGES.
 
 ## Value
 

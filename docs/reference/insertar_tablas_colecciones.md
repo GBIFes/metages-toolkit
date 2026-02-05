@@ -8,7 +8,7 @@ utilizando distintos encabezados y filtros para cada seccion.
 ## Usage
 
 ``` r
-insertar_tablas_colecciones(keywords, filtros)
+insertar_tablas_colecciones(keywords, filtros, driver = NULL)
 ```
 
 ## Arguments
@@ -22,6 +22,11 @@ insertar_tablas_colecciones(keywords, filtros)
 
   Lista de listas con los criterios de filtrado asociados a cada
   encabezado. Cada elemento debe corresponder a uno de `keywords`.
+
+- driver:
+
+  Nombre del driver ODBC Unicode a utilizar. Se pasa a todas las
+  llamadas internas de acceso a METAGES.
 
 ## Value
 
