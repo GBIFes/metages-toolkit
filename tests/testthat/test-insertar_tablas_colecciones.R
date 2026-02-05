@@ -8,68 +8,49 @@ test_that("falla si no existe metagesToolkit.last_docx", {
   )
 })
 
-
-
 test_that("flujo completo devuelve la ruta final del docx", {
   
-  tmp_docx <- tempfile(fileext = ".docx")
-  file.create(tmp_docx)
+  withr::local_tempdir()
+  old_wd <- getwd()
+  setwd(tempdir())
+  on.exit(setwd(old_wd), add = TRUE)
   
-  withr::local_options(metagesToolkit.last_docx = tmp_docx)
+  fake_docx <- file.path(getwd(), "fake.docx")
+  file.create(fake_docx)
+  options(metagesToolkit.last_docx = fake_docx)
   
-  fake_colecciones <- function() {
-    list(
-      data = tibble::tibble(
-        institucion_proyecto = "Museo X",
-        url_institucion = "https://museo.example",
-        coleccion_base = "Herbario",
-        coleccion_url = "https://herbario.example",
-        collection_code = "HB",
-        town = "Madrid",
-        region = "Madrid",
-        number_of_subunits = 1000,
-        ultima_actualizacion_coleccion = 2024,
-        fecha_alta_coleccion = 2020,
-        numberOfRecords = 500,
-        ultima_actualizacion_recursos = 2023,
-        percent_database = 80,
-        percent_georref = 70,
-        tipo_body = "coleccion"
+  # ---- mocks del paquete metagesToolkit ----
+  testthat::local_mocked_bindings(
+    crear_tabla_colecciones = function(filtro, driver = NULL) {
+      data.frame(
+        institucion_proyecto = "Inst",
+        coleccion_base = "Col",
+        Tipo = "CB"
       )
-    )
-  }
-  
-  local_mocked_bindings(
-    extraer_colecciones_mapa = fake_colecciones,
+    },
+    crear_flextable_colecciones = function(x) x,
+    insertar_tabla_en_doc = function(doc, keyword, ft) doc,
     .package = "metagesToolkit"
   )
   
-  local_mocked_bindings(
+  # ---- mockear officer ----
+  testthat::local_mocked_bindings(
     read_docx = function(path) "doc",
-    cursor_reach = function(doc, keyword) doc,
-    body_end_section_portrait = function(doc) doc,
-    body_end_section_landscape = function(doc) doc,
     .package = "officer"
   )
   
-  local_mocked_bindings(
-    flextable = function(x) "ft",
-    compose = function(...) "ft",
-    delete_columns = function(ft, j) ft,
-    set_header_labels = function(ft, ...) ft,
-    body_add_flextable = function(doc, value, align) doc,
-    .package = "flextable"
-  )
-  
-  local_mocked_bindings(
+  # ---- mockear escritura final ----
+  testthat::local_mocked_bindings(
     print = function(x, target) invisible(target),
     .package = "base"
   )
   
-  out <- insertar_tablas_colecciones(
+  res <- insertar_tablas_colecciones(
     keywords = "Colecciones",
-    filtros = list(list())
+    filtros  = list(list()),
+    driver   = "MySQL ODBC 9.4 Unicode Driver"
   )
   
-  expect_true(grepl("_tablas_colecciones\\.docx$", out))
+  expect_true(is.character(res))
+  expect_true(grepl("_tablas_colecciones\\.docx$", res))
 })

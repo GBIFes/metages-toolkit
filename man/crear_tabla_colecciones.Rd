@@ -4,12 +4,15 @@
 \alias{crear_tabla_colecciones}
 \title{Crear tabla de colecciones filtrada}
 \usage{
-crear_tabla_colecciones(filtro = list())
+crear_tabla_colecciones(filtro = list(), driver = NULL)
 }
 \arguments{
 \item{filtro}{Lista con criterios de filtrado. Puede contener los elementos
 \code{disciplina} y/o \code{subdisciplina}, cuyos valores deben coincidir
 exactamente con los existentes en los datos.}
+
+\item{driver}{Nombre del driver ODBC Unicode a utilizar. Se pasa internamente
+a las funciones de acceso a METAGES.}
 }
 \value{
 Un \code{data.frame} con las columnas transformadas, formateadas

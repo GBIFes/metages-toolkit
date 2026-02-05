@@ -1,36 +1,35 @@
 test_that("crear_tabla_colecciones aplica filtro por subdisciplina", {
   
-  fake_colecciones <- function() {
-    list(
-      data = tibble::tibble(
-        disciplina_def = "Zoológica",
-        disciplina_subtipo_def = "Invertebrados",
-        institucion_proyecto = "Museo X",
-        url_institucion = "https://museo.example",
-        coleccion_base = "Colección A",
-        coleccion_url = "https://coleccion.example",
-        collection_code = "COL",
-        town = "Madrid",
-        region = "Madrid",
-        number_of_subunits = 1,
-        ultima_actualizacion_coleccion = 2024,
-        fecha_alta_coleccion = 2020,
-        numberOfRecords = 1,
-        ultima_actualizacion_recursos = 2023,
-        percent_database = 50,
-        percent_georref = 50,
-        tipo_body = "coleccion"
-      )
-    )
-  }
+  test_data <- tibble::tibble(
+    disciplina_def = c("Zoológica", "Zoológica"),
+    disciplina_subtipo_def = c("Invertebrados", "Vertebrados"),
+    institucion_proyecto = c("Inst A", "Inst B"),
+    url_institucion = c("u1", "u2"),
+    coleccion_base = c("Col A", "Col B"),
+    coleccion_url = c("c1", "c2"),
+    collection_code = c("A", "B"),
+    town = c("Madrid", "Madrid"),
+    region = c("Madrid", "Madrid"),
+    number_of_subunits = c(10, 20),
+    numberOfRecords = c(100, 200),
+    percent_database = c(50, 60),
+    percent_georref = c(70, 80),
+    tipo_body = c("coleccion", "coleccion"),
+    ultima_actualizacion_coleccion = c(2020, 2021),
+    fecha_alta_coleccion = c(2019, 2019),
+    ultima_actualizacion_recursos = c(2022, 2022)
+  )
   
-  local_mocked_bindings(
-    extraer_colecciones_mapa = fake_colecciones,
+  testthat::local_mocked_bindings(
+    extraer_colecciones_mapa = function(..., odbc_driver = NULL) {
+      list(data = test_data)
+    },
     .package = "metagesToolkit"
   )
   
-  out <- crear_tabla_colecciones(list(subdisciplina = "Invertebrados"))
+  res <- crear_tabla_colecciones(
+    filtro = list(subdisciplina = "Invertebrados")
+  )
   
-  expect_s3_class(out, "data.frame")
-  expect_equal(nrow(out), 1)
+  expect_equal(nrow(res), 1)
 })

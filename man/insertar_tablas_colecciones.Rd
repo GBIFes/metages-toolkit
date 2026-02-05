@@ -4,7 +4,7 @@
 \alias{insertar_tablas_colecciones}
 \title{Insertar multiples tablas de colecciones en un informe Word}
 \usage{
-insertar_tablas_colecciones(keywords, filtros)
+insertar_tablas_colecciones(keywords, filtros, driver = NULL)
 }
 \arguments{
 \item{keywords}{Vector de caracteres con los encabezados exactos del documento
@@ -12,6 +12,9 @@ Word donde se insertara cada tabla.}
 
 \item{filtros}{Lista de listas con los criterios de filtrado asociados a cada
 encabezado. Cada elemento debe corresponder a uno de \code{keywords}.}
+
+\item{driver}{Nombre del driver ODBC Unicode a utilizar.
+Se pasa a todas las llamadas internas de acceso a METAGES.}
 }
 \value{
 Ruta al archivo \code{.docx} final generado.

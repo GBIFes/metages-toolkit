@@ -8,6 +8,8 @@
 #' @param filtro Lista con criterios de filtrado. Puede contener los elementos
 #'   \code{disciplina} y/o \code{subdisciplina}, cuyos valores deben coincidir
 #'   exactamente con los existentes en los datos.
+#' @param driver Nombre del driver ODBC Unicode a utilizar. Se pasa internamente
+#'   a las funciones de acceso a METAGES.
 #'
 #' @return Un \code{data.frame} con las columnas transformadas, formateadas
 #'   y listas para su visualizacion en una tabla.
@@ -20,9 +22,9 @@
 #' @import scales 
 #'
 #' @export
-crear_tabla_colecciones <- function(filtro = list()) {
+crear_tabla_colecciones <- function(filtro = list(), driver = NULL) {
   
-  datos <- extraer_colecciones_mapa()$data
+  datos <- extraer_colecciones_mapa(odbc_driver = driver)$data
   
   if (!is.null(filtro$disciplina)) {
     datos <- dplyr::filter(datos, disciplina_def == filtro$disciplina)
@@ -189,6 +191,9 @@ insertar_tabla_en_doc <- function(doc, keyword, ft) {
 #'   Word donde se insertara cada tabla.
 #' @param filtros Lista de listas con los criterios de filtrado asociados a cada
 #'   encabezado. Cada elemento debe corresponder a uno de \code{keywords}.
+#' @param driver Nombre del driver ODBC Unicode a utilizar.
+#'   Se pasa a todas las llamadas internas de acceso a METAGES.
+
 #'
 #' @return Ruta al archivo \code{.docx} final generado.
 #'
@@ -231,7 +236,7 @@ insertar_tabla_en_doc <- function(doc, keyword, ft) {
 #' @import officer 
 #'
 #' @export
-insertar_tablas_colecciones <- function(keywords, filtros) {
+insertar_tablas_colecciones <- function(keywords, filtros, driver = NULL) {
   
   stopifnot(length(keywords) == length(filtros))
   
@@ -245,7 +250,8 @@ insertar_tablas_colecciones <- function(keywords, filtros) {
   for (i in seq_along(keywords)) {
     message(paste0("Insertando tabla de ", keywords[[i]]))
     
-    tabla <- crear_tabla_colecciones(filtros[[i]])
+    tabla <- crear_tabla_colecciones(filtros[[i]], 
+                                     driver = driver)
     if (nrow(tabla) == 0) next
     
     ft  <- crear_flextable_colecciones(tabla)
