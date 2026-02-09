@@ -42,7 +42,7 @@ SELECT
     mb.condiciones_col,
     mb.acceso_col AS acceso_ejemplares,
     mb.acceso_informatizado, 
-    mb.medio_acceso,
+    mb.medio_acceso_estandarizado,
     mit.Abreviatura AS software_gestion_col 
 FROM metages_body AS mb       
 LEFT JOIN metages_disciplina AS md								-- Anhadir disciplina de la coleccion (Zoologica, Botanica, etc)  

@@ -139,16 +139,61 @@ con <- conectar_metages(
 )$con
 
 
-
-# data
-n_entidades_actual <- NULL ############## REVISAR ############################
-n_entidades_informe_anterior <- NULL ############# REVISAR ###################
-n_edicion_informe_anterior <- "sexta"
+# otras metricas
 n_edicion_informe_actual <- "septima"
+n_edicion_informe_anterior <- "sexta"
 anno_actual <- format(Sys.Date(), "%Y")
 anno_informe_anterior <- 2019
-mes_anno_informe_anterior <- "diciembre de 2019"
+anno_publi_informe_anterior <- 2021
 mes_anno_actual <- format(Sys.Date(), "%B de %Y")
+mes_anno_informe_anterior <- "diciembre de 2019"
+
+
+
+
+# data
+# Lectura interna
+colbd <- readRDS("data/mapas/mapa-total.rds")
+reg <- readRDS("data/vistas_sql/registros.rds")
+
+# entidades
+n_entidades_actual <- colbd %>% select (institucion_proyecto) %>% distinct() %>% nrow()
+n_entidades_actual_pub <- colbd %>% filter(publica_en_gbif == 1) %>% select(institucion_proyecto) %>% distinct() %>% nrow()
+n_entidades_actual_pub_x100 <- paste0((n_entidades_actual_pub * 100 / n_entidades_actual) %>% round(1), "%")
+n_entidades_informe_anterior <- 229 # Manual
+n_entidades_incremento <- n_entidades_actual - n_entidades_informe_anterior
+n_entidades_incremento_x100 <- paste0((n_entidades_incremento * 100 / n_entidades_informe_anterior) %>% round(1), "%")
+
+
+# colbd
+n_colbd_actual <- nrow(colbd)
+n_colbd_actual_pub <- colbd %>% filter(publica_en_gbif == 1) %>% nrow()
+n_colbd_actual_pub_x100 <- paste0((n_colbd_actual_pub * 100 / n_colbd_actual) %>% round(1), "%")
+n_colbd_informe_anterior <- 474 # Manual
+n_colbd_incremento <- n_colbd_actual - n_colbd_informe_anterior
+n_colbd_incremento_x100 <- paste0((n_colbd_incremento * 100 / n_colbd_informe_anterior) %>% round(1), "%")
+
+# col
+n_col_actual <- colbd %>% filter(tipo_body == "coleccion") %>% nrow()
+n_col_actual_pub <- colbd %>% filter(tipo_body == "coleccion", publica_en_gbif == 1) %>% nrow()
+n_col_actual_pub_x100 <- paste0((n_col_actual_pub * 100 / n_col_actual) %>% round(1), "%")
+n_registros_col_actual <- colbd %>% filter(tipo_body == "coleccion") %>% pull (numberOfRecords) %>% sum(na.rm = T) %>% format(decimal.mark = ",", big.mark = ".")
+n_entidades_col_actual <- colbd %>% filter(tipo_body == "coleccion") %>% select (institucion_proyecto) %>% distinct() %>% nrow()
+n_entidades_col_actual_pub <- colbd %>% filter(tipo_body == "coleccion", publica_en_gbif == 1) %>% select (institucion_proyecto) %>% distinct() %>% nrow()
+
+
+# recursos
+n_recursos_actual <- nrow(reg)
+n_recursos_informe_anterior <- 308 # Manual
+n_recursos_incremento <- n_recursos_actual - n_recursos_informe_anterior
+n_recursos_incremento_x100 <- paste0((n_recursos_incremento * 100 / n_recursos_informe_anterior) %>% round(1), "%")
+
+# registros
+n_registros_actual <- sum(as.integer(reg$numberOfRecords)) %>% format(decimal.mark = ",", big.mark = ".")
+n_registros_informe_anterior <- 32367320 # Manual
+n_registros_incremento <- (sum(as.integer(reg$numberOfRecords)) - n_registros_informe_anterior) %>% format(decimal.mark = ",", big.mark = ".")
+n_registros_incremento_x100 <- paste0(((sum(as.integer(reg$numberOfRecords)) - n_registros_informe_anterior) * 100 / n_registros_informe_anterior) %>% round(1), "%")
+
 
 
 ## disciplinas numero colecciones 
@@ -192,9 +237,10 @@ En el presente **Informe de Colecciones Biológicas y Bases de Datos de Biodiver
 
 La información referente a las entidades y proyectos, y a las colecciones biológicas o bases de datos de biodiversidad se obtiene mediante [formularios](https://gbif.es/datos-biodiversidad/accede-a-los-datos/registro/cuestionario-para-colecciones-biologicas-y-bases-de-datos/) que cumplimentan las propias instituciones, tal como se refleja en dicho Registro, si bien y de forma puntual, se tienen en cuenta las modificaciones y correcciones de los metadatos enviadas por los respectivos responsables a través de los correos de contacto de GBIF.ES. 
 
-~~Hay 229 entidades (instituciones, centros y proyectos) vinculadas al Nodo Nacional de Información en Biodiversidad, referidas y actualizadas hasta diciembre de 2019, de las cuales 104 (el 45 %) publican datos. Con respecto al informe anterior se han incorporado 53 —50 instituciones o centros y 3 proyectos—, es decir, un 23 % más. Estas entidades poseen en conjunto 474 colecciones biológicas o bases de datos y 308 recursos o juegos de datos con un total de 32.367.320 registros en línea, que publican a través de los portales GBIF. Con respecto al informe anterior (diciembre de 2014) se han incorporado 64 colecciones (un 14 % más) y 136 recursos (un 79 % más) a la infraestructura de GBIF, y el número de registros publicados ha crecido en 22.170.677, lo que supone un incremento del 317,42 %, de manera que en este periodo España se mantiene en el décimo país del mundo que más contribuye a GBIF, tal como se puede ver en la tabla 1.a. y gráfica 1.b.~~
+Hay **`r n_entidades_actual`** entidades (instituciones, centros y proyectos) vinculadas al Nodo Nacional de Información en Biodiversidad, referidas y actualizadas hasta `r mes_anno_actual`, de las cuales **`r n_entidades_actual_pub` (el `r n_entidades_actual_pub_x100`) publican datos**. Con respecto al informe anterior se han incorporado `r n_entidades_incremento`, es decir, un `r n_entidades_incremento_x100` más. Estas entidades poseen en conjunto **`r n_colbd_actual`** colecciones biológicas o bases de datos y **`r n_recursos_actual`** recursos o juegos de datos con un total de **`r n_registros_actual`** registros en línea, que publican a través de los portales GBIF. Con respecto al informe anterior (`r mes_anno_informe_anterior`) se han incorporado **`r n_colbd_incremento`** colecciones (un `r n_colbd_incremento_x100` más) y `r n_recursos_incremento` recursos (un `r n_recursos_incremento_x100` más) a la infraestructura de GBIF, y el número de registros publicados ha crecido en `r n_registros_incremento`, lo que supone un incremento del `r n_registros_incremento_x100`, de manera que en este periodo España se mantiene en el ~~décimo país~~ del mundo que más contribuye a GBIF, tal como se puede ver en la ~~tabla 1.a. y gráfica 1.b.~~
 
 ```{r}
+#| label: extrayendo-datos-gbif.org
 safe_ft_tbl <- function(expr, caption) {
   tryCatch(
     {
@@ -246,7 +292,7 @@ La información de los dos primeros se recopila mediante formularios que cumplim
 
 ![Mapa X. Prueba de titulo](../reports/assets/images/external/esquema_flujo_metages.jpg){width="100%"}
 
-La `r n_edicion_informe_anterior` edición del informe, presentado en ~~2015~~, recogía la información disponible hasta ~~diciembre de 2014~~. En esta `r n_edicion_informe_actual` edición, **“Informe de Colecciones Biológicas y Bases de Datos de Biodiversidad en España. Año `r anno_actual`”**, se presentan los datos y estadísticas de los últimos ~~cinco~~ años (desde `r mes_anno_informe_anterior` hasta `r mes_anno_actual`) en relación a las instituciones, colecciones, bases de datos y proyectos adscritos al Nodo Nacional de Información en Biodiversidad. Se hace una síntesis y valoración de las entidades, sus colecciones, proyectos y datos asociados, con especial relevancia de las que publican datos en el Registro de GBIF.ES.
+La `r n_edicion_informe_anterior` edición del informe, presentado en `r anno_publi_informe_anterior`, recogía la información disponible hasta `r mes_anno_informe_anterior`. En esta `r n_edicion_informe_actual` edición, **“Informe de Colecciones Biológicas y Bases de Datos de Biodiversidad en España. Año `r anno_actual`”**, se presentan los datos y estadísticas de los últimos ~~cinco~~ años (desde `r mes_anno_informe_anterior` hasta `r mes_anno_actual`) en relación a las instituciones, colecciones, bases de datos y proyectos adscritos al Nodo Nacional de Información en Biodiversidad. Se hace una síntesis y valoración de las entidades, sus colecciones, proyectos y datos asociados, con especial relevancia de las que publican datos en el Registro de GBIF.ES.
 
 Se puede acceder a la información del Registro, de manera detallada y continuamente actualizada, desde [](https://www.gbif.es/registro-instituciones/). 
 
@@ -282,7 +328,7 @@ En el **Anexo 1**, se pueden ver todas las entidades y proyectos incluidos en el
 
 ### Categorías de las entidades en el Registro
 
-Las entidades (centros e instituciones) y sus colecciones —tanto físicas como virtuales— se han agrupado en ~~cinco~~ categorías por grupos taxonómicos y disciplinas para facilitar las comparaciones y los análisis ~~(tabla 3.1.2.)~~.
+Las entidades (centros e instituciones) y sus colecciones —tanto físicas como virtuales— se han agrupado en cinco categorías por grupos taxonómicos y disciplinas para facilitar las comparaciones y los análisis ~~(tabla 3.1.2.)~~.
 
 AÑADIR VISUALIZACION CON IMAGENES O ESQUEMATICA DE LAS DISCIPLINAS
 
@@ -301,7 +347,7 @@ La categoría **Microbiológica** incluye microorganismos, en general bacterias,
 ### Situación general de las entidades
 Desde su inicio, el **Registro de Colecciones Biológicas y Bases de Datos de Biodiversidad en España** el número de entidades (instituciones, centros y proyectos) incluidas se ha ido incrementando de manera constante, de igual manera que las colecciones, bases de datos, registros y datos publicados.
 
-A fecha de `r mes_anno_actual` hay ~~229 entidades~~ (instituciones, centros y proyectos) que forman parte del Nodo Nacional de Información en Biodiversidad, ~~de las cuáles 104 (el 45 %) 15 publican datos. Con respecto al informe anterior (diciembre de 2015) ha habido 53 nuevas incorporaciones.~~
+A fecha de `r mes_anno_actual` hay `r n_entidades_actual` entidades (instituciones, centros y proyectos) que forman parte del Nodo Nacional de Información en Biodiversidad de las cuáles `r n_entidades_actual_pub` (el `r n_entidades_actual_pub_x100`) publican datos. Con respecto al informe anterior (`r mes_anno_informe_anterior`) ha habido `r n_entidades_incremento` nuevas incorporaciones.
 
 En la gráfica ~~3.2.1.~~ se enumeran las entidades por categorías. Así mismo, se especifica para una el número de entidades que publican datos en GBIF.
 
@@ -316,17 +362,18 @@ Para las entidades que tienen colecciones de diferentes categorías se ha genera
 
 ### Distribución geográfica de las entidades registradas
 
-La distribución espacial de las entidades registradas que forman parte del Nodo Nacional de Información en Biodiversidad, queda reflejada en el ~~mapa 3.2.2.~~ Se observa dónde pueden localizarse las entidades que forman parte del Registro en España por CC.AA. Se destacan las que publican datos ~~(círculos de color azul)~~ y el ~~tamaño de los círculos es proporcional a la cantidad de registros publicados~~.
+La distribución espacial de las entidades registradas que forman parte del Nodo Nacional de Información en Biodiversidad, queda reflejada en el ~~mapa 3.2.2.~~ Se observa dónde pueden localizarse las entidades que forman parte del Registro en España por provincia. Se destacan las que publican datos (círculos de color verde) de las que no (círculos de color gris).
 
 ![](assets/images/generated/mapa-entidades.png)
 
 ## SITUACIÓN GENERAL DE LAS COLECCIONES BIOLÓGICAS Y BASES DE DATOS: TOTAL DE REGISTROS, ACTUALIZACIONES E INCORPORACIONES
 
-Actualmente hay contabilizadas ~~474 colecciones biológicas y bases de datos
-pertenecientes a 229 entidades~~. Desde 2004, que se tienen datos en el Registro, ha habido un aumento anual constante, tal como refleja la ~~gráfica 3.3.a.~~, donde se indican los totales y el número de nuevas incorporaciones por año. ~~En los últimos cinco años (periodo 2015-2019),~~ desde el anterior informe, se han incrementado en ~~64 el número de~~ colecciones y bases de datos.
+Actualmente hay contabilizadas `r n_colbd_actual` colecciones biológicas y bases de datos
+pertenecientes a `r n_entidades_actual` entidades. Desde 2004, que se tienen datos en el Registro, ha habido un aumento anual constante, tal como refleja la ~~gráfica 3.3.a.~~, donde se indican los totales y el número de nuevas incorporaciones por año. ~~En los últimos cinco años (periodo 2015-2019),~~ desde el anterior informe, se han incrementado en `r n_colbd_incremento` el número de colecciones y bases de datos.
 
 ![](assets/images/generated/colecciones_per_anno.png)
 ```{r}
+#| label: col-vs-bd
 proporcion_col_base <- readRDS("data/vistas_sql/proporcion_col_base.rds")
 
 ft_tbl(
@@ -339,11 +386,12 @@ ft_tbl(
 
 ### Incorporación de registros a la red de GBIF
 
-A fecha de `r mes_anno_actual`, de las ~~474 colecciones biológicas y bases de datos del Registro, hay 208 (44 %) que publican datos a través de sus 308 recursos en línea (juegos de datos), constituyendo así el aporte de datos del Nodo Nacional de Información en Biodiversidad, que suman en total 32.367.320 registros, y que colocan am España como décimo país por registros publicados en la red internacional de GBIF.
+A fecha de `r mes_anno_actual`, de las `r n_colbd_actual` colecciones biológicas y bases de datos del Registro, hay `r n_colbd_actual_pub` (`r n_colbd_actual_pub_x100`) que publican datos a través de sus `r n_recursos_actual` recursos en línea (juegos de datos), constituyendo así el aporte de datos del Nodo Nacional de Información en Biodiversidad, que suman en total `r n_registros_actual` registros, y que colocan am España como décimo país por registros publicados en la red internacional de GBIF.
 
-En la tabla 3.3.1.a. se muestra una comparativa entre los registros publicados en 2014 y los de 2019. El incremento de registros en ese periodo ha sido de 22.170.079 (317,42 %).~~
+En la tabla 3.3.1.a. se muestra una comparativa entre los registros publicados en `r anno_publi_informe_anterior` y los de `r anno_actual`. El incremento de registros en ese periodo ha sido de `r n_registros_incremento` (`r n_registros_incremento_x100`).
 
 ```{r}
+#| label: comparativa-colbd-informes
 colbd_comp <- readRDS("data/vistas_sql/colecciones_por_disciplina_y_sub.rds") %>%
               transmute(Disciplina = disciplina,
                         !!paste0("Nº colecciones y bases de datos (", 
@@ -376,7 +424,7 @@ ft_tbl(
 )
 ```
 
-~~En la gráfica 3.3.1.b. podemos ver la progresión del número de registros publicados en GBIF desde 2005 hasta diciembre de 2019 hasta alcanzar los 32.367.320 registros actuales.~~
+~~En la gráfica 3.3.1.b.~~ podemos ver la progresión del número de registros publicados en GBIF desde 2005 hasta `r mes_anno_actual` hasta alcanzar los `r n_registros_actual` registros actuales.
 
 GRAFICA AQUI (Katia la hace con sus tabla de datos)
 
@@ -397,8 +445,8 @@ mientras que por número de registros son las administraciones públicas y las d
 Como las entidades y colecciones pueden asignarse a más de un sector, la distribución de datos entre ellas se ve más claramente a nivel de recursos en línea y registros publicados. El desglose de estos datos por sectores se ve en la ~~tabla 3.3.1.c. y en las gráficas 3.3.1.d. y 3.3.1.e.~~
 
 ```{r}
+#| label: registros-sector
 
-# Ejecuta una llamada para fijar `data_clean_last` con el mismo filtro que el mapa anterior
 df <- readRDS("data/vistas_sql/registros_por_sector.rds")
 
 ft_tbl(
@@ -423,11 +471,12 @@ información sobre la presencia (o ausencia) de una especie en un lugar y en un 
 
 Hay que tener en cuenta que todos los registros de un juego de datos han de ser del mismo tipo. Según estos tipos, los números para los recursos en línea accesibles vía GBIF procedentes de entidades españolas se muestran en la  ~~tabla 3.3.1.f ~~.
 
+~~TABLA AQUI (IPT??)~~
+
 
 ### Actualización de las colecciones publicadas en GBIF
 
-~~De las 474 colecciones y bases de datos del Registro en 2019, han actualizado sus
-metadatos 80 (el 17 %) desde 2015. Así mismo, 180 de los 308 recursos (el 58 %) se han incorporado nuevos o se han actualizado en este mismo periodo.~~
+~~De las `r n_colbd_actual` colecciones y bases de datos del Registro en `r anno_actual`, han actualizado sus metadatos 80 (el 17 %) desde 2015. Así mismo, 180 de los `r n_recursos_actual` recursos (el 58 %) se han incorporado nuevos o se han actualizado en este mismo periodo.~~
 
 # COLECCIONES BIOLÓGICAS
 
@@ -435,12 +484,11 @@ metadatos 80 (el 17 %) desde 2015. Así mismo, 180 de los 308 recursos (el 58 %)
 
 ### Situación general
 
-Actualmente, dadas de alta en el Registro encontramos ~~147 entidades que en total
-mantienen 347~~ colecciones biológicas(físicas) registradas en el Nodo Nacional de Biodiversidad. La ~~ tabla 4.1.1.~~  muestra el número de colecciones biológicas por las categorías ya reseñadas y el porcentaje para cada una.
+Actualmente, dadas de alta en el Registro encontramos `r n_entidades_col_actual` entidades que en total mantienen `r n_col_actual` colecciones biológicas(físicas) registradas en el Nodo Nacional de Biodiversidad. La ~~ tabla 4.1.1.~~  muestra el número de colecciones biológicas por las categorías ya reseñadas y el porcentaje para cada una.
 
 ```{r}
+#| label: col-disciplina
 
-# Ejecuta una llamada para fijar `data_clean_last` con el mismo filtro que el mapa anterior
 df <- readRDS("data/vistas_sql/colecciones_por_disciplina.rds") |>
           select (-total_ejemplares)
 
@@ -455,10 +503,11 @@ ft_tbl(
 La información sobre los fondos de las colecciones biológicas del Registro ha sido
 proporcionada por el ~~ 82,8 %~~  de las entidades. Los datos aquí reflejados se corresponden con las últimas actualizaciones aportadas. Conviene indicar también que el número de registros publicados en GBIF no tiene por qué ir a la par del grado de informatización de los fondos de estas instituciones.
 
-En la ~~ tabla 4.1.2.~~  puede verse el número y porcentaje de informatización de las
-colecciones biológicas de las entidades según sus categorías.
+En la ~~ tabla 4.1.2.~~  puede verse el número y porcentaje de informatización de las colecciones biológicas de las entidades según sus categorías.
 
 ```{r}
+#| label: col-informatizacion
+
 df <- readRDS("data/vistas_sql/colecciones_informatizacion.rds")
 
 ft_tbl(
@@ -474,6 +523,8 @@ A continuación, se muestra el estado de conservación de las colecciones bioló
 según la valoración realizada por los responsables de las colecciones ~~(tabla 4.1.3.). La información mostrada se basa en los datos proporcionadospor el 58,8 % de las colecciones.~~
 
 ```{r}
+#| label: col-estado-conservacion
+
 tabla_condiciones <- readRDS("data/vistas_sql/estado_conservacion.rds")
 
 ft_tbl(
@@ -491,6 +542,8 @@ conservación."
 A continuación, se representan en la ~~tabla 4.1.4.1.~~ las colecciones biológicas en función de su forma de acceso a los ejemplares. Se han establecido cuatro categorías que los responsables o personas de contacto han cumplimentado en los formularios. Ha de tenerse en cuenta que esta información ha sido proporcionada por el ~~73,45 %~~ de las colecciones. En el caso de los préstamos, a veces incluyen restricciones puntuales del uso de los ejemplares.
 
 ```{r}
+#| label: col-acceso-ejemplares
+
 tabla_acceso_ejem <- readRDS("data/vistas_sql/acceso_ejemplares.rds")
 
 ft_tbl(
@@ -507,6 +560,8 @@ Se representa, a continuación, el grado de acceso a los datos informatizados de
 colecciones que facilitaron dicha información ~~(el 54 %).~~
 
 ```{r}
+#| label: col-acceso_informatizado
+
 tabla_acceso_inform <- readRDS("data/vistas_sql/acceso_informatizado.rds")
 
 ft_tbl(
@@ -522,6 +577,8 @@ A continuación, puede verse representada la manera de acceder a los registros
 informatizados de las colecciones según lo dispuesto por cada entidad responsable, basada en las respuestas proporcionadas por el ~~54,5 %~~ de las colecciones. Una misma colección pudo proporcionar respuestas incluidas en más de una categoría. (Ejemplo: “a través del responsable” y “a través de Intranet”).
 
 ```{r}
+#| label: col-medio-acceso-informatizado
+
 tabla_medio_acceso_inform <- readRDS("data/vistas_sql/medio_acceso_inform.rds")
 
 ft_tbl(
@@ -533,12 +590,14 @@ categorías propuestas."
 
 ### Colecciones biológicas que publican en GBIF
 
-De las ~~347 colecciones biológicas registradas, 140 (40 %) publican en GBIF. Estas 140 colecciones pertenecen a 71 entidades distintas, y en total publican en línea 4.288.820 registros. En la tabla 4.1.5.a.~~ se puede ver el número de registros publicados por categorías y sus porcentajes.
+De las `r n_col_actual` colecciones biológicas registradas, `r n_col_actual_pub` (`r n_col_actual_pub_x100`) publican en GBIF. Estas `r n_col_actual_pub` colecciones pertenecen a `r n_entidades_col_actual_pub` entidades distintas, y en total publican en línea `r n_registros_col_actual` registros. En la ~~tabla 4.1.5.a.~~ se puede ver el número de registros publicados por categorías y sus porcentajes.
 
 La colección ~~botánica Herbario de Plantas Vasculares (MA) es la que más registros
 publica, con 761.311, seguida de la zoológica de Invertebrados de agua dulce del Museo de Zoología de la Universidad de Navarra, con 266.400, y de la colección de Vertebrados del Museo de Zoología de la Universidad de Navarra, MZNA-Vert, con 231.365 registros. En los apartados 4.2. a 4.6. se revisan en detalle y por categorías (grupos taxonómicos/disciplinas) los datos de Las colecciones biológicas definidos en la tabla 3.1.2.a.~~
 
 ```{r}
+#| label: registros-disciplina
+
 tabla_registros <- readRDS("data/vistas_sql/registros_por_disciplina_col.rds")
 
 ft_tbl(
@@ -559,6 +618,8 @@ El mapa ~~4.1.6. muestra la distribución de colecciones biológicas en el terri
 Como se indica en el apartado ~~3.1.2.,~~ las colecciones zoológicas se dividen para su presentación de datos en invertebrados y vertebrados, más un tercer grupo (“Invertebrados y vertebrados”) para las colecciones que presentan los datos de los dos grupos anteriores de manera conjunta. La tabla ~~4.2.~~ desglosa los subtipos zoológicos, su proporción, el número de ejemplares que albergan y los registros publicados.
 
 ```{r}
+#| label: col-zoo
+
 tabla_sub_zoo <- readRDS("data/vistas_sql/colecciones_por_subdisciplina_zoologica.rds")
 
 ft_tbl(
@@ -572,6 +633,8 @@ ft_tbl(
 Se recopila en esta sección la informatización para el conjunto ~~de las 136 colecciones zoológicas de las que 55 publican datos en GBIF~~, y también se desglosan en las tres subcategorías. La tabla 4.2.1.a. muestra el porcentaje de informatización de los ejemplares que albergan y su proporción.
 
 ```{r}
+#| label: col-zoo-informatizacion
+
 tabla_inform_zoo <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_zoo.rds") %>% 
                     select(-total_ejemplares)
 
@@ -585,6 +648,8 @@ En relación al software o sistema de informatización y gestión de las colecci
 nueva aplicación Elysia se está usando en algunas colecciones zoológicas en sustitución de la herramienta Zoorbar. ~~La tabla 4.2.1.b. muestra las colecciones zoológicas en relación a los softwares~~ utilizados para la informatización de sus ejemplares.
 
 ```{r}
+#| label: col-zoo-software
+
 tabla_soft_zoo <- readRDS("data/vistas_sql/colecciones_uso_software_zoo.rds")
 
 ft_tbl(
@@ -664,6 +729,8 @@ En la ~~gráfica 4.2.5.~~ podemos ver las diez colecciones zoológicas que más 
 Las colecciones botánicas se dividen en tres grupos o subtipos: Plantas, Algas y Hongos, tal como se refleja en la ~~tabla 3.1.2.a. La tabla 4.3.~~ muestra el desglose por subtipos botánicos y su proporción.
 
 ```{r}
+#| label: col-bot
+
 tabla_sub_bot <- readRDS("data/vistas_sql/colecciones_por_subdisciplina_botanica.rds")
 
 ft_tbl(
@@ -678,6 +745,8 @@ ft_tbl(
 Se detalla la informatización para el conjunto de las ~~148 colecciones botánicas, de las que 79 publican datos en GBIF, y también se desglosan en las tres subcategorías diferenciadas para este grupo. La tabla 4.3.1.a.~~ muestra el porcentaje de informatización de los ejemplares que albergan y su proporción. Nótese que el nº de registros publicados es mayor que el de informatizados. Este desfase de debe a una desactualización en la información proporcionada para el Registro.
 
 ```{r}
+#| label: col-bot-informatizacion
+
 tabla_inform_bot <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_bot.rds") %>% 
                     select(-total_ejemplares)
 
@@ -691,6 +760,8 @@ En relación al software o sistema de informatización y gestión de las colecci
 nueva aplicación Elysia se está usando en algunas colecciones botánicas en sustitución de la herramienta Herbar. ~~La tabla 4.3.1.b.~~ muestra las colecciones botánicas en relación a los softwares utilizados para la informatización de sus ejemplares.
 
 ```{r}
+#| label: col-bot-software
+
 tabla_soft_bot <- readRDS("data/vistas_sql/colecciones_uso_software_bot.rds")
 
 ft_tbl(
@@ -774,6 +845,8 @@ Biodiversidad ~~7 colecciones microbiológicas de 6~~ entidades distintas. ~~Las
 La ~~tabla 4.4.1.a.~~ muestra el porcentaje de informatización de los ejemplares que albergan y su proporción.
 
 ```{r}
+#| label: col-micro-informatizacion
+
 tabla_inform_micro <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_micro.rds")
 
 ft_tbl(
@@ -787,6 +860,8 @@ La ~~tabla 4.4.1.b.~~ muestra las colecciones microbiológicas en relación a lo
 utilizados para la informatización de sus ejemplares.
 
 ```{r}
+#| label: col-micro-software
+
 tabla_soft_micro <- readRDS("data/vistas_sql/colecciones_uso_software_micro.rds")
 
 ft_tbl(
@@ -818,6 +893,8 @@ Biodiversidad ~~44 colecciones paleontológicas de 32 entidades distintas, todas
 Se hace detalla la informatización para el conjunto de las ~~44 colecciones paleontológicas. La tabla 4.5.1.a.~~ muestra el porcentaje de informatización de los ejemplares que albergan y su proporción.
 
 ```{r}
+#| label: col-paleo-informatizacion
+
 tabla_inform_paleo <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_paleo.rds")
 
 ft_tbl(
@@ -830,6 +907,8 @@ La ~~tabla 4.5.1.b.~~ muestra las colecciones paleontológicas en relación a lo
 utilizados para la informatización de sus ejemplares.
 
 ```{r}
+#| label: col-paleo-software
+
 tabla_soft_paleo <- readRDS("data/vistas_sql/colecciones_uso_software_paleo.rds")
 
 ft_tbl(
@@ -861,6 +940,8 @@ La ~~tabla 4.6.1.a.~~ muestra el porcentaje de informatización de los ejemplare
 albergan y su proporción.
 
 ```{r}
+#| label: col-mix-informatizacion
+
 tabla_inform_mixta <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_mixta.rds")
 
 ft_tbl(
@@ -872,6 +953,8 @@ ft_tbl(
 La ~~tabla 4.6.1.b.~~ muestra las colecciones mixtas en relación a los softwares utilizados para la informatización de sus ejemplares.
 
 ```{r}
+#| label: col-mix-software
+
 tabla_soft_mixta <- readRDS("data/vistas_sql/colecciones_uso_software_mixta.rds")
 
 ft_tbl(
@@ -921,6 +1004,8 @@ CREAF (Centro de Investigación Ecológica y Aplicaciones Forestales), ICREA (In
 A finales de ~~diciembre de 2019 se encuentran adscritas al Nodo Nacional de Información en Biodiversidad 127 bases de datos, de las que 68 publican sus datos, con un total de 28.078.500 registros. A continuación, en la tabla 5.2.1.a. y la gráfica 5.2.1.b., se resume la información referente a la cantidad de bases de datos adscritas en función de las categorías establecidas en la tabla 3.1.2.a.,~~ especificando cuántas de ellas publican sus datos a través de los portales GBIF. No hay ninguna base de datos de tipo paleontológico.
 
 ```{r}
+#| label: bd-disciplina
+
 tabla_bd_disc_subdisc <- readRDS("data/vistas_sql/colecciones_bd_por_disciplina_y_sub.rds")
 
 ft_tbl(
@@ -1056,7 +1141,7 @@ hacer cualquier persona allá donde se encuentre con solo disponer de un disposi
 
 # ANEXO I: COLECCIONES BIOLÓGICAS Y BASES DE DATOS SOBRE BIODIVERSIDAD REGISTRADAS EN ESPAÑA
 
-A continuación, listamos las colecciones biológicas y bases de datos sobre biodiversidad, con las entidades (instituciones o proyectos) responsables, recogidas en el Registro de Colecciones, Proyectos y Bases de Datos de Biodiversidad en España. ~~Son 474 colecciones y bases de datos —con 308 recursos publicados—, que se presentan ordenadas en función de las categorías indicadas en la tabla 3.1.2.a:
+A continuación, listamos las colecciones biológicas y bases de datos sobre biodiversidad, con las entidades (instituciones o proyectos) responsables, recogidas en el Registro de Colecciones, Proyectos y Bases de Datos de Biodiversidad en España. ~~Son `r n_colbd_actual` colecciones y bases de datos —con `r n_recursos_actual` recursos publicados—, que se presentan ordenadas en función de las categorías indicadas en la tabla 3.1.2.a:
 
 1. **ZOOLÓGICA**. En este apartado se incluyen 193 colecciones y bases de datos de animales en general. Se han desglosado en tres grupos:
     - Invertebrados. Son 103.

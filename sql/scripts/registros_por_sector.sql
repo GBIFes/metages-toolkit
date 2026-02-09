@@ -15,6 +15,8 @@ SELECT r.categoria AS Sectores,
 		COUNT(*) AS `Nº recursos`,
 		SUM(r.numberOfRecords) AS `Nº registros publicados`
 FROM registros AS r 
+WHERE r.categoria IS NOT NULL -- Solo recursos con categoria
+AND r.categoria <> 'Extranjera' -- Solo categorias nacionales
 GROUP BY r.categoria
 
 UNION ALL
@@ -23,7 +25,9 @@ SELECT
 'TOTAL',
 COUNT(*) AS `Nº recursos`,
 SUM(r.numberOfRecords) AS `Nº registros publicados`
-FROM registros AS r;
+FROM registros AS r
+WHERE r.categoria IS NOT NULL -- Solo recursos con categoria
+AND r.categoria <> 'Extranjera' -- Solo categorias nacionales;
 
 
 

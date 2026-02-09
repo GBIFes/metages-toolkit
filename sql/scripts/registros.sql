@@ -9,7 +9,7 @@
 -- 
 -- ===================================================================
 
-CREATE OR REPLACE VIEW registros AS
+-- CREATE OR REPLACE VIEW registros AS
 
 SELECT 
    mr.recurso_id, 
@@ -42,5 +42,5 @@ AND mtd.tipo_dataset_id BETWEEN 12 AND 17 -- Solo recursos
 AND mb.body_type_fk IN (3, 5)
 AND mb.disciplina_fk BETWEEN 6 AND 11
 AND mb.private = 0
-	
+
 	

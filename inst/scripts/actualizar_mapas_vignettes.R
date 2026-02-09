@@ -152,6 +152,7 @@ vistas_sql <- list(
   colecciones_uso_software_micro  = "SELECT * FROM colecciones_uso_software_micro",
   colecciones_uso_software_mixta  = "SELECT * FROM colecciones_uso_software_mixta",
   colecciones_uso_software_paleo  = "SELECT * FROM colecciones_uso_software_paleo",
+  registros    = "SELECT * FROM registros",
   registros_por_disciplina    = "SELECT * FROM registros_por_disciplina",
   registros_por_disciplina_col    = "SELECT * FROM registros_por_disciplina_col",
   registros_por_disciplina_bd    = "SELECT * FROM registros_por_disciplina_bd",
