@@ -6,6 +6,7 @@ author:
 date: last-modified
 lang: es
 
+
 params:
   odbc_driver: null
 
@@ -56,7 +57,7 @@ Este informe está pensado para **generar automáticamente mapas y tablas** a pa
 ![](assets/images/logos/logo-CSIC-big-trans.png){width="20%"}
 ![](assets/images/logos/MCIU.Gob.png){width="20%"}
 
-
+\newpage
 # Resumen ejecutivo
 
 En esta sección se presenta una síntesis de los principales resultados del Registro, con especial atención a:
@@ -225,12 +226,15 @@ n_col_bot_pub <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "B
 
 n_col_micro <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Microbiológica") %>% nrow()
 n_col_micro_pub <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Microbiológica", publica_en_gbif == 1) %>% nrow()
+n_entidades_col_micro <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Microbiológica") %>% select (institucion_proyecto) %>% distinct() %>% nrow()
 
 n_col_paleo <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Paleontológica") %>% nrow()
 n_col_paleo_pub <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Paleontológica", publica_en_gbif == 1) %>% nrow()
+n_entidades_col_paleo <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Paleontológica") %>% select (institucion_proyecto) %>% distinct() %>% nrow()
 
 n_col_mix <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Mixta") %>% nrow()
 n_col_mix_pub <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Mixta", publica_en_gbif == 1) %>% nrow()
+n_entidades_col_mix <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Mixta") %>% select (institucion_proyecto) %>% distinct() %>% nrow()
 
 # col_subdisci
 n_col_inv <- colbd %>% filter(tipo_body == "coleccion", disciplina_subtipo_def == "Invertebrados") %>% nrow()
@@ -251,8 +255,39 @@ n_entidades_col_botmix <- colbd %>% filter(tipo_body == "coleccion", disciplina_
 
 
 
-# top_col
-top_col <- colbd %>% filter(tipo_body == "coleccion") %>% arrange(desc(as.integer(numberOfRecords))) %>% head (3) %>% transmute (coleccion_base, disciplina_def = tolower(disciplina_def), numberOfRecords = format(numberOfRecords, decimal.mark = ",", big.mark = "."), fecha_alta_coleccion)
+# top_col_bd
+top_col <- colbd %>% filter(tipo_body == "coleccion") %>% arrange(desc(as.integer(numberOfRecords))) %>% head (3) %>% transmute (coleccion_base, disciplina_def = tolower(disciplina_def), numberOfRecords = format(numberOfRecords, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_bd <- colbd %>% filter(tipo_body == "base de datos") %>% arrange(desc(as.integer(numberOfRecords))) %>% head (3) %>% transmute (coleccion_base, disciplina_def = tolower(disciplina_def), numberOfRecords = format(numberOfRecords, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_bd_pub <- colbd %>% filter(tipo_body == "base de datos", publica_en_gbif == 1) %>% arrange(desc(as.integer(numberOfRecords))) %>% head (3) %>% transmute (coleccion_base, disciplina_def = tolower(disciplina_def), numberOfRecords = format(numberOfRecords, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_col_inv <- colbd %>% filter(tipo_body == "coleccion", disciplina_subtipo_def == "Invertebrados") %>% arrange(desc(as.integer(number_of_subunits))) %>% head (3) %>% transmute (coleccion_base, collection_code, number_of_subunits = format(number_of_subunits, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_col_ver <- colbd %>% filter(tipo_body == "coleccion", disciplina_subtipo_def == "Vertebrados") %>% arrange(desc(as.integer(number_of_subunits))) %>% head (3) %>% transmute (coleccion_base, collection_code, number_of_subunits = format(number_of_subunits, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_col_invver <- colbd %>% filter(tipo_body == "coleccion", disciplina_subtipo_def == "Invertebrados y vertebrados") %>% arrange(desc(as.integer(number_of_subunits))) %>% head (3) %>% transmute (coleccion_base, collection_code, number_of_subunits = format(number_of_subunits, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_col_pla <- colbd %>% filter(tipo_body == "coleccion", disciplina_subtipo_def == "Plantas") %>% arrange(desc(as.integer(number_of_subunits))) %>% head (3) %>% transmute (coleccion_base, collection_code, number_of_subunits = format(number_of_subunits, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_col_alg <- colbd %>% filter(tipo_body == "coleccion", disciplina_subtipo_def == "Algas") %>% arrange(desc(as.integer(number_of_subunits))) %>% head (3) %>% transmute (coleccion_base, collection_code, number_of_subunits = format(number_of_subunits, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_col_hong <- colbd %>% filter(tipo_body == "coleccion", disciplina_subtipo_def == "Hongos y líquenes") %>% arrange(desc(as.integer(number_of_subunits))) %>% head (3) %>% transmute (coleccion_base, collection_code, number_of_subunits = format(number_of_subunits, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_col_botmix <- colbd %>% filter(tipo_body == "coleccion", disciplina_subtipo_def == "Botánicas mixtas") %>% arrange(desc(as.integer(number_of_subunits))) %>% head (3) %>% transmute (coleccion_base, collection_code, number_of_subunits = format(number_of_subunits, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_col_micro <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Microbiológica") %>% arrange(desc(as.integer(number_of_subunits))) %>% head (3) %>% transmute (coleccion_base, collection_code, number_of_subunits = format(number_of_subunits, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_col_micro_pub <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Microbiológica", publica_en_gbif == 1) %>% arrange(desc(as.integer(number_of_subunits))) %>% head (3) %>% transmute (coleccion_base, collection_code, number_of_subunits = format(number_of_subunits, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_col_paleo <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Paleontológica") %>% arrange(desc(as.integer(number_of_subunits))) %>% head (3) %>% transmute (coleccion_base, collection_code, number_of_subunits = format(number_of_subunits, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_col_paleo_pub <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Paleontológica", publica_en_gbif == 1) %>% arrange(desc(as.integer(number_of_subunits))) %>% head (3) %>% transmute (coleccion_base, collection_code, number_of_subunits = format(number_of_subunits, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_col_mix <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Mixta") %>% arrange(desc(as.integer(number_of_subunits))) %>% head (3) %>% transmute (coleccion_base, collection_code, number_of_subunits = format(number_of_subunits, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
+top_col_mix_pub <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == "Mixta", publica_en_gbif == 1) %>% arrange(desc(as.integer(number_of_subunits))) %>% head (3) %>% transmute (coleccion_base, collection_code, number_of_subunits = format(number_of_subunits, decimal.mark = ",", big.mark = "."), institucion_proyecto, fecha_alta_coleccion)
+
 
 # recursos
 n_recursos_actual <- nrow(reg)
@@ -309,18 +344,20 @@ inf_ant_n_reg_mix <- "3.095.997"
 
 ```
 
-
+\newpage
 # RESUMEN EJECUTIVO
 
 En el presente **Informe de Colecciones Biológicas y Bases de Datos de Biodiversidad en España. Año `r anno_actual`**, se muestra la situación de las colecciones biológicas, las bases de datos y proyectos sobre biodiversidad publicados en el [Registro de colecciones, proyectos y bases de datos de biodiversidad en España](https://gbif.es/registro-colecciones/) hasta `r mes_anno_actual`. Se ofrecen los datos y estadísticas ~~de los últimos cinco años (desde el 1 de enero de 2015 hasta el 31 de diciembre de 2019)~~ en relación a las entidades (instituciones o centros), colecciones, bases de datos y proyectos adscritos a la **Unidad de Coordinación del Nodo Nacional de Información en Biodiversidad** (UdC). Se hace una síntesis y valoración de las entidades, sus colecciones, proyectos y datos asociados, con especial relevancia de aquellas que publican datos en el Portal Nacional de GBIF España. 
 
 La información referente a las entidades y proyectos, y a las colecciones biológicas o bases de datos de biodiversidad se obtiene mediante [formularios](https://gbif.es/datos-biodiversidad/accede-a-los-datos/registro/cuestionario-para-colecciones-biologicas-y-bases-de-datos/) que cumplimentan las propias instituciones, tal como se refleja en dicho Registro, si bien y de forma puntual, se tienen en cuenta las modificaciones y correcciones de los metadatos enviadas por los respectivos responsables a través de los correos de contacto de GBIF.ES. 
 
-Hay **`r n_entidades_actual`** entidades (instituciones, centros y proyectos) vinculadas al Nodo Nacional de Información en Biodiversidad, referidas y actualizadas hasta `r mes_anno_actual`, de las cuales **`r n_entidades_actual_pub` (el `r n_entidades_actual_pub_x100`) publican datos**. Con respecto al informe anterior se han incorporado `r n_entidades_incremento`, es decir, un `r n_entidades_incremento_x100` más. Estas entidades poseen en conjunto **`r n_colbd_actual`** colecciones biológicas o bases de datos y **`r n_recursos_actual`** recursos o juegos de datos con un total de **`r n_registros_actual`** registros en línea, que publican a través de los portales GBIF. Con respecto al informe anterior (`r mes_anno_informe_anterior`) se han incorporado **`r n_colbd_incremento`** colecciones (un `r n_colbd_incremento_x100` más) y `r n_recursos_incremento` recursos (un `r n_recursos_incremento_x100` más) a la infraestructura de GBIF, y el número de registros publicados ha crecido en `r n_registros_incremento`, lo que supone un incremento del `r n_registros_incremento_x100`, de manera que en este periodo España se mantiene en el ~~décimo país~~ del mundo que más contribuye a GBIF, tal como se puede ver en la ~~tabla 1.a. y gráfica 1.b.~~
+Hay **`r n_entidades_actual`** entidades (instituciones, centros y proyectos) vinculadas al Nodo Nacional de Información en Biodiversidad, referidas y actualizadas hasta `r mes_anno_actual`, de las cuales **`r n_entidades_actual_pub` (el `r n_entidades_actual_pub_x100`) publican datos**. Con respecto al informe anterior se han incorporado `r n_entidades_incremento`, es decir, un `r n_entidades_incremento_x100` más. Estas entidades poseen en conjunto **`r n_colbd_actual`** colecciones biológicas o bases de datos y **`r n_recursos_actual`** recursos o juegos de datos con un total de **`r n_registros_actual`** registros en línea, que publican a través de los portales GBIF. Con respecto al informe anterior (`r mes_anno_informe_anterior`) se han incorporado **`r n_colbd_incremento`** colecciones (un `r n_colbd_incremento_x100` más) y `r n_recursos_incremento` recursos (un `r n_recursos_incremento_x100` más) a la infraestructura de GBIF, y el número de registros publicados ha crecido en `r n_registros_incremento`, lo que supone un incremento del `r n_registros_incremento_x100`, de manera que en este periodo España se mantiene en el ~~décimo país~~ del mundo que más contribuye a GBIF, tal como se puede ver en la @tbl-ranking-gbif-org y @fig-gbif-ranking.
 
-
+\newpage
 ```{r}
-#| label: extrayendo-datos-gbif-org
+#| label: tbl-ranking-gbif-org
+#| tbl-cap: "Ranking de países publicadores en GBIF."
+
 safe_ft_tbl <- function(expr, caption) {
   tryCatch(
     {
@@ -343,17 +380,23 @@ safe_ft_tbl <- function(expr, caption) {
 # )
 
 safe_ft_tbl(
-  get_top_publishing_countries_gbif(n = 15) %>% select(pais_publicador, count, posicion_prev_cum),
+  get_top_publishing_countries_gbif(n = 12) %>% transmute(Ranking = row_number(),
+                                                          País = pais_publicador, 
+                                                          `Registros totales` = count, 
+                                                          `Posición en año previo` = posicion_prev_cum),
   caption = "Registros de datos de biodiversidad publicados en GBIF.ORG."
 )
 
 ```
 
 
-![](../reports/assets/images/external/ranking_occurrences.png){width:"50%"}
+![Registros de datos de biodiversidad publicados en GBIF.ORG. El desfase de registros entre los cálculos de GBIF.ORG y GBIF.ES se debe a que GBIF.ORG suma los datos de eBird tomados por ciudadanos españoles.](../reports/assets/images/external/ranking_occurrences.png){#fig-gbif-ranking width=50%}
 
 Un resumen de los principales datos del Registro en `r anno_actual` y su incremento con respecto al informe anterior de `r anno_informe_anterior` se muestra en la ~~tabla 1.c.~~ Durante este periodo, algunas entidades han reestructurado sus colecciones biológicas y bases de datos. Aquí presentamos la información más relevante, que se verá en detalle en el desarrollo de este informe. 
 
+TABLA AQUI
+
+\newpage
 # INTRODUCCIÓN. JUSTIFICACIÓN Y OBJETIVOS
 
 La Infraestructura Mundial de Información en Biodiversidad (GBIF, de sus siglas inglesas, Global Biodiversity Information Facility) es una iniciativa intergubernamental creada para poner en Internet, a disposición pública y de manera gratuita, toda la información disponible sobre los organismos vivos conocidos a nivel mundial, facilitando el acceso a esta información y compartiendo los datos científicos para avance de la ciencia y beneficio de la sociedad. 
@@ -368,10 +411,10 @@ Los contenidos de este informe y del sistema informático subyacente se organiza
 2. colecciones biológicas o bases de datos de biodiversidad,
 3. juegos de datos publicados en línea. 
 
-La información de los dos primeros se recopila mediante formularios que cumplimentan los propios centros, tal como se refleja en el **Registro de instituciones, colecciones y bases de datos de biodiversidad**. La información de los juegos de datos en línea se introduce por parte de los propios responsables en la [plataforma de publicación de datos de GBIF – IPT](http://www.gbif.es/ipt/). El flujo de la información se refleja en el esquema 2.
+La información de los dos primeros se recopila mediante formularios que cumplimentan los propios centros, tal como se refleja en el **Registro de instituciones, colecciones y bases de datos de biodiversidad**. La información de los juegos de datos en línea se introduce por parte de los propios responsables en la [plataforma de publicación de datos de GBIF – IPT](http://www.gbif.es/ipt/). El flujo de la información se refleja en la @fig-esquema .
 
 
-![Mapa X. Prueba de titulo](../reports/assets/images/external/esquema_flujo_metages.jpg){width="100%"}
+![Procedencia y difusión de la información de colecciones y datos de biodiversidad en GBIF España.](../reports/assets/images/external/esquema_flujo_metages.jpg){#fig-esquema width="100%"}
 
 La `r n_edicion_informe_anterior` edición del informe, presentado en `r anno_publi_informe_anterior`, recogía la información disponible hasta `r mes_anno_informe_anterior`. En esta `r n_edicion_informe_actual` edición, **“Informe de Colecciones Biológicas y Bases de Datos de Biodiversidad en España. Año `r anno_actual`”**, se presentan los datos y estadísticas de los últimos ~~cinco~~ años (desde `r mes_anno_informe_anterior` hasta `r mes_anno_actual`) en relación a las instituciones, colecciones, bases de datos y proyectos adscritos al Nodo Nacional de Información en Biodiversidad. Se hace una síntesis y valoración de las entidades, sus colecciones, proyectos y datos asociados, con especial relevancia de las que publican datos en el Registro de GBIF.ES.
 
@@ -379,6 +422,7 @@ Se puede acceder a la información del Registro, de manera detallada y continuam
 
 Todos los mapas se han realizado de manera dinamica al generar el informe usando el paquete de R [metagesToolkit](https://gbifes.github.io/metages-toolkit/index.html). Los topónimos de las ciudades que figuran en los mapas de las colecciones biológicas y bases de datos corresponden a los nombres estandarizados segun se introdujeron en MetaGES por parte de los gestores de cada coleccion. El tamaño de las burbujas expresa el nº de ejemplares (para colecciones) o de registros publicados (para bases de datos y colecciones publicadoras). La leyenda se ha estandarizado a lo largo de todos los mapas generados atendiendo a los percentiles 10, 40, 65 y 90 del conjunto total de ejemplares y registros por coleccion o base de datos. Todos los mapas generados pueden visualizarse en [Generación de mapas con metagesToolkit](https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html).
 
+\newpage
 # DATOS GENERALES Y FUNCIONAMIENTO DE GBIF
 
 ## METODOLOGÍA Y TÉRMINOS USADOS
@@ -405,9 +449,9 @@ seguimiento de los efectos del cambio global de Sierra Nevada (OBSNEV) figura en
 ~~Ejemplo de proyecto dependiente de una institución: Flora Mycologica Iberica,
 https://www.gbif.es/coleccion/csic-real-jardin-botanico-flora-mycologica-iberica/, depende de la entidad Real Jardín Botánico (CSIC) https://www.gbif.es/instituciones/csic-real-jardinbotanico/ y figura en el nivel de colección (nivel 2) albergando una base de datos.~~
 
-En el **Anexo 1**, se pueden ver todas las entidades y proyectos incluidos en el Registro, con sus colecciones y bases de datos asociadas. Es importante indicar que los nombres empleados para instituciones, proyectos, colecciones y recursos, son los proporcionados por los propios responsables vía formularios y mensajes electrónicos, y son también los que figuran en el [Registro de colecciones](https://www.gbif.es/registro-colecciones/). No obstante, en algunos casos concretos se especifica, más allá de la información proporcionada por los responsables, la procedencia de los datos o la vinculación de los proyectos con las instituciones para una mejor comprensión de la información.
+En la @sec-anexo-1 *(Anexo I)*, se pueden ver todas las entidades y proyectos incluidos en el Registro, con sus colecciones y bases de datos asociadas. Es importante indicar que los nombres empleados para instituciones, proyectos, colecciones y recursos, son los proporcionados por los propios responsables vía formularios y mensajes electrónicos, y son también los que figuran en el [Registro de colecciones](https://www.gbif.es/registro-colecciones/). No obstante, en algunos casos concretos se especifica, más allá de la información proporcionada por los responsables, la procedencia de los datos o la vinculación de los proyectos con las instituciones para una mejor comprensión de la información.
 
-### Categorías de las entidades en el Registro
+### Categorías de las entidades en el Registro {#sec-disciplinas}
 
 Las entidades (centros e instituciones) y sus colecciones —tanto físicas como virtuales— se han agrupado en cinco categorías por grupos taxonómicos y disciplinas para facilitar las comparaciones y los análisis ~~(tabla 3.1.2.)~~.
 
@@ -430,7 +474,7 @@ Desde su inicio, el **Registro de Colecciones Biológicas y Bases de Datos de Bi
 
 A fecha de `r mes_anno_actual` hay `r n_entidades_actual` entidades (instituciones, centros y proyectos) que forman parte del Nodo Nacional de Información en Biodiversidad de las cuáles `r n_entidades_actual_pub` (el `r n_entidades_actual_pub_x100`) publican datos. Con respecto al informe anterior (`r mes_anno_informe_anterior`) ha habido `r n_entidades_incremento` nuevas incorporaciones.
 
-En la gráfica ~~3.2.1.~~ se enumeran las entidades por categorías. Así mismo, se especifica para una el número de entidades que publican datos en GBIF.
+En la @fig-ent-pub se enumeran las entidades por categorías. Así mismo, se especifica para una el número de entidades que publican datos en GBIF.
 
 Hay que tener en cuenta que una misma entidad puede albergar colecciones o bases de datos que correspondan a más de una categoría, por lo que el número de entidades mixtas es elevado, mientras que, por ejemplo, las exclusivamente microbiológicas es muy reducido. Seobserva también que no hay ninguna entidad exclusivamente microbiológica o paleontológica. Por eso, estas categorías las veremos más adelante mejor diferenciadas y definidas en el 2º nivel, de colecciones biológicas y bases de datos.
 
@@ -443,36 +487,52 @@ Para las entidades que tienen colecciones de diferentes categorías se ha genera
 
 ### Distribución geográfica de las entidades registradas
 
-La distribución espacial de las entidades registradas que forman parte del Nodo Nacional de Información en Biodiversidad, queda reflejada en el ~~mapa 3.2.2.~~ Se observa dónde pueden localizarse las entidades que forman parte del Registro en España por provincia. Se destacan las que publican datos (círculos de color verde) de las que no (círculos de color gris).
+La distribución espacial de las entidades registradas que forman parte del Nodo Nacional de Información en Biodiversidad, queda reflejada en la @fig-map-ent Se observa dónde pueden localizarse las entidades que forman parte del Registro en España por provincia. Se destacan las que publican datos (círculos de color verde) de las que no (círculos de color gris).
 
 ![Distribución en España de las entidades registradas, con indicación de las que publican datos en GBIF.](assets/images/generated/mapa-entidades.png){#fig-map-ent}
 
 ## SITUACIÓN GENERAL DE LAS COLECCIONES BIOLÓGICAS Y BASES DE DATOS: TOTAL DE REGISTROS, ACTUALIZACIONES E INCORPORACIONES
 
 Actualmente hay contabilizadas `r n_colbd_actual` colecciones biológicas y bases de datos
-pertenecientes a `r n_entidades_actual` entidades. Desde 2004, que se tienen datos en el Registro, ha habido un aumento anual constante, tal como refleja la ~~gráfica 3.3.a.~~, donde se indican los totales y el número de nuevas incorporaciones por año. ~~En los últimos cinco años (periodo 2015-2019),~~ desde el anterior informe, se han incrementado en `r n_colbd_incremento` el número de colecciones y bases de datos.
+pertenecientes a `r n_entidades_actual` entidades. Desde 2004, que se tienen datos en el Registro, ha habido un aumento anual constante, tal como refleja la @fig-col-anno , donde se indican los totales y el número de nuevas incorporaciones por año. ~~En los últimos cinco años (periodo 2015-2019),~~ desde el anterior informe, se han incrementado en `r n_colbd_incremento` el número de colecciones y bases de datos.
 
-![Número de colecciones y bases de datos en el Registro hasta 2019 e incremento anual.](assets/images/generated/colecciones_per_anno.png){#fig-col-anno}
+![Número de colecciones y bases de datos en el Registro hasta 2019 e incremento anual.](assets/images/generated/colecciones_per_anno.png){#fig-col-anno} 
+
+En la @tbl-col-vs-bd podemos ver el número y porcentaje de colecciones biológicas (físicas)
+y bases de datos (digitales) del Registro.
+
 ```{r}
-#| label: col-vs-bd
+#| label: tbl-col-vs-bd
+#| tbl-cap: "Número y porcentaje de colecciones biológicas (físicas) y bases de datos (digitales) registradas."
+
 proporcion_col_base <- readRDS("data/vistas_sql/proporcion_col_base.rds")
 
 ft_tbl(
   proporcion_col_base,
   caption = "Tabla 3.3.b. Número y porcentaje de colecciones biológicas (físicas) y bases de datos (digitales) registradas."
 )
+
 ```
+
+
+En la @fig-col-pub y @fig-col-disc se resumen las colecciones biológicas y bases de datos en
+función por categorías. 
+
 ![Número de colecciones biológicas y bases de datos en España que participan en GBIF, en función de su tipo de datos, con indicación de las que publican.](assets/images/generated/colecciones_per_publican.png){#fig-col-pub}
+
 ![Proporción de colecciones biológicas y bases de datos en España que participan en GBIF, en función de su tipo de datos.](assets/images/generated/colecciones_por_disciplina.png){#fig-col-disc}
+
 
 ### Incorporación de registros a la red de GBIF
 
 A fecha de `r mes_anno_actual`, de las `r n_colbd_actual` colecciones biológicas y bases de datos del Registro, hay `r n_colbd_actual_pub` (`r n_colbd_actual_pub_x100`) que publican datos a través de sus `r n_recursos_actual` recursos en línea (juegos de datos), constituyendo así el aporte de datos del Nodo Nacional de Información en Biodiversidad, que suman en total `r n_registros_actual` registros, y que colocan am España como décimo país por registros publicados en la red internacional de GBIF.
 
-En la tabla 3.3.1.a. se muestra una comparativa entre los registros publicados en `r anno_publi_informe_anterior` y los de `r anno_actual`. El incremento de registros en ese periodo ha sido de `r n_registros_incremento` (`r n_registros_incremento_x100`).
+En la @tbl-comparativa-colbd-informes se muestra una comparativa entre los registros publicados en `r anno_publi_informe_anterior` y los de `r anno_actual`. El incremento de registros en ese periodo ha sido de `r n_registros_incremento` (`r n_registros_incremento_x100`).
 
 ```{r}
-#| label: comparativa-colbd-informes
+#| label: tbl-comparativa-colbd-informes
+#| tbl-cap: "Comparativa del número total de colecciones biológicas y bases de datos, con registros publicados y número de registros, según su categoría entre los datos del informe anterior y el actual."
+
 colbd_comp <- readRDS("data/vistas_sql/colecciones_por_disciplina_y_sub.rds") %>%
               transmute(Disciplina = disciplina,
                         !!paste0("Nº colecciones y bases de datos (", 
@@ -523,10 +583,11 @@ profesionales o no.
 ~~La mayor parte de las colecciones y bases de datos proceden del ámbito académico,
 mientras que por número de registros son las administraciones públicas y las de ciencia ciudadana los sectores que más aportan. Es de destacar que desde mediados de 2019 se incorpora el sector privado al ámbito de GBIF, con la cementera LafargeHolcim España, que publicó un primer juego de datos en 2019. Se abre así una nueva entrada de datos, que por volumen y foco (estudios de impacto ambiental, restauración de paisaje), puede completar y complementar el mundo de los datos de biodiversidad de manera relevante.~~
 
-Como las entidades y colecciones pueden asignarse a más de un sector, la distribución de datos entre ellas se ve más claramente a nivel de recursos en línea y registros publicados. El desglose de estos datos por sectores se ve en la ~~tabla 3.3.1.c. y en las gráficas 3.3.1.d. y 3.3.1.e.~~
+Como las entidades y colecciones pueden asignarse a más de un sector, la distribución de datos entre ellas se ve más claramente a nivel de recursos en línea y registros publicados. El desglose de estos datos por sectores se ve en la @tbl-registros-sector y en la @fig-rec-sec y @fig-reg-sec
 
 ```{r}
-#| label: registros-sector
+#| label: tbl-registros-sector
+#| tbl-cap: "Recursos clasificados por sectores (número de recursos y registros)."
 
 df <- readRDS("data/vistas_sql/registros_por_sector.rds")
 
@@ -537,6 +598,7 @@ ft_tbl(
 ```
 
 ![Porcentajes de recursos clasificados por tipo de sector, según el número de recursos.](assets/images/generated/recursos_por_sector.png){#fig-rec-sec}
+
 ![Porcentajes de recursos clasificados por sectores, según el número de registros publicados.](assets/images/generated/registros_por_sector.png){#fig-reg-sec}
 
 Por último, examinamos los datos publicados en GBIF por parte de entidades españolas desde el punto de vista del tipo de registro de los juegos de datos. En la red de GBIF —de la mano de la especificación “Darwin Core Archive”— se reconocen cuatro tipos:
@@ -559,16 +621,18 @@ Hay que tener en cuenta que todos los registros de un juego de datos han de ser 
 
 ~~De las `r n_colbd_actual` colecciones y bases de datos del Registro en `r anno_actual`, han actualizado sus metadatos 80 (el 17 %) desde 2015. Así mismo, 180 de los `r n_recursos_actual` recursos (el 58 %) se han incorporado nuevos o se han actualizado en este mismo periodo.~~
 
+\newpage
 # COLECCIONES BIOLÓGICAS
 
 ## ANÁLISIS Y SITUACIÓN GENERAL
 
 ### Situación general
 
-Actualmente, dadas de alta en el Registro encontramos `r n_entidades_col_actual` entidades que en total mantienen `r n_col_actual` colecciones biológicas(físicas) registradas en el Nodo Nacional de Biodiversidad. La ~~ tabla 4.1.1.~~  muestra el número de colecciones biológicas por las categorías ya reseñadas y el porcentaje para cada una.
+Actualmente, dadas de alta en el Registro encontramos `r n_entidades_col_actual` entidades que en total mantienen `r n_col_actual` colecciones biológicas(físicas) registradas en el Nodo Nacional de Biodiversidad. La @tbl-col-disciplina muestra el número de colecciones biológicas por las categorías ya reseñadas y el porcentaje para cada una.
 
 ```{r}
-#| label: col-disciplina
+#| label: tbl-col-disciplina
+#| tbl-cap: "Número y porcentaje de las colecciones biológicas en función de las categorías utilizadas."
 
 df <- readRDS("data/vistas_sql/colecciones_por_disciplina.rds") |>
           select (-total_ejemplares)
@@ -584,10 +648,11 @@ ft_tbl(
 La información sobre los fondos de las colecciones biológicas del Registro ha sido
 proporcionada para el `r informatizacion_proporcionada_x100`  de las colecciones. Los datos aquí reflejados se corresponden con las últimas actualizaciones aportadas. Conviene indicar también que el número de registros publicados en GBIF no tiene por qué ir a la par del grado de informatización de los fondos de estas instituciones.
 
-En la ~~ tabla 4.1.2.~~  puede verse el número y porcentaje de informatización de las colecciones biológicas de las entidades según sus categorías.
+En la @tbl-col-informatizacion  puede verse el número y porcentaje de informatización de las colecciones biológicas de las entidades según sus categorías.
 
 ```{r}
-#| label: col-informatizacion
+#| label: tbl-col-informatizacion
+#| tbl-cap: "Fondos y estado de informatización por categorías de las colecciones biológicas de las instituciones"
 
 df <- readRDS("data/vistas_sql/colecciones_informatizacion.rds")
 
@@ -601,10 +666,11 @@ instituciones)."
 ### Estado de conservación de las colecciones biológicas
 
 A continuación, se muestra el estado de conservación de las colecciones biológicas
-según la valoración realizada por los responsables de las colecciones ~~(tabla 4.1.3.).~~ La información mostrada se basa en los datos proporcionados por el `r estado_conservacion_proporcionada_x100` de las colecciones.
+según la valoración realizada por los responsables de las colecciones @tbl-col-estado-conservacion La información mostrada se basa en los datos proporcionados por el `r estado_conservacion_proporcionada_x100` de las colecciones.
 
 ```{r}
-#| label: col-estado-conservacion
+#| label: tbl-col-estado-conservacion
+#| tbl-cap: "Número de colecciones biológicas españolas participantes en GBIF en relación a su estado de conservación." 
 
 tabla_condiciones <- readRDS("data/vistas_sql/estado_conservacion.rds")
 
@@ -620,10 +686,11 @@ conservación."
 
 #### Accesibilidad a los ejemplares
 
-A continuación, se representan en la ~~tabla 4.1.4.1.~~ las colecciones biológicas en función de su forma de acceso a los ejemplares. Se han establecido cuatro categorías que los responsables o personas de contacto han cumplimentado en los formularios. Ha de tenerse en cuenta que esta información ha sido proporcionada por el `r acceso_ejemplares_proporcionada_x100` de las colecciones. En el caso de los préstamos, a veces incluyen restricciones puntuales del uso de los ejemplares.
+A continuación, se representan en la @tbl-col-acceso-ejemplares las colecciones biológicas en función de su forma de acceso a los ejemplares. Se han establecido cuatro categorías que los responsables o personas de contacto han cumplimentado en los formularios. Ha de tenerse en cuenta que esta información ha sido proporcionada por el `r acceso_ejemplares_proporcionada_x100` de las colecciones. En el caso de los préstamos, a veces incluyen restricciones puntuales del uso de los ejemplares.
 
 ```{r}
-#| label: col-acceso-ejemplares
+#| label: tbl-col-acceso-ejemplares
+#| tbl-cap: "Acceso a las colecciones biológicas españolas participantes en GBIF."
 
 tabla_acceso_ejem <- readRDS("data/vistas_sql/acceso_ejemplares.rds")
 
@@ -641,14 +708,14 @@ Se representa, a continuación, el grado de acceso a los datos informatizados de
 colecciones que facilitaron dicha información (el `r acceso_informatizado_proporcionada_x100`).
 
 ```{r}
-#| label: col-acceso_informatizado
+#| label: tbl-col-acceso_informatizado
+#| tbl-cap: "Posibilidad de acceso a los datos informatizados de las colecciones biológicas españolas en función de las categorías propuestas."
 
 tabla_acceso_inform <- readRDS("data/vistas_sql/acceso_informatizado.rds")
 
 ft_tbl(
   tabla_acceso_inform,
-  caption = "Tabla 4.1.4.2.1. Posibilidad de acceso a los datos informatizados de las colecciones biológicas españolas
-en función de las categorías propuestas"
+  caption = "Tabla 4.1.4.2.1. Posibilidad de acceso a los datos informatizados de las colecciones biológicas españolas en función de las categorías propuestas"
 )
 ```
 
@@ -658,26 +725,27 @@ A continuación, puede verse representada la manera de acceder a los registros
 informatizados de las colecciones según lo dispuesto por cada entidad responsable, basada en las respuestas proporcionadas por el `r medio_acceso_informatizado_proporcionada_x100` de las colecciones. Una misma colección pudo proporcionar respuestas incluidas en más de una categoría. (Ejemplo: “a través del responsable” y “a través de Intranet”).
 
 ```{r}
-#| label: col-medio-acceso-informatizado
+#| label: tbl-col-medio-acceso-informatizado
+#| tbl-cap: "Forma de acceso a los datos informatizados de las colecciones biológicas según las categorías propuestas."
 
 tabla_medio_acceso_inform <- readRDS("data/vistas_sql/medio_acceso_inform.rds")
 
 ft_tbl(
   tabla_medio_acceso_inform,
-  caption = "Tabla 4.1.4.2.2. Forma de acceso a los datos informatizados de las colecciones biológicas según las
-categorías propuestas."
+  caption = "Tabla 4.1.4.2.2. Forma de acceso a los datos informatizados de las colecciones biológicas según las categorías propuestas."
 )
 ```
 
 ### Colecciones biológicas que publican en GBIF
 
-De las `r n_col_actual` colecciones biológicas registradas, `r n_col_actual_pub` (`r n_col_actual_pub_x100`) publican en GBIF. Estas `r n_col_actual_pub` colecciones pertenecen a `r n_entidades_col_actual_pub` entidades distintas, y en total publican en línea `r n_registros_col_actual` registros. En la ~~tabla 4.1.5.a.~~ se puede ver el número de registros publicados por categorías y sus porcentajes.
+De las `r n_col_actual` colecciones biológicas registradas, `r n_col_actual_pub` (`r n_col_actual_pub_x100`) publican en GBIF. Estas `r n_col_actual_pub` colecciones pertenecen a `r n_entidades_col_actual_pub` entidades distintas, y en total publican en línea `r n_registros_col_actual` registros. En la @tbl-registros-disciplina se puede ver el número de registros publicados por categorías y sus porcentajes.
 
-La colección `r top_col[1,2]` *`r top_col[1,1]`* es la que más registros
+La colección `r top_col[1,2]` *`r top_col[1,1]`* del `r top_col[1,4]` es la que más registros
 publica, con `r top_col[1,3]`, seguida de la `r top_col[2,2]` *`r top_col[2,1]`*, con `r top_col[2,3]`, y de la colección `r top_col[3,2]` *`r top_col[3,1]`*, con `r top_col[3,3]` registros. En los apartados ~~4.2. a 4.6. se revisan en detalle y por categorías (grupos taxonómicos/disciplinas) los datos de Las colecciones biológicas definidos en la tabla 3.1.2.a.~~
 
 ```{r}
-#| label: registros-disciplina
+#| label: tbl-registros-disciplina
+#| tbl-cap: "Número de registros publicados de colecciones biológicas por categorías."
 
 tabla_registros <- readRDS("data/vistas_sql/registros_por_disciplina_col.rds")
 
@@ -689,17 +757,18 @@ ft_tbl(
 
 ### Distribución de las colecciones biológicas
 
-El mapa ~~4.1.6. muestra la distribución de colecciones biológicas en el territorio español, tanto peninsular como insular. Destacan las CC.AA. de Andalucía, Madrid y Cataluña en cuanto a número de entidades que publican datos, mientras que en el otro extremo se encuentra, por ejemplo, Cantabria, con ninguna entidad publicadora de datos, o Castilla-La Mancha, Castilla y León y Extremadura, con un máximo de dos entidades publicadoras en cada CC.AA. En el caso de la Comunidad Valenciana, el elevado número de entidades presentes en el registro de colecciones contrasta con el número de las que publican datos (solo dos).~~
+La @fig-map-col-pub muestra la distribución de colecciones biológicas en el territorio español, tanto peninsular como insular. Destacan las CC.AA. de Andalucía, Madrid y Cataluña en cuanto a número de entidades que publican datos, mientras que en el otro extremo se encuentra, por ejemplo, Cantabria, con ninguna entidad publicadora de datos, o Castilla-La Mancha, Castilla y León y Extremadura, con un máximo de dos entidades publicadoras en cada CC.AA. En el caso de la Comunidad Valenciana, el elevado número de entidades presentes en el registro de colecciones contrasta con el número de las que publican datos (solo dos).~~
 
 ![Distribución de las instituciones con colecciones biológicas en España, con diferenciación de las que publican.](assets/images/generated/mapa_col_pub.png){#fig-map-col-pub}
 
 
 ## COLECCIONES ZOOLÓGICAS
 
-Como se indica en el apartado ~~3.1.2.,~~ las colecciones zoológicas se dividen para su presentación de datos en invertebrados y vertebrados, más un tercer grupo (“Invertebrados y vertebrados”) para las colecciones que presentan los datos de los dos grupos anteriores de manera conjunta. La tabla ~~4.2.~~ desglosa los subtipos zoológicos, su proporción, el número de ejemplares que albergan y los registros publicados.
+Como se indica en la @sec-disciplinas las colecciones zoológicas se dividen para su presentación de datos en invertebrados y vertebrados, más un tercer grupo (“Invertebrados y vertebrados”) para las colecciones que presentan los datos de los dos grupos anteriores de manera conjunta. La @tbl-col-zoo desglosa los subtipos zoológicos, su proporción, el número de ejemplares que albergan y los registros publicados.
 
 ```{r}
-#| label: col-zoo
+#| label: tbl-col-zoo
+#| tbl-cap: "Colecciones zoológicas y su proporción según subtipos, con indicación del número de ejemplares y registros que publican."
 
 tabla_sub_zoo <- readRDS("data/vistas_sql/colecciones_por_subdisciplina_zoologica.rds")
 
@@ -711,10 +780,11 @@ ft_tbl(
 
 ### Estado de informatización de las colecciones zoológicas
 
-Se recopila en esta sección la informatización para el conjunto de las `r n_col_zoo` colecciones zoológicas de las que `r n_col_zoo_pub` publican datos en GBIF, y también se desglosan en las tres subcategorías. La tabla 4.2.1.a. muestra el porcentaje de informatización de los ejemplares que albergan y su proporción.
+Se recopila en esta sección la informatización para el conjunto de las `r n_col_zoo` colecciones zoológicas de las que `r n_col_zoo_pub` publican datos en GBIF, y también se desglosan en las tres subcategorías. La @tbl-col-zoo-informatizacion muestra el porcentaje de informatización de los ejemplares que albergan y su proporción.
 
 ```{r}
-#| label: col-zoo-informatizacion
+#| label: tbl-col-zoo-informatizacion
+#| tbl-cap: "Número de colecciones zoológicas por subtipos en relación al estado de informatización desus ejemplares."
 
 tabla_inform_zoo <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_zoo.rds") %>% 
                     select(-total_ejemplares)
@@ -726,10 +796,11 @@ ft_tbl(
 ```
 
 En relación al software o sistema de informatización y gestión de las colecciones, la
-nueva aplicación Elysia se está usando en algunas colecciones zoológicas en sustitución de la herramienta Zoorbar. ~~La tabla 4.2.1.b. muestra las colecciones zoológicas en relación a los softwares~~ utilizados para la informatización de sus ejemplares.
+nueva aplicación Elysia se está usando en algunas colecciones zoológicas en sustitución de la herramienta Zoorbar. La @tbl-col-zoo-software muestra las colecciones zoológicas en relación a los softwares utilizados para la informatización de sus ejemplares.
 
 ```{r}
-#| label: col-zoo-software
+#| label: tbl-col-zoo-software
+#| tbl-cap: "Número de colecciones zoológicas españolas en relación a los softwares de informatización. * Incluye Access, Excel y otros sistemas que no especificaron los proveedores."
 
 tabla_soft_zoo <- readRDS("data/vistas_sql/colecciones_uso_software_zoo.rds")
 
@@ -742,40 +813,41 @@ ft_tbl(
 ### Colecciones zoológicas: invertebrados
 
 Actualmente hay dadas de alta en el Registro del Nodo Nacional de Información en
-Biodiversidad `r n_col_inv` colecciones zoológicas de invertebrados pertenecientes a `r n_entidades_col_inv` entidades distintas. En el ~~Anexo 1~~ figura el listado de estas colecciones asociadas a sus códigos y entidades.
+Biodiversidad `r n_col_inv` colecciones zoológicas de invertebrados pertenecientes a `r n_entidades_col_inv` entidades distintas. En el @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ### Mapa de distribución de las colecciones zoológicas de invertebrados en España
 
-En los  ~~mapas 4.2.2.1.a. y 4.2.2.1.b.~~ se muestran las colecciones zoológicas de
+En la @fig-map-col-inv y @fig-map-col-inv-pub se muestran las colecciones zoológicas de
 invertebrados, representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo el número de colecciones que publican a través de los portales GBIF.
 
 ![Colecciones zoológicas de invertebrados en España. El tamaño de los círculos expresa el nº de ejemplares.](assets/images/generated/mapa-colecciones-inv.png){#fig-map-col-inv}
+
 ![Colecciones zoológicas de invertebrados en España con la proporción de registros publicados en GBIF.](assets/images/generated/mapa-colecciones-inv-pub.png){#fig-map-col-inv-pub}
 
 ### Grandes colecciones zoológicas de invertebrados
 
-~~Destaca con mucha diferencia la colección de Invertebrados de agua dulce del Museo
-de Zoología de la Universidad de Navarra (MZNA-INV-FRW), con 25 millones ejemplares. La sigue a gran distancia la Colección de entomología del Museo Nacional de Ciencias Naturales (MNCNEnt), con 4 millones. Y en tercer lugar la colección Artrópodos, Museu de Ciències Naturals de Barcelona (MCNB-Art), con 1,9 millones. La gráfica 4.2.2.2. muestra las 10 colecciones de vertebrados que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.~~
+Destaca la colección *`r top_col_inv[1,1]`* (`r top_col_inv[1,2]`) del *`r top_col_inv[1,4]`*, con `r top_col_inv[1,3]` ejemplares; seguida de las coleccines *`r top_col_inv[2,1]`* (`r top_col_inv[2,2]`), con `r top_col_inv[2,3]` ejemplares y *`r top_col_inv[3,1]`* (`r top_col_inv[3,2]`), con `r top_col_inv[3,3]` ejemplares. La @fig-barplot-inv muestra las 10 colecciones de vertebrados que más ejemplares albergan ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ![Las 10 colecciones zoológicas de invertebrados que más ejemplares albergan en el Registro.](assets/images/generated/barplot-colecciones-inv.png){#fig-barplot-inv}
 
 ### Colecciones zoológicas: vertebrados
 
 Actualmente hay dadas de alta en el Registro del Nodo Nacional de Información en
-Biodiversidad `r n_col_ver` colecciones de vertebrados pertenecientes a `r n_entidades_col_ver` entidades distintas. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+Biodiversidad `r n_col_ver` colecciones de vertebrados pertenecientes a `r n_entidades_col_ver` entidades distintas. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ### Mapa de distribución de las colecciones zoológicas de vertebrados en España
 
-En los mapas 4.2.3.1.a. y 4.2.3.1.b. se muestran las colecciones zoológicas de
+En la @fig-map-col-ver y @fig-map-col-ver-pub se muestran las colecciones zoológicas de
 vertebrados, representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo el número de colecciones que publican a través de los portales GBIF.
 
 
 ![Colecciones zoológicas de vertebrados en España.](assets/images/generated/mapa-colecciones-vert.png){#fig-map-col-ver}
+
 ![Colecciones zoológicas de vertebrados en España con la proporción de registros publicados en GBIF.](assets/images/generated/mapa-colecciones-vert-pub.png){#fig-map-col-ver-pub}
 
 ### Grandes colecciones zoológicas de vertebrados
 
-De las grandes colecciones zoológicas de vertebrados del Registro, ~~destaca la Colección de ictiología del Museo Nacional de Ciencias Naturales (MNCN_ICTIO), con 325.000 ejemplares, seguida de la colección de Vertebrados del Museo de Zoología, de la Universidad de Navarra (MZNA-Vert), con más de 206.000, y de la Colección de anfibios y reptiles, también del Museo Nacional de Ciencias Naturales (MNCN-Herpeto), con más de 60.000 ejemplares. La gráfica 4.2.3.2. muestra las 10 colecciones de vertebrados que más ejemplares albergan ordenadas por nº de registros.~~ En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+De las grandes colecciones zoológicas de vertebrados del Registro, destaca en primer lugar *`r top_col_ver[1,1]`* (`r top_col_ver[1,2]`) del *`r top_col_ver[1,4]`*, con `r top_col_ver[1,3]` ejemplares; seguida de *`r top_col_ver[2,1]`* (`r top_col_ver[2,2]`), con `r top_col_ver[2,3]` ejemplares y de *`r top_col_ver[3,1]`* (`r top_col_ver[3,2]`), con `r top_col_ver[3,3]` ejemplares. La @fig-barplot-ver muestra las 10 colecciones de vertebrados que más ejemplares albergan ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ![Las 10 colecciones zoológicas de vertebrados que más ejemplares albergan en el Registro.](assets/images/generated/barplot-colecciones-vert.png){#fig-barplot-ver}
 
@@ -786,31 +858,33 @@ Biodiversidad `r n_col_invver` colecciones conjuntas de vertebrados e invertebra
 
 ### Mapa de distribución de las colecciones zoológicas conjuntas de invertebrados y vertebrados en España
 
-En los ~~mapas 4.2.4.1.a y 4.2.4.1.b~~ se muestran las colecciones zoológicas conjuntas de invertebrados y vertebrados, representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo las colecciones que publican a través de los portales GBIF.
+En la @fig-map-col-invver y @fig-map-col-invver-pub se muestran las colecciones zoológicas conjuntas de invertebrados y vertebrados, representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo las colecciones que publican a través de los portales GBIF.
 
 ![Colecciones zoológicas conjuntas de vertebrados e invertebrados en España.](assets/images/generated/mapa-colecciones-invver.png){#fig-map-col-invver}
+
 ![Colecciones zoológicas conjuntas de vertebrados e invertebrados en España con la proporción de registros publicados en GBIF.](assets/images/generated/mapa-colecciones-invver-pub.png){#fig-map-col-invver-pub}
 
 ### Grandes colecciones zoológicas conjuntas de invertebrados y vertebrados
 
 De las grandes colecciones zoológicas conjuntas de invertebrados y vertebrados del
-Registro, ~~destaca la colección del Museo de Zoología de la Universidad de Navarra (MZNA), con 1,7 millones de ejemplares, seguida de la colección Efectos del Cambio Ambiental en las comunidades de organismos de los ríos mediterráneos (CARIMED), de la Universitat de Barcelona, con casi 600.000, y de la Colección de tejidos y ADN, del Museo Nacional de Ciencias Naturales (MNCN-ADN), con más de 50.000 ejemplares. La gráfica 4.2.4.2. ~~muestra las 10 colecciones de vertebrados que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+Registro, destaca en primer lugar *`r top_col_invver[1,1]`* (`r top_col_invver[1,2]`) del *`r top_col_invver[1,4]`*, con `r top_col_invver[1,3]` ejemplares; seguida de *`r top_col_invver[2,1]`* (`r top_col_invver[2,2]`), con `r top_col_invver[2,3]` ejemplares y de *`r top_col_invver[3,1]`* (`r top_col_invver[3,2]`), con `r top_col_invver[3,3]` ejemplares. La @fig-barplot-invver ~~muestra las 10 colecciones de vertebrados que más ejemplares albergan ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ![Las 10 colecciones zoológicas conjuntas de invertebrados y vertebrados que más ejemplares albergan en el Registro.](assets/images/generated/barplot-colecciones-invver.png){#fig-barplot-invver}
 
 
 ### Colecciones zoológicas que publican datos en GBIF
 
-En la ~~gráfica 4.2.5.~~ podemos ver las diez colecciones zoológicas que más registros publican en los portales de GBIF ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+En la @fig-barplot-zoo podemos ver las diez colecciones zoológicas que más registros publican en los portales de GBIF ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ![](assets/images/generated/barplot-colecciones-zoo.png){#fig-barplot-zoo}
 
 ## COLECCIONES BOTÁNICAS
 
-Las colecciones botánicas se dividen en cuatro grupos o subtipos: Plantas, Algas, Hongos y líquenes y Botánicas mixtas, tal como se refleja en la ~~tabla 3.1.2.a. La tabla 4.3.~~ muestra el desglose por subtipos botánicos y su proporción.
+Las colecciones botánicas se dividen en cuatro grupos o subtipos: Plantas, Algas, Hongos y líquenes y Botánicas mixtas, tal como se refleja en la ~~tabla 3.1.2.a. La @tbl-col-bot ~~ muestra el desglose por subtipos botánicos y su proporción.
 
 ```{r}
-#| label: col-bot
+#| label: tbl-col-bot
+#| tbl-cap: "Colecciones botánicas según subtipos y su proporción, con indicación del número de ejemplares que albergan y los registros que publican."
 
 tabla_sub_bot <- readRDS("data/vistas_sql/colecciones_por_subdisciplina_botanica.rds")
 
@@ -823,10 +897,11 @@ ft_tbl(
 
 ### Estado de informatización de las colecciones botánicas
 
-Se detalla la informatización para el conjunto de las `r n_col_bot` colecciones botánicas, de las que `r n_col_bot_pub` publican datos en GBIF, y también se desglosan en las tres subcategorías diferenciadas para este grupo. La ~~tabla 4.3.1.a.~~ muestra el porcentaje de informatización de los ejemplares que albergan y su proporción. Nótese que el nº de registros publicados es mayor que el de informatizados. Este desfase de debe a una desactualización en la información proporcionada para el Registro.
+Se detalla la informatización para el conjunto de las `r n_col_bot` colecciones botánicas, de las que `r n_col_bot_pub` publican datos en GBIF, y también se desglosan en las tres subcategorías diferenciadas para este grupo. La @tbl-col-bot-informatizacion muestra el porcentaje de informatización de los ejemplares que albergan y su proporción. Nótese que el nº de registros publicados es mayor que el de informatizados. Este desfase de debe a una desactualización en la información proporcionada para el Registro.
 
 ```{r}
-#| label: col-bot-informatizacion
+#| label: tbl-col-bot-informatizacion
+#| tbl-cap: "Número de colecciones botánicas por subtipos en relación al estado de informatización de sus ejemplares"
 
 tabla_inform_bot <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_bot.rds") %>% 
                     select(-total_ejemplares)
@@ -838,10 +913,11 @@ ft_tbl(
 ```
 
 En relación al software o sistema de informatización y gestión de las colecciones, la
-nueva aplicación Elysia se está usando en algunas colecciones botánicas en sustitución de la herramienta Herbar. ~~La tabla 4.3.1.b.~~ muestra las colecciones botánicas en relación a los softwares utilizados para la informatización de sus ejemplares.
+nueva aplicación Elysia se está usando en algunas colecciones botánicas en sustitución de la herramienta Herbar. La @tbl-col-bot-software muestra las colecciones botánicas en relación a los softwares utilizados para la informatización de sus ejemplares.
 
 ```{r}
-#| label: col-bot-software
+#| label: tbl-col-bot-software
+#| tbl-cap: "Número de colecciones botánicas españolas en relación a los softwares de informatización."
 
 tabla_soft_bot <- readRDS("data/vistas_sql/colecciones_uso_software_bot.rds")
 
@@ -855,73 +931,77 @@ ft_tbl(
 ### Colecciones de plantas
 
 Actualmente hay dadas de alta en el Registro del Nodo Nacional de Información en
-Biodiversidad `r n_col_pla` colecciones botánicas de plantas pertenecientes a `r n_entidades_col_pla` entidades distintas. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+Biodiversidad `r n_col_pla` colecciones botánicas de plantas pertenecientes a `r n_entidades_col_pla` entidades distintas. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ### Mapa de distribución de las colecciones de plantas
 
-En los mapas ~~4.3.2.1.a. y 4.3.2.1.b.~~ se muestran las colecciones botánicas de plantas representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo las colecciones que publican datos a través de los portales GBIF.
+En @fig-map-col-pla y @fig-map-col-pla-pub se muestran las colecciones botánicas de plantas representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo las colecciones que publican datos a través de los portales GBIF.
 
 ![Colecciones botánicas de plantas en España.](assets/images/generated/mapa-colecciones-pla.png){#fig-map-col-pla}
+
 ![Colecciones botánicas de plantas en España con la proporción de registros publicados en GBIF.](assets/images/generated/mapa-colecciones-pla-pub.png){#fig-map-col-pla-pub}
 
 ### Grandes colecciones de plantas
 
-De las grandes colecciones botánicas de plantas del Registro, ~~destaca la colección CSICReal Jardín Botánico-Colección de Plantas Vasculares (CSIC-RJB-MA-Phanero), con 875.000 pliegos de herbario. La siguiente es la colección Herbario BC, Instituto Botánico de Barcelona (BC), con 800.000 ejemplares, que alberga tanto fanerógamas como criptógamas. En tercer lugar, está la colección del Herbario de la Universidad de Barcelona (BCN), del Centro de Documentación de Biodiversidad Vegetal - CeDocBIV, con 402.000 ejemplares de todos los grupos botánicos. La gráfica 4.3.2.2.~~ muestra las 10 colecciones botánicas que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+De las grandes colecciones botánicas de plantas del Registro, destaca en primer lugar *`r top_col_pla[1,1]`* (`r top_col_pla[1,2]`) del *`r top_col_pla[1,4]`*, con `r top_col_pla[1,3]` ejemplares; seguida de *`r top_col_pla[2,1]`* (`r top_col_pla[2,2]`), con `r top_col_pla[2,3]` ejemplares y de *`r top_col_pla[3,1]`* (`r top_col_pla[3,2]`), con `r top_col_pla[3,3]` ejemplares. La @fig-barplot-pla muestra las 10 colecciones botánicas que más ejemplares albergan ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ![Las 10 colecciones botánicas que más ejemplares albergan en el Registro.](assets/images/generated/barplot-colecciones-pla.png){#fig-barplot-pla}
 
 ### Colecciones de algas
 
 Actualmente hay dadas de alta en el Registro del Nodo Nacional de Información en
-Biodiversidad `r n_col_alg` colecciones botánicas de algas pertenecientes a `r n_entidades_col_alg` entidades distintas. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+Biodiversidad `r n_col_alg` colecciones botánicas de algas pertenecientes a `r n_entidades_col_alg` entidades distintas. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 
 ### Mapa de distribución de las colecciones de algas
 
-En los mapas ~~4.3.3.1.a. y 4.3.3.1.b.~~ se muestran las colecciones botánicas de algas representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo las colecciones que publican a través de los portales GBIF.
+En la @fig-map-col-alg y @fig-map-col-alg-pub se muestran las colecciones botánicas de algas representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo las colecciones que publican a través de los portales GBIF.
 
 
 ![Colecciones botánicas de algas en España.](assets/images/generated/mapa-colecciones-alg.png){#fig-map-col-alg}
+
 ![Colecciones botánicas de algas en España con la proporción de registros publicados en GBIF.](assets/images/generated/mapa-colecciones-alg-pub.png){#fig-map-col-alg-pub}
 
 ### Grandes colecciones de algas
 
-De las grandes colecciones botánicas de algas del Registro, ~~destaca la colección Herbario TFC, Universidad de La Laguna: algas, con 15.200 ejemplares, seguida de la colección del Herbario de la Universidad de Girona - sección algas, con más de 13.000, y de la colección CSIC Real Jardín Botánico-Herbario de Criptogamia: algas, con 10.000 ejemplares. La gráfica 4.3.3.2.~~ muestra las 10 colecciones botánicas de algas que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+De las grandes colecciones botánicas de algas del Registro, destaca en primer lugar *`r top_col_alg[1,1]`* (`r top_col_alg[1,2]`) del *`r top_col_alg[1,4]`*, con `r top_col_alg[1,3]` ejemplares; seguida de *`r top_col_alg[2,1]`* (`r top_col_alg[2,2]`), con `r top_col_alg[2,3]` ejemplares y de *`r top_col_alg[3,1]`* (`r top_col_alg[3,2]`), con `r top_col_alg[3,3]` ejemplares. La @fig-barplot-alg muestra las 10 colecciones botánicas de algas que más ejemplares albergan ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ![Las 10 colecciones botánicas de algas que más ejemplares albergan en el Registro.](assets/images/generated/barplot-colecciones-alg.png){#fig-barplot-alg}
 
 
 ### Colecciones de Hongos y líquenes
 
-Actualmente hay dadas de alta en el Registro del Nodo Nacional de Información en Biodiversidad `r n_col_hong` colecciones de hongos y líquenes pertenecientes a `r n_entidades_col_hong` entidades distintas. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+Actualmente hay dadas de alta en el Registro del Nodo Nacional de Información en Biodiversidad `r n_col_hong` colecciones de hongos y líquenes pertenecientes a `r n_entidades_col_hong` entidades distintas. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ### Mapa de distribución de las colecciones de hongos y líquenes
 
-En los ~~mapas 4.3.4.1.a. y 4.3.4.1.b.~~ se muestran las colecciones de hongos y líquenes representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo las colecciones que publican a través de los portales GBIF.
+En la @fig-map-col-hong y @fig-map-col-hong-pub se muestran las colecciones de hongos y líquenes representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo las colecciones que publican a través de los portales GBIF.
 
 ![Colecciones de hongos y líquenes en España.](assets/images/generated/mapa-colecciones-hong.png){#fig-map-col-hong}
+
 ![Colecciones de hongos y líquenes en España con la proporción de registros publicados en GBIF.](assets/images/generated/mapa-colecciones-hong-pub.png){#fig-map-col-hong-pub}
 
 ### Grandes colecciones de hongos y líquenes
 
-De las grandes colecciones de hongos y líquenes del Registro, ~~destaca la colección CSIC-Real Jardín Botánico-Herbario de Criptogamia: hongos y líquenes, con más de 117.000 ejemplares, seguida de la colección Herbario VIT Criptogamia, Museo de Ciencias Naturales de Álava, con casi 50.000 ejemplares, y de la colección Herbario de la Universidad de Barcelona: hongos, con 42.000 ejemplares. La gráfica @fig-barplot-hong  ~~ muestra las 10 colecciones de hongos que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+De las grandes colecciones de hongos y líquenes del Registro, destaca en primer lugar *`r top_col_hong[1,1]`* (`r top_col_hong[1,2]`) del *`r top_col_hong[1,4]`*, con `r top_col_hong[1,3]` ejemplares; seguida de *`r top_col_hong[2,1]`* (`r top_col_hong[2,2]`), con `r top_col_hong[2,3]` ejemplares y de *`r top_col_hong[3,1]`* (`r top_col_hong[3,2]`), con `r top_col_hong[3,3]` ejemplares. La @fig-barplot-hong muestra las 10 colecciones de hongos que más ejemplares albergan ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ![Las 10 colecciones de hongos y líquenes que más ejemplares albergan en el Registro.](assets/images/generated/barplot-colecciones-hong.png){#fig-barplot-hong}
 
 ### Colecciones Botánicas mixtas
 
-Actualmente hay dadas de alta en el Registro del Nodo Nacional de Información en Biodiversidad `r n_col_botmix` colecciones botánicas mixtas pertenecientes a `r n_entidades_col_botmix` entidades distintas. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+Actualmente hay dadas de alta en el Registro del Nodo Nacional de Información en Biodiversidad `r n_col_botmix` colecciones botánicas mixtas pertenecientes a `r n_entidades_col_botmix` entidades distintas. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ### Mapa de distribución de las colecciones botánicas mixtas
 
-En los ~~mapas 4.3.4.1.a. y 4.3.4.1.b.~~ se muestran las colecciones botánicas mixtas representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo las colecciones que publican a través de los portales GBIF.
+En la @fig-map-col-botmix y @fig-map-col-botmix-pub se muestran las colecciones botánicas mixtas representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo las colecciones que publican a través de los portales GBIF.
 
 ![Colecciones botánicas mixtas en España.](assets/images/generated/mapa-colecciones-botmix.png){#fig-map-col-botmix}
+
 ![Colecciones botánicas mixtas en España con la proporción de registros publicados en GBIF.](assets/images/generated/mapa-colecciones-botmix-pub.png){#fig-map-col-botmix-pub}
 
 ### Grandes colecciones botánicas mixtas
 
-De las grandes colecciones botánicas mixtas del Registro, ~~destaca la colección CSIC-Real Jardín Botánico-Herbario de Criptogamia: hongos y líquenes, con más de 117.000 ejemplares, seguida de la colección Herbario VIT Criptogamia, Museo de Ciencias Naturales de Álava, con casi 50.000 ejemplares, y de la colección Herbario de la Universidad de Barcelona: hongos, con 42.000 ejemplares. La gráfica 4.3.4.2.~~ muestra las 10 colecciones botánicas mixtas que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+De las grandes colecciones botánicas mixtas del Registro, destaca en primer lugar *`r top_col_botmix[1,1]`* (`r top_col_botmix[1,2]`) del *`r top_col_botmix[1,4]`*, con `r top_col_botmix[1,3]` ejemplares; seguida de *`r top_col_botmix[2,1]`* (`r top_col_botmix[2,2]`), con `r top_col_botmix[2,3]` ejemplares y de *`r top_col_botmix[3,1]`* (`r top_col_botmix[3,2]`), con `r top_col_botmix[3,3]` ejemplares. La @fig-barplot-botmix muestra las 10 colecciones botánicas mixtas que más ejemplares albergan ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ![Las 10 colecciones botánicas mixtas que más ejemplares albergan en el Registro.](assets/images/generated/barplot-colecciones-botmix.png){#fig-barplot-botmix}
 
@@ -929,8 +1009,8 @@ De las grandes colecciones botánicas mixtas del Registro, ~~destaca la colecci�
 
 ### Colecciones botánicas que publican en GBIF
 
-En la ~~gráfica 4.3.5.~~ podemos ver las diez colecciones botánicas que más registros
-publican en los portales de GBIF ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+En la @fig-barplot-bot podemos ver las diez colecciones botánicas que más registros
+publican en los portales de GBIF ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ![Las 10 colecciones botánicas que más registros publican en GBIF.](assets/images/generated/barplot-colecciones-bot.png){#fig-barplot-bot}
 
@@ -939,12 +1019,13 @@ publican en los portales de GBIF ordenadas por nº de registros. En el Anexo 1 f
 ### Entidades y colecciones microbiológicas y su estado de informatización
 
 Actualmente hay dadas de alta en el Registro del Nodo Nacional de Información en
-Biodiversidad ~~`r n_col_micro` colecciones microbiológicas de 6~~ entidades distintas. ~~Las `r n_col_micro_pub` colecciones que publican datos son Diatomeas de Lagos Pirenaicos (CEAB-LOOP-DIATOMS) y Fitoplancton de lagos pirenaicos (CEAB-LOOP-PHYTOPLANKTON), del Centre d'Estudis Avançats de Blanes – CSIC, el Herbario LEB “Jaime Andrés Rodríguez”: LEB-Diatomea, de la Universidad de León, y la Colección Española de Cultivos Tipo (CECT), de la institución homónima.~~
+Biodiversidad `r n_col_micro` colecciones microbiológicas provenientes de `r n_entidades_col_micro` entidades distintas. Las dos colecciones con más ejemplares son *`r top_col_micro[1,1]`* (`r top_col_micro[1,2]`), con `r top_col_micro[1,3]` ejemplares y *`r top_col_micro[2,1]`* (`r top_col_micro[2,2]`), con `r top_col_micro[2,3]` ejemplares. De entre las `r n_col_micro_pub` colecciones que publican datos, destaca por número de registros *`r top_col_micro_pub[1,1]`* (`r top_col_micro_pub[1,2]`) del *`r top_col_micro_pub[1,4]`*, con `r top_col_micro_pub[1,3]` registros publicados. 
 
-La ~~tabla 4.4.1.a.~~ muestra el porcentaje de informatización de los ejemplares que albergan y su proporción.
+La @tbl-col-micro-informatizacion muestra el porcentaje de informatización de los ejemplares que albergan y su proporción.
 
 ```{r}
-#| label: col-micro-informatizacion
+#| label: tbl-col-micro-informatizacion
+#| tbl-cap: "Número de colecciones microbiológicas españolas en relación a la informatización de sus ejemplares."
 
 tabla_inform_micro <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_micro.rds")
 
@@ -955,11 +1036,12 @@ ft_tbl(
 )
 ```
 
-La ~~tabla 4.4.1.b.~~ muestra las colecciones microbiológicas en relación a los softwares
+La @tbl-col-micro-software muestra las colecciones microbiológicas en relación a los softwares
 utilizados para la informatización de sus ejemplares.
 
 ```{r}
-#| label: col-micro-software
+#| label: tbl-col-micro-software
+#| tbl-cap: "Número de colecciones microbiológicas españolas en relación a softwares de informatización."
 
 tabla_soft_micro <- readRDS("data/vistas_sql/colecciones_uso_software_micro.rds")
 
@@ -970,16 +1052,17 @@ ft_tbl(
 )
 ```
 
-En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades, y en la ~~gráfica 4.4.1.d.~~ se muestran las `r n_col_micro` colecciones microbiológicas ordenadas por nº de ejemplares. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades, y en la @fig-barplot-micro se muestran las `r n_col_micro` colecciones microbiológicas ordenadas por nº de ejemplares. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ![Las colecciones microbiológicas y sus ejemplares.](assets/images/generated/barplot-colecciones-micro.png){#fig-barplot-micro}
 
 ### Mapa de distribución de las colecciones microbiológicas
 
-En los mapas ~~4.4.2.a. y 4.4.2.b.~~ se muestran las colecciones microbiológicas
+En la @fig-map-col-micro y @fig-map-col-micro-pub se muestran las colecciones microbiológicas
 representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo las colecciones que publican a través de los portales GBIF.
 
 ![Colecciones microbiológicas en España.](assets/images/generated/mapa-colecciones-micro.png){#fig-map-col-micro}
+
 ![Colecciones microbiológicas en España con la proporción de registros publicados en GBIF.](assets/images/generated/mapa-colecciones-micro-pub.png){#fig-map-col-micro-pub}
 
 ## COLECCIONES PALEONTOLÓGICAS
@@ -987,12 +1070,13 @@ representadas en función de la localidad donde se ubica la entidad. En el prime
 ### Entidades y colecciones paleontológicas y su estado de informatización
 
 Actualmente hay dadas de alta en el Registro del Nodo Nacional de Información en
-Biodiversidad ~~`r n_col_paleo` colecciones paleontológicas de 32 entidades distintas, todas ya registradas con anterioridad a 2015. La colección de Paleontología del Museo Geológico del Seminario de Barcelona (MGSB) es la que posee mayor número de ejemplares, con más 1,5 millones; las demás están por debajo del medio millón de ejemplares. Solo hay `r n_col_paleo_pub` colecciones paleontológicas que publican datos: la colección de Paleovertebrados, del Institut Mediterrani D'Estudis Avançats, CSIC-UIB (IMEDEA-Paleovert), con 27.286 ejemplares, y la colección de Paleontología, del Museo de Ciencias Naturales de Barcelona (MCNB-Pal), con 7.351.~~
+Biodiversidad `r n_col_paleo` colecciones paleontológicas de `r n_entidades_col_paleo` entidades distintas. Las dos colecciones con más ejemplares son *`r top_col_paleo[1,1]`* (`r top_col_paleo[1,2]`), con `r top_col_paleo[1,3]` ejemplares y *`r top_col_paleo[2,1]`* (`r top_col_paleo[2,2]`), con `r top_col_paleo[2,3]` ejemplares. De entre las `r n_col_paleo_pub` colecciones que publican datos, destaca por número de registros *`r top_col_paleo_pub[1,1]`* (`r top_col_paleo_pub[1,2]`) del *`r top_col_paleo_pub[1,4]`*, con `r top_col_paleo_pub[1,3]` registros publicados.
 
-Se detalla la informatización para el conjunto de las ~~`r n_col_paleo` colecciones paleontológicas. La tabla 4.5.1.a.~~ muestra el porcentaje de informatización de los ejemplares que albergan y su proporción.
+Se detalla la informatización para el conjunto de las `r n_col_paleo` colecciones paleontológicas. La @tbl-col-paleo-informatizacion muestra el porcentaje de informatización de los ejemplares que albergan y su proporción.
 
 ```{r}
-#| label: col-paleo-informatizacion
+#| label: tbl-col-paleo-informatizacion
+#| tbl-cap: "Número de colecciones paleontológicas en relación al estado de informatización de sus ejemplares."
 
 tabla_inform_paleo <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_paleo.rds")
 
@@ -1002,11 +1086,12 @@ ft_tbl(
 )
 ```
 
-La ~~tabla 4.5.1.b.~~ muestra las colecciones paleontológicas en relación a los softwares
+La @tbl-col-paleo-software muestra las colecciones paleontológicas en relación a los softwares
 utilizados para la informatización de sus ejemplares.
 
 ```{r}
-#| label: col-paleo-software
+#| label: tbl-col-paleo-software
+#| tbl-cap: "Número de colecciones paleontológicas españolas en relación a los softwares de informatización."
 
 tabla_soft_paleo <- readRDS("data/vistas_sql/colecciones_uso_software_paleo.rds")
 
@@ -1016,16 +1101,17 @@ ft_tbl(
 )
 ```
 
-En la ~~gráfica 4.5.1.c.~~ se muestran las 10 colecciones paleontológicas que más ejemplares albergan ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+En la @fig-barplot-paleo se muestran las 10 colecciones paleontológicas que más ejemplares albergan ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ![Las 10 colecciones paleontológicas que más ejemplares albergan en el Registro](assets/images/generated/barplot-colecciones-pale.png){#fig-barplot-paleo}
 
 ### Mapa de distribución de las colecciones paleontológicas
 
-En los ~~mapas 4.5.2.a. y 4.5.2.b.~~ se muestran las colecciones paleontológicas
+En la @fig-map-col-paleo y @fig-map-col-paleo-pub se muestran las colecciones paleontológicas
 representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo las colecciones que publican a través de los portales GBIF.
 
 ![Colecciones paleontológicas en España.](assets/images/generated/mapa-colecciones-pale.png){#fig-map-col-paleo}
+
 ![Colecciones paleontológicas en España con la proporción de registros publicados en GBIF.](assets/images/generated/mapa-colecciones-pale-pub.png){#fig-map-col-paleo-pub}
 
 ## COLECCIONES MIXTAS
@@ -1033,13 +1119,14 @@ representadas en función de la localidad donde se ubica la entidad. En el prime
 ### Entidades y colecciones mixtas y su estado de informatización
 
 Actualmente hay dadas de alta en el Registro del Nodo Nacional de Información en
-Biodiversidad ~~`r n_col_mix` colecciones biológicas de 10 entidades distintas catalogadas como de tipo mixto. Son aquellas que contienen ejemplares de al menos dos tipos de las categorías definidas. La colección del Museo de la Naturaleza de las Islas Baleares, Sociedad biológicas de las Baleares (MNIB), tiene 400.000 ejemplares, en tanto las demás no sobrepasan los 30.000 ejemplares. Solo una de ellas publica datos, Colecciones del Museo Darder, del Museo Darder, con 4.681 registros.~~
+Biodiversidad `r n_col_mix` colecciones biológicas de `r n_entidades_col_mix` entidades distintas catalogadas como de tipo mixto. Son aquellas que contienen ejemplares de al menos dos tipos de las categorías definidas. Las dos colecciones con más ejemplares son *`r top_col_mix[1,1]`* (`r top_col_mix[1,2]`), con `r top_col_mix[1,3]` ejemplares y *`r top_col_mix[2,1]`* (`r top_col_mix[2,2]`), con `r top_col_mix[2,3]` ejemplares. De entre las `r n_col_mix_pub` colecciones que publican datos, destaca por número de registros *`r top_col_mix_pub[1,1]`* (`r top_col_mix_pub[1,2]`) del *`r top_col_mix_pub[1,4]`*, con `r top_col_mix_pub[1,3]` registros publicados. 
 
-La ~~tabla 4.6.1.a.~~ muestra el porcentaje de informatización de los ejemplares que
+La @tbl-col-mix-informatizacion muestra el porcentaje de informatización de los ejemplares que
 albergan y su proporción.
 
 ```{r}
-#| label: col-mix-informatizacion
+#| label: tbl-col-mix-informatizacion
+#| tbl-cap: "Número de colecciones mixtas en relación al estado de informatización de sus ejemplares."
 
 tabla_inform_mixta <- readRDS("data/vistas_sql/colecciones_informatizacion_ejemplares_mixta.rds")
 
@@ -1049,10 +1136,11 @@ ft_tbl(
 )
 ```
 
-La ~~tabla 4.6.1.b.~~ muestra las colecciones mixtas en relación a los softwares utilizados para la informatización de sus ejemplares.
+La @tbl-col-mix-software muestra las colecciones mixtas en relación a los softwares utilizados para la informatización de sus ejemplares.
 
 ```{r}
-#| label: col-mix-software
+#| label: tbl-col-mix-software
+#| tbl-cap: "Número de colecciones mixtas en relación al estado de informatización de sus ejemplares."
 
 tabla_soft_mixta <- readRDS("data/vistas_sql/colecciones_uso_software_mixta.rds")
 
@@ -1062,25 +1150,25 @@ ft_tbl(
 )
 ```
 
-La ~~gráfica 4.6.1.c.~~ muestra las 10 colecciones mixtas que más ejemplares albergan
-ordenadas por nº de registros. En el Anexo 1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+La @fig-barplot-mix muestra las 10 colecciones mixtas que más ejemplares albergan
+ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ![Las 10 colecciones mixtas que más ejemplares albergan en el Registro.](assets/images/generated/barplot-colecciones-mix.png){#fig-barplot-mix}
 
 ### Mapa de distribución de las colecciones mixtas
 
-En los ~~mapas 4.6.2.a. y 4.6.2.b.~~ se muestran las colecciones mixtas representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo las colecciones que publican a través de los portales GBIF.
+En la @fig-map-col-mix y @fig-map-col-mix-pub se muestran las colecciones mixtas representadas en función de la localidad donde se ubica la entidad. En el primer mapa se muestran el total de colecciones de las entidades colaboradoras y en el segundo las colecciones que publican a través de los portales GBIF.
 
 
 ![Colecciones mixtas en España.](assets/images/generated/mapa-colecciones-mix.png){#fig-map-col-mix}
+
 ![Colecciones mixtas en España con la proporción de registros publicados en GBIF.](assets/images/generated/mapa-colecciones-mix-pub.png){#fig-map-col-mix-pub}
 
 # BASES DE DATOS
 
-Las bases de datos son conjuntos de registros de información de biodiversidad no
-generadas a partir de especímenes físicos conservados en colecciones biológicas, es decir, que no tienen un soporte o respaldo de material (especímenes, restos o partes, fósiles, germoplasma, tejidos…). Corresponden en su mayoría a observaciones, inventarios, listados (especies, nombres científicos, listas rojas, referencias taxonómicas…) y eventos de muestreo.
+Las bases de datos son conjuntos de registros de información de biodiversidad no generadas a partir de especímenes físicos conservados en colecciones biológicas, es decir, que no tienen un soporte o respaldo de material (especímenes, restos o partes, fósiles, germoplasma, tejidos…). Corresponden en su mayoría a observaciones, inventarios, listados (especies, nombres científicos, listas rojas, referencias taxonómicas…) y eventos de muestreo.
 
-Un caso especial de bases de datos lo constituyen los proyectos, referidos a una entidad no permanente en el tiempo de la que dependen una o más bases de datos y tienen financiación adscrita a alguna institución, administración, museo, empresa pública o privada.
+~~Un caso especial de bases de datos lo constituyen los proyectos, referidos a una entidad no permanente en el tiempo de la que dependen una o más bases de datos y tienen financiación adscrita a alguna institución, administración, museo, empresa pública o privada.
 
 ## PROYECTOS: SITUACIÓN GENERAL
 
@@ -1088,9 +1176,9 @@ Como se comentó en el apartado 3.1.1., a efectos del Registro, los proyectos se
 consideran independientes cuando su adscripción a una institución permanente no es clara o directa. En el resto de los casos vamos a encontrarnos que los proyectos se adscriben a una entidad, que aparecerá en el Registro como titular de las bases de datos de sus proyectos.
 
 En algunos casos, las bases de datos generadas por proyectos “independientes”, tras su
-finalización, pasan a ser mantenidas y administradas por entidades permanentes en el tiempo. Así, por ejemplo, encontramos varios casos de proyectos que han cambiado su situación durante el periodo ~~2015-2019~~, entre otros:
+finalización, pasan a ser mantenidas y administradas por entidades permanentes en el tiempo. Así, por ejemplo, encontramos varios casos de proyectos que han cambiado su situación durante el periodo 2015-2019, entre otros:
 
-- ~~El proyecto independiente **Iberian Spider Catalogue, Morano and Cardoso**, en 2019
+- El proyecto independiente **Iberian Spider Catalogue, Morano and Cardoso**, en 2019
 pasó a ser la Base de datos de Aranae de la P.I. Morano y Cardoso: AraIb (AraIb),
 vinculada a la nueva entidad Sociedad Entomológica Aragonesa (SEA).
 - El proyecto **Mosquito Alert**, que era independiente coordinado por tres instituciones:
@@ -1100,10 +1188,11 @@ CREAF (Centro de Investigación Ecológica y Aplicaciones Forestales), ICREA (In
 
 ### Bases de datos de biodiversidad en España
 
-A `r mes_anno_actual` se encuentran adscritas al Nodo Nacional de Información en Biodiversidad `r n_bd_actual` bases de datos, de las que `r n_bd_actual_pub` (el `r n_bd_actual_pub_x100`) publican sus datos, con un total de `r n_registros_bd_actual` registros. A continuación, en la ~~tabla 5.2.1.a. y la gráfica 5.2.1.b., se resume la información referente a la cantidad de bases de datos adscritas en función de las categorías establecidas en la tabla 3.1.2.a.,~~ especificando cuántas de ellas publican sus datos a través de los portales GBIF. No hay ninguna base de datos de tipo paleontológico.
+A `r mes_anno_actual` se encuentran adscritas al Nodo Nacional de Información en Biodiversidad `r n_bd_actual` bases de datos, de las que `r n_bd_actual_pub` (el `r n_bd_actual_pub_x100`) publican sus datos, con un total de `r n_registros_bd_actual` registros. A continuación, en la  @tbl-bd-disciplina y la @fig-pie-bd-disc , se resume la información referente a la cantidad de bases de datos adscritas en función de las categorías establecidas en la ~~tabla 3.1.2.a.,~~ especificando cuántas de ellas publican sus datos a través de los portales GBIF. No hay ninguna base de datos de tipo paleontológico.
 
 ```{r}
-#| label: bd-disciplina
+#| label: tbl-bd-disciplina
+#| tbl-cap: "Número de bases de datos del Registro en función de las disciplinas utilizadas, con indicación de las que publican en GBIF y el número de registros publicados."
 
 tabla_bd_disc_subdisc <- readRDS("data/vistas_sql/colecciones_bd_por_disciplina_y_sub.rds")
 
@@ -1113,33 +1202,32 @@ ft_tbl(
 )
 ```
 
-![Proporción de bases de datos del registro en función de las categorías utilizadas.](assets/images/generated/colecciones_bd_por_disciplina.png)
+![Proporción de bases de datos del registro en función de las categorías utilizadas.](assets/images/generated/colecciones_bd_por_disciplina.png){#fig-pie-bd-disc}
 
 ### Bases de datos en GBIF
 
 En el Anexo I están todas incluidas bajo la categoría “BD” de la columna “tipo”. A
-continuación, se muestran las diez bases de datos que más registros publican en GBIF. El desajuste respecto a los datos publicados se debe a que algunos proveedores no han actualizado los metadatos en el Registro a nivel de entidad o no han proporcionado el estado de sus fondos digitales. ~~Destaca con 8 millones de registros SEO/BirdLife-Colección de Aves Silvestres Marcadas de España, seguida de Cartografía de vegetación a escala de detalle 1:10.000 de la masa forestal de Andalucía, de la Red de Información Ambiental de Andalucía (REDIAM) de la Junta de Andalucía, con casi 7 millones. En tercer lugar la base de datos ICO-ornitho.cat, del Institut Català d’Ornitologia, con 1,75 millones, y en cuarto lugar aparece el primer proyecto
-Banco de Datos de la Biodiversidad de la Generalitat Valenciana (BDBCV-general).~~
+continuación, se muestran las diez bases de datos que más registros publican en GBIF. El desajuste respecto a los datos publicados se debe a que algunos proveedores no han actualizado los metadatos en el Registro a nivel de entidad o no han proporcionado el estado de sus fondos digitales. ~~Destaca con `r top_bd[1,3]` registros, la base de datos `r top_bd[1,2]` *`r top_bd[1,1]`*, seguida de la base de datos `r top_bd[2,2]` *`r top_bd[2,1]`* del *`r top_bd[2,4]`* con `r top_bd[2,3]` registros publicados. En tercer lugar la base de datos `r top_bd[3,2]` *`r top_bd[3,1]`*, con `r top_bd[3,3]` registros.
 
 ![Las 10 bases de datos que más registros publican en GBIF.](assets/images/generated/barplot-facet-bd-disciplina.png){#fig-barplot-bd}
 
 ### Mapa de distribución de las bases de datos registradas
 
-En el ~~mapa 5.2.3.~~ se puede observar la distribución en España de las bases de datos del Registro organizadas por grupos y diferenciadas por colores.
+En la @fig-map-bd se puede observar la distribución en España de las bases de datos del Registro organizadas por disciplinas.
 
 ![Bases de datos en España.](assets/images/generated/mapa-facet-bd-disciplina.png){#fig-map-bd}
 
 ### Bases de datos que publican registros en GBIF
 
-De las ~~`r n_bd_actual_pub` bases de datos que publican en GBIF, destaca con casi 9 millones de registros SEO/BirdLife-Colección de Aves Silvestres Marcadas de España, seguida de Cartografía de vegetación a escala de detalle 1:10.000 de la masa forestal de Andalucía, de la Red de Información Ambiental de Andalucía (REDIAM) de la Junta de Andalucía, con casi 7 millones; y en tercer lugar la Base de datos general. Banco de Datos de la Biodiversidad de la Comunitat Valenciana (BDBCV-general) con casi 2 millones. El primer proyecto en la lista figura en la cuarta posición, Iveriveg. Sistema de Información de la Vegetación Ibérica y Macaronésica (SIVIM), de la Universidad de Barcelona.~~
-
-En el ~~mapa 5.2.4.a.~~ se puede observar la distribución en España de las bases de datos que publican en GBIF organizadas por grupos y diferenciadas por colores.
+En la @fig-map-bd-pub se puede observar la distribución en España de las bases de datos que publican en GBIF organizadas por disciplinas.
 
 ![Bases de datos en España que publican en GBIF.](assets/images/generated/mapa-facet-bd-disciplina-pub.png){#fig-map-bd-pub}
-A continuación, en la gráfica 5.2.4.b. se muestran las diez bases de datos de biodiversidad españolas con mayor número de registros publicados en GBIF. Nótese que el nº de registros publicados es mayor que el de informatizados. Este desfase de debe a una desactualización en la información proporcionada para el Registro.
+
+A continuación, en la @fig-barplot-bd-pub se muestran las diez bases de datos de biodiversidad españolas con mayor número de registros publicados en GBIF. Nótese que el nº de registros publicados es mayor que el de informatizados. Este desfase de debe a una desactualización en la información proporcionada para el Registro.
 
 ![Las 10 bases de datos que más registros publican en GBIF.](assets/images/generated/barplot-facet-bd-disciplina-pub.png){#fig-barplot-bd-pub}
 
+\newpage
 # DATOS BASADOS EN ESPECÍMENES DE COLECCIONES CIENTÍFICAS FRENTE A DATOS OBSERVACIONALES (SIN RESPALDO DE ESPECÍMENES)
 
 En la presente edición de este informe incluimos este nuevo capítulo con el fin de
@@ -1165,7 +1253,7 @@ extensión espacial, y el rango temporal cubierto.
 
 ## Comparativa taxonómica
 
-A pesar de que el número de registros de observaciones es muy superior al de especímenes en colecciones (casi en un orden de magnitud), las especies cuya presencia solo se conoce de colecciones, constituyen ~~casi el 80 % de las registradas. Se puede decir que las observaciones proporcionan abundante información sobre un espectro muy limitado de especies en el que los grupos más vistosos, como aves o plantas con flores, copan un porcentaje altísimo de las observaciones (por ejemplo, las aves suponen más del 95 %~~ de las observaciones de animales), mientras que de otros grupos representados en colecciones (cuatro de cada cuatro especies, entre tres y dos géneros por cada uno que se observa) no hay información. En las ~~gráficas 6.1.a y 6.1.b. y tablas 6.1.c. y 6.1.d~~ se pueden ver estas diferencias.
+A pesar de que el número de registros de observaciones es muy superior al de especímenes en colecciones (casi en un orden de magnitud), las especies cuya presencia solo se conoce de colecciones, constituyen ~~casi el 80 % de las registradas. Se puede decir que las observaciones proporcionan abundante información sobre un espectro muy limitado de especies en el que los grupos más vistosos, como aves o plantas con flores, copan un porcentaje altísimo de las observaciones (por ejemplo, las aves suponen más del 95 %~~ de las observaciones de animales), mientras que de otros grupos representados en colecciones (cuatro de cada cuatro especies, entre tres y dos géneros por cada uno que se observa) no hay información. En las @fig-pie-tax-obs y @fig-pie-tax-spec y tablas 6.1.c. y 6.1.d~~ se pueden ver estas diferencias.
 
 ### Observaciones
 
@@ -1181,7 +1269,7 @@ TABLA AQUI
 ## Comparativa temporal
 
 Bajo la perspectiva del tiempo, se puede decir que las observaciones son "los datos
-nuevos" y masivos, mientras que las colecciones proporcionan series temporales mucho más largas. Aunque en el gráfico se parte del ~~año 1900, hay ejemplares catalogados ̶-así como sus datos en línea- que datan de mediados del siglo XVII~~I. Sin entrar en detalles o causas, el declive en los trabajos de recolección y el auge en las observaciones en tiempos recientes es patente, como se puede observar en las ~~gráficas 6.2.a. y 6.2.b.~~
+nuevos" y masivos, mientras que las colecciones proporcionan series temporales mucho más largas. Aunque en el gráfico se parte del ~~año 1900, hay ejemplares catalogados ̶-así como sus datos en línea- que datan de mediados del siglo XVIII~~. Sin entrar en detalles o causas, el declive en los trabajos de recolección y el auge en las observaciones en tiempos recientes es patente, como se puede observar en las ~~gráficas 6.2.a. y 6.2.b.~~
 
 GRAFICA AQUI
 
@@ -1237,7 +1325,8 @@ alcances de maneras complejas, lo que exige una cierta profundidad en su escruti
 Por otra parte, es de destacar que el escrutinio de los datos aquí realizado lo puede
 hacer cualquier persona allá donde se encuentre con solo disponer de un dispositivo que le conecte a internet: todos los datos están en abierto, las herramientas de filtrado y visualización utilizadas son sencillas y accesibles, y cuestiones que hace unos pocos años eran muy difíciles de contestar, ahora están al alcance de muchos. Este hecho en sí ya es revolucionario y es la puerta abierta que está haciendo posible ciencia de vanguardia y usos de los datos más de la investigación.
 
-# ANEXO I: COLECCIONES BIOLÓGICAS Y BASES DE DATOS SOBRE BIODIVERSIDAD REGISTRADAS EN ESPAÑA
+\newpage
+# ANEXO I: COLECCIONES BIOLÓGICAS Y BASES DE DATOS SOBRE BIODIVERSIDAD REGISTRADAS EN ESPAÑA {#sec-anexo-1}
 
 A continuación, listamos las colecciones biológicas y bases de datos sobre biodiversidad, con las entidades (instituciones o proyectos) responsables, recogidas en el Registro de Colecciones, Proyectos y Bases de Datos de Biodiversidad en España. ~~Son `r n_colbd_actual` colecciones y bases de datos —con `r n_recursos_actual` recursos publicados—, que se presentan ordenadas en función de las categorías indicadas en la tabla 3.1.2.a:
 
