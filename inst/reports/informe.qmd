@@ -429,41 +429,44 @@ Todos los mapas se han realizado de manera dinamica al generar el informe usando
 
 ### Entidades, proyectos, colecciones y bases de datos
 
-A continuación, se detallan y explican los conceptos y términos utilizados en este
-informe:
+MetaGES contiene información sobre instituciones, proyectos, colecciones biológicas, bases de datos y juegos de datos. Estos conceptos se relacionan entre sí mediante una jerarquía definida y dividida en tres niveles:
 
-La unidad o nivel principal, llamada **entidad**, es el centro o institución (o
-proyecto independiente), que puede albergar una o más **colecciones**, que constituyen el segundo nivel. Estas pueden ser **colecciones biológicas** (ejemplares físicos) o bien colecciones de datos virtuales que son **bases de datos**. Cada colección o base de datos puede dar lugar a uno o más juegos de datos (también llamados a veces recursos o dataset, que serían el tercer nivel. Estos juegos de datos son los que se publican en el [Portal de Datos de Biodiversidad del Nodo Nacional GBIF.ES](https://datos.gbif.es/) y en el [Portal Internacional de GBIF](https://www.gbif.org/).
 
-Los **proyectos** pueden ser independientes y albergar sus propias bases de datos.
-En estos casos en el Registro funcionan como entidades y siempre llevan asociadas sus
-propias bases de datos, es decir, recursos de datos virtuales. Otras veces los proyectos no son independientes y están vinculados directamente a alguna entidad, que es la que alberga esas bases de datos, y así se indica también su dependencia en el Registro.
+- El **_tercer nivel_** comprende los juegos de datos que se publican en el [Portal de Datos de Biodiversidad del Nodo Nacional GBIF.ES](https://datos.gbif.es/) y en el [Portal Internacional de GBIF](https://www.gbif.org/). Estos juegos de datos contienen registros espaciotemporales de presencia (y en ocasiones de ausencia) de biodiversidad.
 
-HACER ALGO ESTILO https://github.com/iobis/env-data/issues/10#issuecomment-444422701 PARA EXPLICAR JERARQUIAS
+- El **_segundo nivel_** agrupa y gestiona los juegos  en conjuntos coherentes. Si los registros están basados en ejemplares físicos capturados y conservados a largo plazo, hablamos de una **colección biológica**. Por el contrario, si los registros provienen de métodos de muestreo no invasivos o de técnicas de captura y liberación (o descarte), entonces hablamos de una **base de datos** o colección virtual, ya que no existe un espécimen conservado que actúe como respaldo material de dichos registros.
 
-~~Ejemplo donde la entidad es un centro o institución. La Sociedad de Ciencias Aranzadi alberga 3 colecciones biológicas y 4 bases de datos (nivel 2), y comparte 5 recursos en los portales (nivel 3):~~ 
+- El **_primer nivel_**, conocido como **entidad**, es el centro o institución que gobierna y administra las colecciones biológicas y bases de datos descritas.
 
-~~Ejemplo donde la entidad es un proyecto independiente: el proyecto Observatorio de
-seguimiento de los efectos del cambio global de Sierra Nevada (OBSNEV) figura en el nivel de entidad y alberga una colección virtual (base de datos) con 7 recursos en línea.~~
 
-~~Ejemplo de proyecto dependiente de una institución: Flora Mycologica Iberica,
-https://www.gbif.es/coleccion/csic-real-jardin-botanico-flora-mycologica-iberica/, depende de la entidad Real Jardín Botánico (CSIC) https://www.gbif.es/instituciones/csic-real-jardinbotanico/ y figura en el nivel de colección (nivel 2) albergando una base de datos.~~
+En anteriores versiones de este informe se incluían **proyectos** en el *primer nivel*. Sin embargo, estos proyectos y sus bases y juegos de datos están siempre vinculados a una entidad, garantizando coherencia organizativa y trazabilidad institucional, por lo que se ha decidido simplificar MetaGES estructuralmente integrándolos bajo la entidad correspondiente.
+
+En la @fig-jerarquia y la @fig-jerarquiav2 se muestra la estructura jerárquica de los tres niveles descritos, mediante dos ejemplos que ilustran una institución junto con las colecciones biológicas y bases de datos que administra, así como los juegos de datos que estas publican.
+
+
+![Ejemplo de diagrama de jerarquía de entidades, colecciones y juegos de datos en MetaGES. La Sociedad de Ciencias Aranzadi (*nivel 1*) alberga 3 colecciones biológicas y 4 bases de datos (*nivel 2*), y comparte 5 recursos en los portales (*nivel 3*).](../reports/assets/images/external/jerarquia.png){#fig-jerarquia}
+
+[Versión del diagrama de jerarquía con enlaces clicables](https://app.xmind.com/share/hSxg29nP)
+
+![Ejemplo de diagrama de jerarquía de entidades, colecciones y juegos de datos en MetaGES. L Estación Biológica de Doñana (*nivel 1*) alberga 4 colecciones biológicas y 2 bases de datos (*nivel 2*), y comparte 42 recursos en los portales (*nivel 3*).](../reports/assets/images/external/jerarquia_v2.png){#fig-jerarquiav2}
+
 
 En la @sec-anexo-1 *(Anexo I)*, se pueden ver todas las entidades y proyectos incluidos en el Registro, con sus colecciones y bases de datos asociadas. Es importante indicar que los nombres empleados para instituciones, proyectos, colecciones y recursos, son los proporcionados por los propios responsables vía formularios y mensajes electrónicos, y son también los que figuran en el [Registro de colecciones](https://www.gbif.es/registro-colecciones/). No obstante, en algunos casos concretos se especifica, más allá de la información proporcionada por los responsables, la procedencia de los datos o la vinculación de los proyectos con las instituciones para una mejor comprensión de la información.
 
 ### Categorías de las entidades en el Registro {#sec-disciplinas}
 
-Las entidades (centros e instituciones) y sus colecciones —tanto físicas como virtuales— se han agrupado en cinco categorías por grupos taxonómicos y disciplinas para facilitar las comparaciones y los análisis ~~(tabla 3.1.2.)~~.
+Las entidades (centros e instituciones) y sus colecciones —tanto físicas como virtuales— se han agrupado en cinco categorías por grupos taxonómicos y disciplinas para facilitar las comparaciones y los análisis @fig-disciplinas .
 
-AÑADIR VISUALIZACION CON IMAGENES O ESQUEMATICA DE LAS DISCIPLINAS
+![Categorización de las entidades y las colecciones en el Registro por grupo taxonómico (disciplina y subdisciplina)](../reports/assets/images/external/disciplinas.png){#fig-disciplinas width="85%"}
 
 Dentro de la categoría **Zoológica** se distinguen **invertebrados** y **vertebrados** por fines prácticos: el número promedio de registros y ejemplares recogidos en las colecciones y bases de datos de invertebrados es muy superior al de vertebrados, de modo que un abordaje conjunto haría inapreciables estos últimos en cualquier estudio o consulta. Para unos pocos casos en los que no se ha diferenciado entre estos dos grupos, se ha utilizado una tercera categoría: “**Invertebrados y vertebrados**”.
 
-La categoría **Botánica** se subdivide en tres grupos bien reconocidos:
+La categoría **Botánica** se subdivide en cuatro grupos bien reconocidos:
 
 - **Plantas**, en el que se incluyen las plantas vasculares: fanerógamas y criptógamas vasculares como los helechos (pteridofitos), además de musgos y afines (briofitos).
-- **Algas**. REQUIERE EXPLICACION DE SI SON MACROALGAS O MIXTAS
-- **Hongos**, que incluye los líquenes.
+- **Algas**. 
+- **Hongos y líquenes**.
+- **Botánicas mixtas**, en el que se incluyen colecciones o bases de datos de varias categorias.
 
 La categoría **Microbiológica** incluye microorganismos, en general bacterias, fitoplancton y zooplancton. La **Paleontológica** las colecciones y bases de datos de organismos fósiles y la categoría **Mixta** colecciones y bases de datos que tienen ejemplares de dos o más de alguna de las categorías anteriores.
 
@@ -741,7 +744,7 @@ ft_tbl(
 De las `r n_col_actual` colecciones biológicas registradas, `r n_col_actual_pub` (`r n_col_actual_pub_x100`) publican en GBIF. Estas `r n_col_actual_pub` colecciones pertenecen a `r n_entidades_col_actual_pub` entidades distintas, y en total publican en línea `r n_registros_col_actual` registros. En la @tbl-registros-disciplina se puede ver el número de registros publicados por categorías y sus porcentajes.
 
 La colección `r top_col[1,2]` *`r top_col[1,1]`* del `r top_col[1,4]` es la que más registros
-publica, con `r top_col[1,3]`, seguida de la `r top_col[2,2]` *`r top_col[2,1]`*, con `r top_col[2,3]`, y de la colección `r top_col[3,2]` *`r top_col[3,1]`*, con `r top_col[3,3]` registros. En los apartados ~~4.2. a 4.6. se revisan en detalle y por categorías (grupos taxonómicos/disciplinas) los datos de Las colecciones biológicas definidos en la tabla 3.1.2.a.~~
+publica, con `r top_col[1,3]`, seguida de la `r top_col[2,2]` *`r top_col[2,1]`*, con `r top_col[2,3]`, y de la colección `r top_col[3,2]` *`r top_col[3,1]`*, con `r top_col[3,3]` registros. Desde la @sec-col-zoo a la @sec-col-mix se revisan en detalle y por categorías (grupos taxonómicos/disciplinas) los datos de Las colecciones biológicas definidos en la @fig-disciplinas
 
 ```{r}
 #| label: tbl-registros-disciplina
@@ -762,7 +765,7 @@ La @fig-map-col-pub muestra la distribución de colecciones biológicas en el te
 ![Distribución de las instituciones con colecciones biológicas en España, con diferenciación de las que publican.](assets/images/generated/mapa_col_pub.png){#fig-map-col-pub}
 
 
-## COLECCIONES ZOOLÓGICAS
+## COLECCIONES ZOOLÓGICAS {#sec-col-zoo}
 
 Como se indica en la @sec-disciplinas las colecciones zoológicas se dividen para su presentación de datos en invertebrados y vertebrados, más un tercer grupo (“Invertebrados y vertebrados”) para las colecciones que presentan los datos de los dos grupos anteriores de manera conjunta. La @tbl-col-zoo desglosa los subtipos zoológicos, su proporción, el número de ejemplares que albergan y los registros publicados.
 
@@ -867,7 +870,7 @@ En la @fig-map-col-invver y @fig-map-col-invver-pub se muestran las colecciones 
 ### Grandes colecciones zoológicas conjuntas de invertebrados y vertebrados
 
 De las grandes colecciones zoológicas conjuntas de invertebrados y vertebrados del
-Registro, destaca en primer lugar *`r top_col_invver[1,1]`* (`r top_col_invver[1,2]`) del *`r top_col_invver[1,4]`*, con `r top_col_invver[1,3]` ejemplares; seguida de *`r top_col_invver[2,1]`* (`r top_col_invver[2,2]`), con `r top_col_invver[2,3]` ejemplares y de *`r top_col_invver[3,1]`* (`r top_col_invver[3,2]`), con `r top_col_invver[3,3]` ejemplares. La @fig-barplot-invver ~~muestra las 10 colecciones de vertebrados que más ejemplares albergan ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
+Registro, destaca en primer lugar *`r top_col_invver[1,1]`* (`r top_col_invver[1,2]`) del *`r top_col_invver[1,4]`*, con `r top_col_invver[1,3]` ejemplares; seguida de *`r top_col_invver[2,1]`* (`r top_col_invver[2,2]`), con `r top_col_invver[2,3]` ejemplares y de *`r top_col_invver[3,1]`* (`r top_col_invver[3,2]`), con `r top_col_invver[3,3]` ejemplares. La @fig-barplot-invver muestra las 10 colecciones de vertebrados que más ejemplares albergan ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
 ![Las 10 colecciones zoológicas conjuntas de invertebrados y vertebrados que más ejemplares albergan en el Registro.](assets/images/generated/barplot-colecciones-invver.png){#fig-barplot-invver}
 
@@ -880,7 +883,7 @@ En la @fig-barplot-zoo podemos ver las diez colecciones zoológicas que más reg
 
 ## COLECCIONES BOTÁNICAS
 
-Las colecciones botánicas se dividen en cuatro grupos o subtipos: Plantas, Algas, Hongos y líquenes y Botánicas mixtas, tal como se refleja en la ~~tabla 3.1.2.a. La @tbl-col-bot ~~ muestra el desglose por subtipos botánicos y su proporción.
+Las colecciones botánicas se dividen en cuatro grupos o subtipos: Plantas, Algas, Hongos y líquenes y Botánicas mixtas, tal como se refleja en la @fig-disciplinas . La @tbl-col-bot muestra el desglose por subtipos botánicos y su proporción.
 
 ```{r}
 #| label: tbl-col-bot
@@ -1114,7 +1117,7 @@ representadas en función de la localidad donde se ubica la entidad. En el prime
 
 ![Colecciones paleontológicas en España con la proporción de registros publicados en GBIF.](assets/images/generated/mapa-colecciones-pale-pub.png){#fig-map-col-paleo-pub}
 
-## COLECCIONES MIXTAS
+## COLECCIONES MIXTAS {#sec-col-mix}
 
 ### Entidades y colecciones mixtas y su estado de informatización
 
@@ -1188,7 +1191,7 @@ CREAF (Centro de Investigación Ecológica y Aplicaciones Forestales), ICREA (In
 
 ### Bases de datos de biodiversidad en España
 
-A `r mes_anno_actual` se encuentran adscritas al Nodo Nacional de Información en Biodiversidad `r n_bd_actual` bases de datos, de las que `r n_bd_actual_pub` (el `r n_bd_actual_pub_x100`) publican sus datos, con un total de `r n_registros_bd_actual` registros. A continuación, en la  @tbl-bd-disciplina y la @fig-pie-bd-disc , se resume la información referente a la cantidad de bases de datos adscritas en función de las categorías establecidas en la ~~tabla 3.1.2.a.,~~ especificando cuántas de ellas publican sus datos a través de los portales GBIF. No hay ninguna base de datos de tipo paleontológico.
+A `r mes_anno_actual` se encuentran adscritas al Nodo Nacional de Información en Biodiversidad `r n_bd_actual` bases de datos, de las que `r n_bd_actual_pub` (el `r n_bd_actual_pub_x100`) publican sus datos, con un total de `r n_registros_bd_actual` registros. A continuación, en la  @tbl-bd-disciplina y la @fig-pie-bd-disc , se resume la información referente a la cantidad de bases de datos adscritas en función de las categorías establecidas en la @fig-disciplinas , especificando cuántas de ellas publican sus datos a través de los portales GBIF. No hay ninguna base de datos de tipo paleontológico.
 
 ```{r}
 #| label: tbl-bd-disciplina
@@ -1207,7 +1210,7 @@ ft_tbl(
 ### Bases de datos en GBIF
 
 En el Anexo I están todas incluidas bajo la categoría “BD” de la columna “tipo”. A
-continuación, se muestran las diez bases de datos que más registros publican en GBIF. El desajuste respecto a los datos publicados se debe a que algunos proveedores no han actualizado los metadatos en el Registro a nivel de entidad o no han proporcionado el estado de sus fondos digitales. ~~Destaca con `r top_bd[1,3]` registros, la base de datos `r top_bd[1,2]` *`r top_bd[1,1]`*, seguida de la base de datos `r top_bd[2,2]` *`r top_bd[2,1]`* del *`r top_bd[2,4]`* con `r top_bd[2,3]` registros publicados. En tercer lugar la base de datos `r top_bd[3,2]` *`r top_bd[3,1]`*, con `r top_bd[3,3]` registros.
+continuación, se muestran las diez bases de datos que más registros publican en GBIF. El desajuste respecto a los datos publicados se debe a que algunos proveedores no han actualizado los metadatos en el Registro a nivel de entidad o no han proporcionado el estado de sus fondos digitales. Destaca con `r top_bd[1,3]` registros, la base de datos `r top_bd[1,2]` *`r top_bd[1,1]`*, seguida de la base de datos `r top_bd[2,2]` *`r top_bd[2,1]`* del *`r top_bd[2,4]`* con `r top_bd[2,3]` registros publicados. En tercer lugar la base de datos `r top_bd[3,2]` *`r top_bd[3,1]`*, con `r top_bd[3,3]` registros.
 
 ![Las 10 bases de datos que más registros publican en GBIF.](assets/images/generated/barplot-facet-bd-disciplina.png){#fig-barplot-bd}
 
@@ -1328,7 +1331,7 @@ hacer cualquier persona allá donde se encuentre con solo disponer de un disposi
 \newpage
 # ANEXO I: COLECCIONES BIOLÓGICAS Y BASES DE DATOS SOBRE BIODIVERSIDAD REGISTRADAS EN ESPAÑA {#sec-anexo-1}
 
-A continuación, listamos las colecciones biológicas y bases de datos sobre biodiversidad, con las entidades (instituciones o proyectos) responsables, recogidas en el Registro de Colecciones, Proyectos y Bases de Datos de Biodiversidad en España. ~~Son `r n_colbd_actual` colecciones y bases de datos —con `r n_recursos_actual` recursos publicados—, que se presentan ordenadas en función de las categorías indicadas en la tabla 3.1.2.a:
+A continuación, listamos las colecciones biológicas y bases de datos sobre biodiversidad, con las entidades (instituciones o proyectos) responsables, recogidas en el Registro de Colecciones, Proyectos y Bases de Datos de Biodiversidad en España. Son `r n_colbd_actual` colecciones y bases de datos —con `r n_recursos_actual` recursos publicados—, que se presentan ordenadas en función de las categorías indicadas en la tabla @fig-disciplinas :
 
 1. **ZOOLÓGICA**. En este apartado se incluyen `r n_colbd_zoo` colecciones y bases de datos de animales en general. Se han desglosado en tres grupos:
     - Invertebrados. Son `r n_colbd_inv`.
