@@ -148,6 +148,8 @@ anno_informe_anterior <- 2019
 anno_publi_informe_anterior <- 2021
 mes_anno_actual <- format(Sys.Date(), "%B de %Y")
 mes_anno_informe_anterior <- "diciembre de 2019"
+n_gbif_paises <- 69 # Extraer de https://www.gbif.org/the-gbif-network = "Voting participants" + "Associate country participants"
+n_gbif_organizaciones <- 42 # Extraer de https://www.gbif.org/the-gbif-network = "Other associate participants"
 
 
 
@@ -162,8 +164,11 @@ n_entidades_actual <- colbd %>% select (institucion_proyecto) %>% distinct() %>%
 n_entidades_actual_pub <- colbd %>% filter(publica_en_gbif == 1) %>% select(institucion_proyecto) %>% distinct() %>% nrow()
 n_entidades_actual_pub_x100 <- paste0((n_entidades_actual_pub * 100 / n_entidades_actual) %>% round(1), "%")
 n_entidades_informe_anterior <- 229 # Manual
+n_entidades_informe_anterior_pub <- 104 # Manual
 n_entidades_incremento <- n_entidades_actual - n_entidades_informe_anterior
 n_entidades_incremento_x100 <- paste0((n_entidades_incremento * 100 / n_entidades_informe_anterior) %>% round(1), "%")
+n_entidades_incremento_pub <- n_entidades_actual_pub - n_entidades_informe_anterior_pub
+n_entidades_incremento_pub_x100 <- paste0((n_entidades_incremento_pub * 100 / n_entidades_informe_anterior_pub) %>% round(1), "%")
 
 
 # colbd
@@ -173,6 +178,8 @@ n_colbd_actual_pub_x100 <- paste0((n_colbd_actual_pub * 100 / n_colbd_actual) %>
 n_colbd_informe_anterior <- 474 # Manual
 n_colbd_incremento <- n_colbd_actual - n_colbd_informe_anterior
 n_colbd_incremento_x100 <- paste0((n_colbd_incremento * 100 / n_colbd_informe_anterior) %>% round(1), "%")
+n_colbd_actualizados <- sum(pmax(as.numeric(colbd$fecha_alta_coleccion), as.numeric(colbd$ultima_actualizacion_coleccion), na.rm = TRUE) > anno_informe_anterior,  na.rm = TRUE)
+n_colbd_actualizados_x100 <- paste0((n_colbd_actualizados * 100 / n_colbd_actual) %>% round(1), "%")
 
 # colbd_disci
 n_colbd_zoo <- colbd %>% filter(disciplina_def == "Zoológica") %>% nrow()
@@ -294,6 +301,9 @@ n_recursos_actual <- nrow(reg)
 n_recursos_informe_anterior <- 308 # Manual
 n_recursos_incremento <- n_recursos_actual - n_recursos_informe_anterior
 n_recursos_incremento_x100 <- paste0((n_recursos_incremento * 100 / n_recursos_informe_anterior) %>% round(1), "%")
+n_recursos_actualizados <- sum(reg$ultima_actualizacion > anno_informe_anterior, na.rm = TRUE)
+n_recursos_actualizados_x100 <- paste0((n_recursos_actualizados * 100 / n_recursos_actual) %>% round(1), "%")
+
 
 # registros
 n_registros_actual <- sum(as.integer(reg$numberOfRecords)) %>% format(decimal.mark = ",", big.mark = ".")
@@ -392,16 +402,56 @@ safe_ft_tbl(
 
 ![Registros de datos de biodiversidad publicados en GBIF.ORG. El desfase de registros entre los cálculos de GBIF.ORG y GBIF.ES se debe a que GBIF.ORG suma los datos de eBird tomados por ciudadanos españoles.](../reports/assets/images/external/ranking_occurrences.png){#fig-gbif-ranking width=50%}
 
-Un resumen de los principales datos del Registro en `r anno_actual` y su incremento con respecto al informe anterior de `r anno_informe_anterior` se muestra en la ~~tabla 1.c.~~ Durante este periodo, algunas entidades han reestructurado sus colecciones biológicas y bases de datos. Aquí presentamos la información más relevante, que se verá en detalle en el desarrollo de este informe. 
+Un resumen de los principales datos del Registro en `r anno_actual` y su incremento con respecto al informe anterior de `r anno_informe_anterior` se muestra en la @tbl-comparativa-informes Durante este periodo, algunas entidades han reestructurado sus colecciones biológicas y bases de datos. Aquí presentamos la información más relevante, que se verá en detalle en el desarrollo de este informe. 
 
-TABLA AQUI
+```{r}
+#| label: tbl-comparativa-informes
+#| tbl-cap: "Comparativa de los principales parámetros del informe entre los datos del informe anterior y el actual."
+
+colbd_comp <- tibble(
+  `Principales datos del Registro` = c(
+    "Nº total de entidades",
+    "Nº de entidades que publican",
+    "Nº total de colecciones y bases de datos",
+    "Nº total de juegos de datos publicados",
+    "Nº total de registros publicados"
+  ),
+  !!as.character(anno_informe_anterior) := c(
+    n_entidades_informe_anterior,
+    n_entidades_informe_anterior_pub,
+    n_colbd_informe_anterior,
+    n_recursos_informe_anterior,
+    n_registros_informe_anterior
+  ),
+  !!as.character(anno_actual) := c(
+    n_entidades_actual,
+    n_entidades_actual_pub,
+    n_colbd_actual,
+    n_recursos_actual,
+    n_registros_actual
+  ),
+  !!paste0("Incremento ", anno_informe_anterior, "-", anno_actual) := c(
+    paste0(n_entidades_incremento, " (", n_entidades_incremento_x100, ")"),
+    paste0(n_entidades_incremento_pub, " (", n_entidades_incremento_pub_x100, ")"),
+    paste0(n_colbd_incremento, " (", n_colbd_incremento_x100, ")"),
+    paste0(n_recursos_incremento, " (", n_recursos_incremento_x100, ")"),
+    paste0(n_registros_incremento, " (", n_registros_incremento_x100, ")")
+  )
+)
+
+
+
+ft_tbl(
+  colbd_comp
+)
+```
 
 \newpage
 # INTRODUCCIÓN. JUSTIFICACIÓN Y OBJETIVOS
 
 La Infraestructura Mundial de Información en Biodiversidad (GBIF, de sus siglas inglesas, Global Biodiversity Information Facility) es una iniciativa intergubernamental creada para poner en Internet, a disposición pública y de manera gratuita, toda la información disponible sobre los organismos vivos conocidos a nivel mundial, facilitando el acceso a esta información y compartiendo los datos científicos para avance de la ciencia y beneficio de la sociedad. 
 
-A `r mes_anno_actual`, GBIF cuenta entre sus miembros con ~~59 países y 38 organizaciones internacionales~~. España es miembro fundador de GBIF, representada por el Ministerio de Ciencia e Innovación, el cual encomendó al CSIC la gestión científico-técnica del “Nodo Nacional de Información en Biodiversidad para la participación en el Programa Internacional Global Biodiversity Information Facility (BOE, 12 de junio de 2002) y para lo que constituyó la Unidad de Coordinación de GBIF en España, sita en el Real Jardín Botánico de Madrid. 
+A `r mes_anno_actual`, GBIF cuenta entre sus miembros con `r n_gbif_paises` países y `r n_gbif_organizaciones` organizaciones internacionales. España es miembro fundador de GBIF, representada por el Ministerio de Ciencia e Innovación, el cual encomendó al CSIC la gestión científico-técnica del “Nodo Nacional de Información en Biodiversidad para la participación en el Programa Internacional Global Biodiversity Information Facility (BOE, 12 de junio de 2002) y para lo que constituyó la Unidad de Coordinación de GBIF en España, sita en el Real Jardín Botánico de Madrid. 
 
 Para cumplir con sus objetivos, esta Unidad de Coordinación recopila y publica información sobre las entidades que producen, agregan o administran datos e información sobre biodiversidad. Esta información da contexto a los datos publicados sobre biodiversidad en España, permite determinar el estado del conocimiento y establecer sus prioridades, bien de índole científica, bien desde el punto de vista de la gestión y conservación de la biodiversidad y el medioambiente. En el año 2005, la Unidad de Coordinación abrió un registro de las instituciones y proyectos con sede en el territorio español que cuenta con información ligada al conocimiento y la conservación de la biodiversidad. Esta información se encuentra, en unos casos, en **colecciones biológicas** de distintos tipos (zoológicas, botánicas, microbiológicas, paleontológicas y mixtas) que, como tales, contienen ejemplares físicos que sirven de respaldo a la información (ejemplares preservados o sus partes, fósiles, bancos de germoplasma, de tejidos…). En otros casos la información se recoge en **bases de datos** creadas en el ámbito de proyectos de investigación, o de otra índole, sin contar con el respaldo físico de ejemplares (inventarios, listados, eventos de muestreo…). 
 
@@ -574,17 +624,22 @@ GRAFICA AQUI (Katia la hace con sus tabla de datos)
 
 Otro punto de vista bajo el que analizar las entidades, colecciones y datos de
 biodiversidad del Registro, es el ámbito o sector en el que se enmarcan las mismas, y así se han distinguido los siguientes:
+
 - **Académico**: instituciones educativas, museos, centros de investigación o vinculados a
 proyectos concretos de investigación.
+
 - **Administraciones públicas**: gobiernos de las CCAA, ayuntamientos, consejerías,
 cabildos…
+
 - **Ciencia ciudadana**: principalmente asociaciones y centros de información
 medioambiental cuyos datos proceden generalmente de voluntarios y aficionados,
 profesionales o no.
+
 - **Sector privado**: empresas privadas.
 
-~~La mayor parte de las colecciones y bases de datos proceden del ámbito académico,
-mientras que por número de registros son las administraciones públicas y las de ciencia ciudadana los sectores que más aportan. Es de destacar que desde mediados de 2019 se incorpora el sector privado al ámbito de GBIF, con la cementera LafargeHolcim España, que publicó un primer juego de datos en 2019. Se abre así una nueva entrada de datos, que por volumen y foco (estudios de impacto ambiental, restauración de paisaje), puede completar y complementar el mundo de los datos de biodiversidad de manera relevante.~~
+
+La mayor parte de las colecciones y bases de datos proceden del ámbito académico,
+mientras que por número de registros son las administraciones públicas y el sector académico los que más aportan, seguidas de cerca de los registros derivados de ciencia ciudadana, mientras que el sector privado sigue despegando.
 
 Como las entidades y colecciones pueden asignarse a más de un sector, la distribución de datos entre ellas se ve más claramente a nivel de recursos en línea y registros publicados. El desglose de estos datos por sectores se ve en la @tbl-registros-sector y en la @fig-rec-sec y @fig-reg-sec
 
@@ -615,14 +670,23 @@ información sobre la presencia (o ausencia) de una especie en un lugar y en un 
 
 - **Registros no publicados**, solo se hacen disponibles los metadatos del juego de datos. (“metadata”). 
 
-Hay que tener en cuenta que todos los registros de un juego de datos han de ser del mismo tipo. Según estos tipos, los números para los recursos en línea accesibles vía GBIF procedentes de entidades españolas se muestran en la  ~~tabla 3.3.1.f ~~.
+Hay que tener en cuenta que todos los registros de un juego de datos han de ser del mismo tipo. Según estos tipos, los números para los recursos en línea accesibles vía GBIF procedentes de entidades españolas se muestran en la  @tbl-tipos-recursos .
 
-~~TABLA AQUI (IPT??)~~
+```{r}
+#| label: tbl-tipos-recursos
+#| tbl-cap: "Recursos y registros publicados clasificados por el tipo de juegos de datos."
+
+df <- extraer_tipos_recursos_ipt_pais()
+
+ft_tbl(
+  df
+)
+```
 
 
 ### Actualización de las colecciones publicadas en GBIF
 
-~~De las `r n_colbd_actual` colecciones y bases de datos del Registro en `r anno_actual`, han actualizado sus metadatos 80 (el 17 %) desde 2015. Así mismo, 180 de los `r n_recursos_actual` recursos (el 58 %) se han incorporado nuevos o se han actualizado en este mismo periodo.~~
+De las `r n_colbd_actual` colecciones y bases de datos del Registro en `r anno_actual`, se han incorporado o actualizado los metadatos de `r n_colbd_actualizados` (el `r n_colbd_actualizados_x100`) de ellas desde `r anno_informe_anterior` Así mismo, `r n_recursos_actualizados` de los `r n_recursos_actual` recursos (el `r n_recursos_actualizados_x100`) se han incorporado nuevos o se han actualizado en este mismo periodo.
 
 \newpage
 # COLECCIONES BIOLÓGICAS
@@ -1171,22 +1235,6 @@ En la @fig-map-col-mix y @fig-map-col-mix-pub se muestran las colecciones mixtas
 
 Las bases de datos son conjuntos de registros de información de biodiversidad no generadas a partir de especímenes físicos conservados en colecciones biológicas, es decir, que no tienen un soporte o respaldo de material (especímenes, restos o partes, fósiles, germoplasma, tejidos…). Corresponden en su mayoría a observaciones, inventarios, listados (especies, nombres científicos, listas rojas, referencias taxonómicas…) y eventos de muestreo.
 
-~~Un caso especial de bases de datos lo constituyen los proyectos, referidos a una entidad no permanente en el tiempo de la que dependen una o más bases de datos y tienen financiación adscrita a alguna institución, administración, museo, empresa pública o privada.
-
-## PROYECTOS: SITUACIÓN GENERAL
-
-Como se comentó en el apartado 3.1.1., a efectos del Registro, los proyectos se
-consideran independientes cuando su adscripción a una institución permanente no es clara o directa. En el resto de los casos vamos a encontrarnos que los proyectos se adscriben a una entidad, que aparecerá en el Registro como titular de las bases de datos de sus proyectos.
-
-En algunos casos, las bases de datos generadas por proyectos “independientes”, tras su
-finalización, pasan a ser mantenidas y administradas por entidades permanentes en el tiempo. Así, por ejemplo, encontramos varios casos de proyectos que han cambiado su situación durante el periodo 2015-2019, entre otros:
-
-- El proyecto independiente **Iberian Spider Catalogue, Morano and Cardoso**, en 2019
-pasó a ser la Base de datos de Aranae de la P.I. Morano y Cardoso: AraIb (AraIb),
-vinculada a la nueva entidad Sociedad Entomológica Aragonesa (SEA).
-- El proyecto **Mosquito Alert**, que era independiente coordinado por tres instituciones:
-CREAF (Centro de Investigación Ecológica y Aplicaciones Forestales), ICREA (Institución Catalana de Investigación y Estudios Avanzados) y CEAB-CSIC (Centro de Estudios Avanzados de Blanes), en el Registro figura desde 2018 como la base de datos Mosquito Alert: Tiger Mosquito Dataset vinculado únicamente al CREAF.~~
-
 ## BASES DE DATOS: SITUACIÓN GENERAL
 
 ### Bases de datos de biodiversidad en España
@@ -1209,7 +1257,7 @@ ft_tbl(
 
 ### Bases de datos en GBIF
 
-En el Anexo I están todas incluidas bajo la categoría “BD” de la columna “tipo”. A
+En la @sec-anexo-1 (Anexo I) están todas incluidas bajo la categoría “BD” de la columna “tipo”. A
 continuación, se muestran las diez bases de datos que más registros publican en GBIF. El desajuste respecto a los datos publicados se debe a que algunos proveedores no han actualizado los metadatos en el Registro a nivel de entidad o no han proporcionado el estado de sus fondos digitales. Destaca con `r top_bd[1,3]` registros, la base de datos `r top_bd[1,2]` *`r top_bd[1,1]`*, seguida de la base de datos `r top_bd[2,2]` *`r top_bd[2,1]`* del *`r top_bd[2,4]`* con `r top_bd[2,3]` registros publicados. En tercer lugar la base de datos `r top_bd[3,2]` *`r top_bd[3,1]`*, con `r top_bd[3,3]` registros.
 
 ![Las 10 bases de datos que más registros publican en GBIF.](assets/images/generated/barplot-facet-bd-disciplina.png){#fig-barplot-bd}

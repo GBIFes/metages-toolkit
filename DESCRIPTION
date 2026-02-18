@@ -1,6 +1,6 @@
 Package: metagesToolkit
 Title: Herramientas internas para METAGES
-Version: 1.1.6
+Version: 1.1.7
 Authors@R: c(
     person("Ruben", 
             "Perez Perez", , 
@@ -31,6 +31,8 @@ Imports:
     ggplot2,
     ggrepel,
     giscoR,
+    httr,
+    jsonlite,
     odbc,
     officer,
     processx,

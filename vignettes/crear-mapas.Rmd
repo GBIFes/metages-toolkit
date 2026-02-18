@@ -28,6 +28,11 @@ de la función, sin entrar en detalles de edición cartográfica avanzada.
 
 ## Datos de ejemplo
 
+<details>
+<summary> Desplegar datos</summary>
+
+<br>
+
 Para los ejemplos se utilizan datos extraídos del Registro de colecciones
 mediante la función `extraer_colecciones_mapa()$data`.
 
@@ -57,6 +62,7 @@ datatable(
 )
 
 ```
+</details>
 
 
 ## Mapa básico por estado de publicación

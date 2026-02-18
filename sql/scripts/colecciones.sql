@@ -33,6 +33,7 @@ SELECT
     mt.LAT AS latitude,
     mt.`LONG` AS longitude, 
     COALESCE(r.publica_en_gbif, 0) AS publica_en_gbif, 
+    r.numero_recursos,
     r.numberOfRecords, 
     YEAR(mb.created_when) AS fecha_alta_coleccion,
     YEAR(mb.updated_when) AS ultima_actualizacion_coleccion,
@@ -58,6 +59,7 @@ LEFT JOIN metages_informati_tbl mit                             -- Anhadir softw
 LEFT JOIN (														-- Anhadir numero de registros publicados por coleccion
     SELECT 
         r2.body_fk,
+        COUNT(*) AS numero_recursos, 
         MAX(r2.publica_en_gbif) AS publica_en_gbif,
         SUM(r2.numberOfRecords) AS numberOfRecords,
         MAX(r2.ultima_actualizacion) AS ultima_actualizacion_recursos
