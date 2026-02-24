@@ -2,7 +2,7 @@
 title: "Guia de uso de metages-toolkit — DESARROLLADORES"
 output: rmarkdown::html_vignette
 vignette: >
-  %\\VignetteIndexEntry{Usage guide}
+  %\\VignetteIndexEntry{Dev guide}
   %\\VignetteEngine{knitr::rmarkdown}
   %\\VignetteEncoding{UTF-8}
 ---

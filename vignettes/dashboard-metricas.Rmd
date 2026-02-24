@@ -1,0 +1,89 @@
+---
+title: "Dashboard estático de métricas de MetaGES"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dashboard de MetaGES}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+## Introducción
+
+Esta vignette muestra distintas gráficas para mostrar métricas de MetaGES, usando el paquete `metagesToolkit` mediante las siguientes [funciones](reference/index.html) .
+
+
+## Número de entidades según su estado de publicacion
+![](figures/entidades_per_publican.png){width="100%"}
+
+## Número de colecciones y bases de datos según su estado de publicacion
+![](figures/colecciones_per_publican.png){width="100%"}
+
+## Evolución del número de colecciones y bases de datos registradas por año
+![](figures/colecciones_per_anno.png){width="100%"}
+
+## Proporción de colecciones y bases de datos por disciplina
+![](figures/colecciones_por_disciplina.png){width="100%"}
+
+## Proporción de recursos por sector
+![](figures/recursos_por_sector.png){width="100%"}
+
+## Proporción de registros por sector
+![](figures/registros_por_sector.png){width="100%"}
+
+## Evolución del número de registros por basisOfRecord
+![](figures/registros_evolucion_BasisOfRecord.png){width="100%"}
+
+## Evolución (logarítmica) del número de registros por basisOfRecord 
+![](figures/registros_evolucion_BasisOfRecord_log.png){width="100%"}
+
+
+## Colecciones biológicas
+
+### Número de ejemplares de las mayores colecciones botánicas
+![](figures/barplot-colecciones-bot.png){width="100%"}
+
+### Número de ejemplares de las mayores colecciones botánicas de plantas
+![](figures/barplot-colecciones-pla.png){width="100%"}
+
+### Número de ejemplares de las mayores colecciones botánicas de algas
+![](figures/barplot-colecciones-alg.png){width="100%"}
+
+### Número de ejemplares de las mayores colecciones botánicas de hongos y líquenes
+![](figures/barplot-colecciones-hong.png){width="100%"}
+
+### Número de ejemplares de las mayores colecciones botánicas mixtas
+![](figures/barplot-colecciones-botmix.png){width="100%"}
+
+### Número de ejemplares de las mayores colecciones zoológicas
+![](figures/barplot-colecciones-zoo.png){width="100%"}
+
+### Número de ejemplares de las mayores colecciones zoológicas de invertebrados
+![](figures/barplot-colecciones-inv.png){width="100%"}
+
+### Número de ejemplares de las mayores colecciones zoológicas de vertebrados
+![](figures/barplot-colecciones-vert.png){width="100%"}
+
+### Número de ejemplares de las mayores colecciones zoológicas de invertebrados y vertebrados
+![](figures/barplot-colecciones-invver.png){width="100%"}
+
+### Número de ejemplares de las mayores colecciones microbiológicas
+![](figures/barplot-colecciones-micro.png){width="100%"}
+
+### Número de ejemplares de las mayores colecciones paleontológicas
+![](figures/barplot-colecciones-pale.png){width="100%"}
+
+### Número de ejemplares de las mayores colecciones mixtas
+![](figures/barplot-colecciones-mix.png){width="100%"}
+
+## Bases de datos
+
+### Número de registros de las mayores bases de datos 
+![](figures/barplot-facet-bd-disciplina.png){width="100%"}
+
+### Proporción de bases de datos por disciplina
+![](figures/colecciones_bd_por_disciplina.png){width="100%"}
+
+
+

@@ -67,8 +67,7 @@ datatable(
 
 ## Mapa básico por estado de publicación
 
-Ejemplo mínimo de uso de `crear_mapa_entidades()`, mostrando la distribución
-espacial de las entidades del Registro segun su estado de publicación en GBIF.
+En `metagesToolkit` existe otra función para crear mapas usando `crear_mapa_entidades()`, que muestra la distribución espacial de las entidades del Registro segun su estado de publicación en GBIF.
 
 ![](figures/mapa-entidades.png)
 

@@ -46,27 +46,6 @@ bibliography: []
 ---
 
 
-::: callout-note
-Este informe está pensado para **generar automáticamente mapas y tablas** a partir del Registro (Metages/WordPress) siguiendo una estructura similar a los informes institucionales de GBIF España.
-:::
-
-# Portada
-
-
-![](assets/images/logos/logo-GBIF-RGB-01.png){width="20%"}
-![](assets/images/logos/logo-CSIC-big-trans.png){width="20%"}
-![](assets/images/logos/MCIU.Gob.png){width="20%"}
-
-\newpage
-# Resumen ejecutivo
-
-En esta sección se presenta una síntesis de los principales resultados del Registro, con especial atención a:
-
--   número de colecciones / bases de datos con registros (\>0)
--   distribución espacial
--   principales focos (ciudades) según nº de ejemplares/registros
--   publicación en GBIF
-
 ```{r}
 #| label: setup
 #| include: false
@@ -127,6 +106,26 @@ ft_tbl <- function(x, caption = NULL) {
   }
   ft
 }
+
+
+# Utilidad: wrapper de tabla con deteccion de API caida para llamadas a GBIF.org
+safe_ft_tbl <- function(expr) {
+  tryCatch(
+    {
+      df <- expr
+      ft_tbl(df)
+    },
+    error = function(e) {
+      cat(
+        "\n\n⚠️ **Datos no disponibles temporalmente**\n\n",
+        "La API de GBIF no está accesible en el momento de generar este informe.\n\n"
+      )
+      NULL
+    }
+  )
+}
+
+
 ```
 
 ```{r}
@@ -134,23 +133,26 @@ ft_tbl <- function(x, caption = NULL) {
 #| include: false
 
 
-# SQL Views
-con <- conectar_metages(
-  driver = params$odbc_driver
-)$con
+# ================================
+# Carga de métricas manuales
+# ================================
+metricas_manuales <- readRDS("data/metricas_manuales.rds")
+list2env(metricas_manuales, envir = .GlobalEnv)
 
+
+# SQL Views
+# con <- conectar_metages(
+#   driver = params$odbc_driver
+# )$con
+
+
+# ================================
+# Carga de métricas calculadas
+# ================================
 
 # otras metricas
-n_edicion_informe_actual <- "septima"
-n_edicion_informe_anterior <- "sexta"
 anno_actual <- format(Sys.Date(), "%Y")
-anno_informe_anterior <- 2019
-anno_publi_informe_anterior <- 2021
 mes_anno_actual <- format(Sys.Date(), "%B de %Y")
-mes_anno_informe_anterior <- "diciembre de 2019"
-n_gbif_paises <- 69 # Extraer de https://www.gbif.org/the-gbif-network = "Voting participants" + "Associate country participants"
-n_gbif_organizaciones <- 42 # Extraer de https://www.gbif.org/the-gbif-network = "Other associate participants"
-
 
 
 
@@ -158,13 +160,14 @@ n_gbif_organizaciones <- 42 # Extraer de https://www.gbif.org/the-gbif-network =
 # Lectura interna
 colbd <- readRDS("data/mapas/mapa-total.rds")
 reg <- readRDS("data/vistas_sql/registros.rds")
+n_species_total <- readRDS("data/mapas/resumen_tax_gbif_total.rds")
+n_species_specimen <- readRDS("data/mapas/resumen_tax_gbif_spec.rds")
+n_clases_obs <- readRDS("data/mapas/n_clases_obs.rds")
 
 # entidades
 n_entidades_actual <- colbd %>% select (institucion_proyecto) %>% distinct() %>% nrow()
 n_entidades_actual_pub <- colbd %>% filter(publica_en_gbif == 1) %>% select(institucion_proyecto) %>% distinct() %>% nrow()
 n_entidades_actual_pub_x100 <- paste0((n_entidades_actual_pub * 100 / n_entidades_actual) %>% round(1), "%")
-n_entidades_informe_anterior <- 229 # Manual
-n_entidades_informe_anterior_pub <- 104 # Manual
 n_entidades_incremento <- n_entidades_actual - n_entidades_informe_anterior
 n_entidades_incremento_x100 <- paste0((n_entidades_incremento * 100 / n_entidades_informe_anterior) %>% round(1), "%")
 n_entidades_incremento_pub <- n_entidades_actual_pub - n_entidades_informe_anterior_pub
@@ -175,7 +178,6 @@ n_entidades_incremento_pub_x100 <- paste0((n_entidades_incremento_pub * 100 / n_
 n_colbd_actual <- nrow(colbd)
 n_colbd_actual_pub <- colbd %>% filter(publica_en_gbif == 1) %>% nrow()
 n_colbd_actual_pub_x100 <- paste0((n_colbd_actual_pub * 100 / n_colbd_actual) %>% round(1), "%")
-n_colbd_informe_anterior <- 474 # Manual
 n_colbd_incremento <- n_colbd_actual - n_colbd_informe_anterior
 n_colbd_incremento_x100 <- paste0((n_colbd_incremento * 100 / n_colbd_informe_anterior) %>% round(1), "%")
 n_colbd_actualizados <- sum(pmax(as.numeric(colbd$fecha_alta_coleccion), as.numeric(colbd$ultima_actualizacion_coleccion), na.rm = TRUE) > anno_informe_anterior,  na.rm = TRUE)
@@ -298,7 +300,6 @@ top_col_mix_pub <- colbd %>% filter(tipo_body == "coleccion", disciplina_def == 
 
 # recursos
 n_recursos_actual <- nrow(reg)
-n_recursos_informe_anterior <- 308 # Manual
 n_recursos_incremento <- n_recursos_actual - n_recursos_informe_anterior
 n_recursos_incremento_x100 <- paste0((n_recursos_incremento * 100 / n_recursos_informe_anterior) %>% round(1), "%")
 n_recursos_actualizados <- sum(reg$ultima_actualizacion > anno_informe_anterior, na.rm = TRUE)
@@ -307,7 +308,6 @@ n_recursos_actualizados_x100 <- paste0((n_recursos_actualizados * 100 / n_recurs
 
 # registros
 n_registros_actual <- sum(as.integer(reg$numberOfRecords)) %>% format(decimal.mark = ",", big.mark = ".")
-n_registros_informe_anterior <- 32367320 # Manual
 n_registros_incremento <- (sum(as.integer(reg$numberOfRecords)) - n_registros_informe_anterior) %>% format(decimal.mark = ",", big.mark = ".")
 n_registros_incremento_x100 <- paste0(((sum(as.integer(reg$numberOfRecords)) - n_registros_informe_anterior) * 100 / n_registros_informe_anterior) %>% round(1), "%")
 
@@ -320,69 +320,28 @@ acceso_informatizado_proporcionada_x100 <- paste0(round(mean(!is.na(colbd$acceso
 medio_acceso_informatizado_proporcionada_x100 <- paste0(round(mean(!is.na(colbd$medio_acceso_estandarizado[colbd$tipo_body == "coleccion"])) * 100, 1), "%")
 
 
-## disciplinas numero colecciones 
-inf_ant_n_colbd_total <- "474"
-inf_ant_n_colbd_zoo <- "(192)"
-inf_ant_n_colbd_inv <- "103"
-inf_ant_n_colbd_ver <- "70"
-inf_ant_n_colbd_invver <- "19"
-inf_ant_n_colbd_bot <- "(201)"
-inf_ant_n_colbd_pla <- "163"
-inf_ant_n_colbd_alg <- "14"
-inf_ant_n_colbd_hong <- "24"
-inf_ant_n_colbd_botmix <- "NA"
-inf_ant_n_colbd_micro <- "8"
-inf_ant_n_colbd_paleo <- "44"
-inf_ant_n_colbd_mix <- "29"
-
-## disciplinas numero registros
-inf_ant_n_reg_total <- "32.367.320"
-inf_ant_n_reg_zoo <- "(13.331.336)"
-inf_ant_n_reg_inv <- "1.064.701"
-inf_ant_n_reg_ver <- "12.199.676"
-inf_ant_n_reg_invver <- "66.959"
-inf_ant_n_reg_bot <- "(15.893.174)"
-inf_ant_n_reg_pla <- "15.430.831"
-inf_ant_n_reg_alg <- "31.868"
-inf_ant_n_reg_hong <- "430.475"
-inf_ant_n_reg_botmix <- "NA"
-inf_ant_n_reg_micro <- "12.176"
-inf_ant_n_reg_paleo <- "34.637"
-inf_ant_n_reg_mix <- "3.095.997"
+# especies  
+n_especies_spec_x100 <- paste0(round(as.numeric(n_species_specimen[9,7])*100/as.numeric(n_species_total[9,7]), 1), "%")
 
 
+clase_obs_mayor_nombre <- n_clases_obs %>% head(1)[[1]]
+clase_obs_mayor_x100 <- paste0(round(as.numeric(gsub("\\.", "", (n_clases_obs %>% head(1))[[2]]))*100/as.numeric(gsub("\\.", "", (n_clases_obs %>% tail(1))[[2]])), 1), "%")
 
 ```
 
 \newpage
 # RESUMEN EJECUTIVO
 
-En el presente **Informe de Colecciones Biológicas y Bases de Datos de Biodiversidad en España. Año `r anno_actual`**, se muestra la situación de las colecciones biológicas, las bases de datos y proyectos sobre biodiversidad publicados en el [Registro de colecciones, proyectos y bases de datos de biodiversidad en España](https://gbif.es/registro-colecciones/) hasta `r mes_anno_actual`. Se ofrecen los datos y estadísticas ~~de los últimos cinco años (desde el 1 de enero de 2015 hasta el 31 de diciembre de 2019)~~ en relación a las entidades (instituciones o centros), colecciones, bases de datos y proyectos adscritos a la **Unidad de Coordinación del Nodo Nacional de Información en Biodiversidad** (UdC). Se hace una síntesis y valoración de las entidades, sus colecciones, proyectos y datos asociados, con especial relevancia de aquellas que publican datos en el Portal Nacional de GBIF España. 
+En el presente **Informe de Colecciones Biológicas y Bases de Datos de Biodiversidad en España. Año `r anno_actual`**, se muestra la situación de las colecciones biológicas y las bases de datos de biodiversidad publicados en el [Registro de colecciones, proyectos y bases de datos de biodiversidad en España](https://gbif.es/registro-colecciones/) hasta `r mes_anno_actual`. Se ofrecen los datos y estadísticas en relación a las entidades (instituciones o centros), colecciones y bases de datos adscritos a la **Unidad de Coordinación del Nodo Nacional de Información en Biodiversidad** (UdC). Se hace una síntesis y valoración de las entidades, sus colecciones y datos asociados, con especial relevancia de aquellas que publican datos en el Portal Nacional de GBIF España. 
 
 La información referente a las entidades y proyectos, y a las colecciones biológicas o bases de datos de biodiversidad se obtiene mediante [formularios](https://gbif.es/datos-biodiversidad/accede-a-los-datos/registro/cuestionario-para-colecciones-biologicas-y-bases-de-datos/) que cumplimentan las propias instituciones, tal como se refleja en dicho Registro, si bien y de forma puntual, se tienen en cuenta las modificaciones y correcciones de los metadatos enviadas por los respectivos responsables a través de los correos de contacto de GBIF.ES. 
 
-Hay **`r n_entidades_actual`** entidades (instituciones, centros y proyectos) vinculadas al Nodo Nacional de Información en Biodiversidad, referidas y actualizadas hasta `r mes_anno_actual`, de las cuales **`r n_entidades_actual_pub` (el `r n_entidades_actual_pub_x100`) publican datos**. Con respecto al informe anterior se han incorporado `r n_entidades_incremento`, es decir, un `r n_entidades_incremento_x100` más. Estas entidades poseen en conjunto **`r n_colbd_actual`** colecciones biológicas o bases de datos y **`r n_recursos_actual`** recursos o juegos de datos con un total de **`r n_registros_actual`** registros en línea, que publican a través de los portales GBIF. Con respecto al informe anterior (`r mes_anno_informe_anterior`) se han incorporado **`r n_colbd_incremento`** colecciones (un `r n_colbd_incremento_x100` más) y `r n_recursos_incremento` recursos (un `r n_recursos_incremento_x100` más) a la infraestructura de GBIF, y el número de registros publicados ha crecido en `r n_registros_incremento`, lo que supone un incremento del `r n_registros_incremento_x100`, de manera que en este periodo España se mantiene en el ~~décimo país~~ del mundo que más contribuye a GBIF, tal como se puede ver en la @tbl-ranking-gbif-org y @fig-gbif-ranking.
+Hay **`r n_entidades_actual`** entidades (instituciones, centros y proyectos) vinculadas al Nodo Nacional de Información en Biodiversidad, referidas y actualizadas hasta `r mes_anno_actual`, de las cuales **`r n_entidades_actual_pub` (el `r n_entidades_actual_pub_x100`) publican datos**. Con respecto al informe anterior se han incorporado `r n_entidades_incremento`, es decir, un `r n_entidades_incremento_x100` más. Estas entidades poseen en conjunto **`r n_colbd_actual`** colecciones biológicas o bases de datos y **`r n_recursos_actual`** recursos o juegos de datos con un total de **`r n_registros_actual`** registros en línea, que publican a través de los portales GBIF. Con respecto al informe anterior (`r mes_anno_informe_anterior`) se han incorporado **`r n_colbd_incremento`** colecciones (un `r n_colbd_incremento_x100` más) y `r n_recursos_incremento` recursos (un `r n_recursos_incremento_x100` más) a la infraestructura de GBIF, y el número de registros publicados ha crecido en `r n_registros_incremento`, lo que supone un incremento del `r n_registros_incremento_x100`, de manera que en este periodo España se mantiene en el `r n_ranking_gbifes` país del mundo que más contribuye a GBIF, tal como se puede ver en la @tbl-ranking-gbif-org y @fig-gbif-ranking.
 
 \newpage
 ```{r}
 #| label: tbl-ranking-gbif-org
 #| tbl-cap: "Ranking de países publicadores en GBIF."
-
-safe_ft_tbl <- function(expr, caption) {
-  tryCatch(
-    {
-      df <- expr
-      ft_tbl(df, caption = caption)
-    },
-    error = function(e) {
-      cat(
-        "\n\n⚠️ **Datos no disponibles temporalmente**\n\n",
-        "La API de GBIF no está accesible en el momento de generar este informe.\n\n"
-      )
-      NULL
-    }
-  )
-}
 
 # safe_ft_tbl(
 #   get_top10_countries_rgbif(),
@@ -393,8 +352,7 @@ safe_ft_tbl(
   get_top_publishing_countries_gbif(n = 12) %>% transmute(Ranking = row_number(),
                                                           País = pais_publicador, 
                                                           `Registros totales` = count, 
-                                                          `Posición en año previo` = posicion_prev_cum),
-  caption = "Registros de datos de biodiversidad publicados en GBIF.ORG."
+                                                          `Posición en año previo` = posicion_prev_cum)
 )
 
 ```
@@ -466,7 +424,7 @@ La información de los dos primeros se recopila mediante formularios que cumplim
 
 ![Procedencia y difusión de la información de colecciones y datos de biodiversidad en GBIF España.](../reports/assets/images/external/esquema_flujo_metages.jpg){#fig-esquema width="100%"}
 
-La `r n_edicion_informe_anterior` edición del informe, presentado en `r anno_publi_informe_anterior`, recogía la información disponible hasta `r mes_anno_informe_anterior`. En esta `r n_edicion_informe_actual` edición, **“Informe de Colecciones Biológicas y Bases de Datos de Biodiversidad en España. Año `r anno_actual`”**, se presentan los datos y estadísticas de los últimos ~~cinco~~ años (desde `r mes_anno_informe_anterior` hasta `r mes_anno_actual`) en relación a las instituciones, colecciones, bases de datos y proyectos adscritos al Nodo Nacional de Información en Biodiversidad. Se hace una síntesis y valoración de las entidades, sus colecciones, proyectos y datos asociados, con especial relevancia de las que publican datos en el Registro de GBIF.ES.
+La `r n_edicion_informe_anterior` edición del informe, presentado en `r anno_publi_informe_anterior`, recogía la información disponible hasta `r mes_anno_informe_anterior`. En esta `r n_edicion_informe_actual` edición, **“Informe de Colecciones Biológicas y Bases de Datos de Biodiversidad en España. Año `r anno_actual`”**, se presentan los datos y estadísticas en relación a las instituciones, colecciones y bases de datos adscritos al Nodo Nacional de Información en Biodiversidad. Se hace una síntesis y valoración de las entidades, sus colecciones y datos asociados, con especial relevancia de las que publican datos en el Registro de GBIF.ES.
 
 Se puede acceder a la información del Registro, de manera detallada y continuamente actualizada, desde [](https://www.gbif.es/registro-instituciones/). 
 
@@ -547,7 +505,7 @@ La distribución espacial de las entidades registradas que forman parte del Nodo
 ## SITUACIÓN GENERAL DE LAS COLECCIONES BIOLÓGICAS Y BASES DE DATOS: TOTAL DE REGISTROS, ACTUALIZACIONES E INCORPORACIONES
 
 Actualmente hay contabilizadas `r n_colbd_actual` colecciones biológicas y bases de datos
-pertenecientes a `r n_entidades_actual` entidades. Desde 2004, que se tienen datos en el Registro, ha habido un aumento anual constante, tal como refleja la @fig-col-anno , donde se indican los totales y el número de nuevas incorporaciones por año. ~~En los últimos cinco años (periodo 2015-2019),~~ desde el anterior informe, se han incrementado en `r n_colbd_incremento` el número de colecciones y bases de datos.
+pertenecientes a `r n_entidades_actual` entidades. Desde 2004, que se tienen datos en el Registro, ha habido un aumento anual constante, tal como refleja la @fig-col-anno , donde se indican los totales y el número de nuevas incorporaciones por año. Desde el anterior informe, se han incrementado en `r n_colbd_incremento` el número de colecciones y bases de datos.
 
 ![Número de colecciones y bases de datos en el Registro hasta 2019 e incremento anual.](assets/images/generated/colecciones_per_anno.png){#fig-col-anno} 
 
@@ -702,7 +660,10 @@ Actualmente, dadas de alta en el Registro encontramos `r n_entidades_col_actual`
 #| tbl-cap: "Número y porcentaje de las colecciones biológicas en función de las categorías utilizadas."
 
 df <- readRDS("data/vistas_sql/colecciones_por_disciplina.rds") |>
-          select (-total_ejemplares)
+          select (-total_ejemplares) |>
+          rename(`Disciplina` = disciplina_def,
+                 `Nº colecciones` = numero_colecciones,
+                `Porcentaje (%)` = numero_colecciones_porcentaje)
 
 ft_tbl(
   df,
@@ -721,7 +682,12 @@ En la @tbl-col-informatizacion  puede verse el número y porcentaje de informati
 #| label: tbl-col-informatizacion
 #| tbl-cap: "Fondos y estado de informatización por categorías de las colecciones biológicas de las instituciones"
 
-df <- readRDS("data/vistas_sql/colecciones_informatizacion.rds")
+df <- readRDS("data/vistas_sql/colecciones_informatizacion.rds") |>
+          rename(`Disciplina` = disciplina_def,
+                 `Nº ejemplares` = total_ejemplares,
+                 `Nº ejemplares informatizados` = `%_ejemplares_informatizados (media)`,
+                 `Nº ejemplares sin informatizar` = ejemplares_informatizados,
+                 `Porcentaje informatización` = ejemplares_no_informatizados)
 
 ft_tbl(
   df,
@@ -824,7 +790,8 @@ ft_tbl(
 
 ### Distribución de las colecciones biológicas
 
-La @fig-map-col-pub muestra la distribución de colecciones biológicas en el territorio español, tanto peninsular como insular. Destacan las CC.AA. de Andalucía, Madrid y Cataluña en cuanto a número de entidades que publican datos, mientras que en el otro extremo se encuentra, por ejemplo, Cantabria, con ninguna entidad publicadora de datos, o Castilla-La Mancha, Castilla y León y Extremadura, con un máximo de dos entidades publicadoras en cada CC.AA. En el caso de la Comunidad Valenciana, el elevado número de entidades presentes en el registro de colecciones contrasta con el número de las que publican datos (solo dos).~~
+La @fig-map-col-pub muestra la distribución de colecciones biológicas en el territorio español, tanto peninsular como insular. Destacan las CC.AA. de Andalucía, Madrid y Cataluña en cuanto a número de entidades que publican datos, mientras que en el otro extremo se encuentra, por ejemplo, Cantabria, con ninguna entidad publicadora de datos, o La Rioja y Extremadura, con una y dos entidades publicadoras respectivamente.
+
 
 ![Distribución de las instituciones con colecciones biológicas en España, con diferenciación de las que publican.](assets/images/generated/mapa_col_pub.png){#fig-map-col-pub}
 
@@ -1304,7 +1271,7 @@ extensión espacial, y el rango temporal cubierto.
 
 ## Comparativa taxonómica
 
-A pesar de que el número de registros de observaciones es muy superior al de especímenes en colecciones (casi en un orden de magnitud), las especies cuya presencia solo se conoce de colecciones, constituyen ~~casi el 80 % de las registradas. Se puede decir que las observaciones proporcionan abundante información sobre un espectro muy limitado de especies en el que los grupos más vistosos, como aves o plantas con flores, copan un porcentaje altísimo de las observaciones (por ejemplo, las aves suponen más del 95 %~~ de las observaciones de animales), mientras que de otros grupos representados en colecciones (cuatro de cada cuatro especies, entre tres y dos géneros por cada uno que se observa) no hay información. En las @fig-pie-tax-obs y @fig-pie-tax-spec y tablas 6.1.c. y 6.1.d~~ se pueden ver estas diferencias.
+A pesar de que el número de registros de observaciones es muy superior al de especímenes en colecciones, las especies cuya presencia solo se conoce de colecciones, constituyen el `r n_especies_spec_x100` de las registradas. Se puede decir que las observaciones proporcionan abundante información sobre un espectro muy limitado de especies en el que los grupos más vistosos, como aves o plantas con flores, copan un porcentaje altísimo de las observaciones (por ejemplo, la clase `r clase_obs_mayor_nombre` supone el `r clase_obs_mayor_x100` de las observaciones de animales), mientras que de otros grupos representados en colecciones no hay información. En la @fig-pie-tax-obs , la @fig-pie-tax-spec , la @tbl-resumen-tax-obs y la @tbl-resumen-tax-spec se pueden ver estas diferencias.
 
 ### Observaciones
 
@@ -1314,17 +1281,33 @@ A pesar de que el número de registros de observaciones es muy superior al de es
 
 ![Distribución en grupos taxonómicos de los registros publicados en GBIF para ejemplares preservados en colecciones.](assets/images/external/taxonomy_sum_spec.png){#fig-pie-tax-spec}
 
-TABLA AQUI 
-TABLA AQUI
+```{r}
+#| label: tbl-resumen-tax-obs
+#| tbl-cap: "Distribución en grupos taxonómicos de los registros de observaciones publicados en GBIF.ORG para España."
+#| results: asis
+
+  readRDS("data/mapas/resumen_tax_gbif_obs.rds") %>% ft_tbl()
+
+``` 
+
+
+```{r}
+#| label: tbl-resumen-tax-spec
+#| tbl-cap: "Distribución en grupos taxonómicos de los registros publicados en GBIF.ORG para especímenes en colecciones en España."
+#| results: asis
+
+ readRDS("data/mapas/resumen_tax_gbif_spec.rds") %>% ft_tbl()
+
+```
 
 ## Comparativa temporal
 
 Bajo la perspectiva del tiempo, se puede decir que las observaciones son "los datos
-nuevos" y masivos, mientras que las colecciones proporcionan series temporales mucho más largas. Aunque en el gráfico se parte del ~~año 1900, hay ejemplares catalogados ̶-así como sus datos en línea- que datan de mediados del siglo XVIII~~. Sin entrar en detalles o causas, el declive en los trabajos de recolección y el auge en las observaciones en tiempos recientes es patente, como se puede observar en las ~~gráficas 6.2.a. y 6.2.b.~~
+nuevos" y masivos, mientras que las colecciones proporcionan series temporales mucho más largas. Aunque en el gráfico se parte del año 1840, hay ejemplares catalogados -así como sus datos en línea- que datan de mediados del siglo XVIII. Sin entrar en detalles o causas, el declive en los trabajos de recolección y el auge en las observaciones en tiempos recientes es patente, como se puede observar en la @fig-reg-evo y la @fig-reg-evo-log .
 
-GRAFICA AQUI
+![Comparativa temporal, por año de colecta/observación, del número de registros publicados en GBIF atendiendo a su naturaleza: especímenes preservados en colecciones y observaciones. Las escalas en ordenadas son propias de cada serie de datos y su magnitud se ha ajustado para facilitar la comparación.](assets/images/generated/registros_evolucion_basisOfRecord.png){#fig-reg-evo}
 
-GRAFICA AQUI
+![Representación logarítmica de la comparativa temporal, por año de colecta/observación, del número de registros publicados en GBIF atendiendo a su naturaleza: especímenes preservados en colecciones y observaciones. Aparecen indicados los valores mínimos y máximos de registros.](assets/images/generated/registros_evolucion_basisOfRecord_log.png){#fig-reg-evo-log}
 
 ## Comparativa espacial
 
@@ -1339,29 +1322,74 @@ MAPA AQUI
 
 ### Observaciones
 
-También se observa un sesgo espacial y taxonómico en la distribución de los datos para los registros de tipo observacional (HumanObservation y MachineObservation), como se puede apreciar en el mapa ~~6.3.1.a. y la tabla 6.3.1.b.~~ Así, las CC.AA. que presentan mayor número de registros basados en observaciones directas o indirectas son Andalucía y Cataluña, seguidas por el País Vasco (mapa 6.3.1.a.). Las capturas procedentes de dispositivos o medios digitales suponen una representación ínfima de las observaciones (y tienen una acumulación importante en la provincia de Huesca). Los grupos taxonómicos más representados en observaciones son, como cabía esperar, animales y plantas, y estas suponen casi ~~el 99.4% del número de registros totales para todos los grupos taxonómicos (tabla 6.3.1.b.).~~
+También se observa un sesgo espacial y taxonómico en la distribución de los datos para los registros de tipo observacional (HumanObservation y MachineObservation), como se puede apreciar en el mapa ~~6.3.1.a. y la @tbl-conteo-registros-observaciones-reinos . Así, las CC.AA. que presentan mayor número de registros basados en observaciones directas o indirectas son Andalucía y Cataluña, seguidas por el País Vasco (mapa 6.3.1.a.). Las capturas procedentes de dispositivos o medios digitales suponen una representación ínfima de las observaciones (y tienen una acumulación importante en la provincia de Huesca). Los grupos taxonómicos más representados en observaciones son, como cabía esperar, animales y plantas, muy por encima en número de registros de los otros grupos taxonómicos como puede apreciarse en la @tbl-conteo-registros-observaciones-reinos .
 
 MAPA AQUI
 
-TABLA AQUI
+```{r}
+#| label: tbl-conteo-registros-observaciones-reinos
+#| tbl-cap: "Distribución en grupos taxonómicos de los registros de observaciones publicados en GBIF.ORG para España."
+
+safe_ft_tbl(
+  conteo_registros_por_taxon(facet = "kingdomKey", basisOfRecord = c("OBSERVATION",
+                                                                     "HUMAN_OBSERVATION",
+                                                                     "MACHINE_OBSERVATION"))
+)
+
+```
 
 ### Especímenes preservados en colecciones
 
 MAPA AQUI
 
-TABLA AQUI
+```{r}
+#| label: tbl-conteo-registros-especimenes-reinos
+#| tbl-cap: "Distribución en grupos taxonómicos de los registros publicados en GBIF.ORG para especímenes preservados en colecciones en España."
+
+safe_ft_tbl(
+  conteo_registros_por_taxon(facet = "kingdomKey")
+)
+
+```
 
 #### Colecciones zoológicas
 
 MAPA AQUI
 
-TABLA AQUI
+```{r}
+#| label: tbl-conteo-registros-especimenes-zoo
+#| tbl-cap: "Distribución en grupos taxonómicos Distribución en grupos taxonómicos de los registros publicados en GBIF.ORG para especímenes preservados en colecciones zoológicas."
+
+safe_ft_tbl(
+  conteo_registros_por_taxon(facet = "phylumKey", taxonKey = 1)
+)
+
+```
 
 #### Colecciones botánicas
 
 MAPA AQUI
 
-TABLA AQUI
+```{r}
+#| label: tbl-conteo-registros-especimenes-pla
+#| tbl-cap: "Distribución en grupos taxonómicos Distribución en grupos taxonómicos de los registros publicados en GBIF.ORG para especímenes preservados en colecciones botánicas de plantas"
+
+safe_ft_tbl(
+  conteo_registros_por_taxon(facet = "phylumKey", taxonKey = 6)
+)
+
+```
+
+
+```{r}
+#| label: tbl-conteo-registros-especimenes-hong
+#| tbl-cap: "Distribución en grupos taxonómicos Distribución en grupos taxonómicos de los registros publicados en GBIF.ORG para especímenes preservados en colecciones botánicas de hongos"
+
+safe_ft_tbl(
+  conteo_registros_por_taxon(facet = "phylumKey", taxonKey = 5)
+)
+
+```
 
 Parejo al volumen de datos de observaciones, su cobertura espacial es considerable,
 más teniendo en cuenta el poco tiempo transcurrido desde que esta fuente de información resulta cuantitativamente significativa. También lo es la diferencia de patrones en cuanto a distribución espacial de los registros que presenta respecto de los datos procedentes de colecciones. Si los especímenes de colecciones —generados casi exclusivamente como fruto de la investigación científica— se concentran en zonas de mayor riqueza y mejor conservadas (macizos montañosos, espacios protegidos, zonas no explotadas agrícolamente, etc.), las observaciones van impulsadas por la actividades conocidas colectivamente como de ciencia ciudadana o participativa. Así, Cataluña, Madrid y País Vasco aparecen particularmente "observadas" ~~(ver Mapa 6.3.1.a.)~~. A este patrón de observaciones se superponen los datos de censos y seguimientos promovidos desde las administraciones. Es conspicuo el caso de los datos
@@ -1394,7 +1422,7 @@ principales:
 3. **MICROBIOLÓGICA**. Se incluyen `r n_colbd_micro` colecciones y bases de datos de microbiología,
 fitoplancton, zooplancton, etc.
 4. **PALEONTOLÓGICA**. Se incluyen `r n_colbd_paleo`, en este caso todas bases de datos de organismos fósiles.
-5. **MIXTA**. Se incluyen en este apartado `r n_colbd_mix` colecciones y bases de datos que albergan ejemplares o registros con más de una de las categorías anteriores.~~
+5. **MIXTA**. Se incluyen en este apartado `r n_colbd_mix` colecciones y bases de datos que albergan ejemplares o registros con más de una de las categorías anteriores.
 
 Dentro de cada categoría, se organizan por orden alfabético de la institución o proyecto. Aparecen indicados, además, los centros y proyectos cuyos datos están publicados a través del Nodo Nacional de Información en Biodiversidad.
 

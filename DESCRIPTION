@@ -1,6 +1,6 @@
 Package: metagesToolkit
 Title: Herramientas internas para METAGES
-Version: 1.1.7
+Version: 1.1.8
 Authors@R: c(
     person("Ruben", 
             "Perez Perez", , 
@@ -32,6 +32,7 @@ Imports:
     ggrepel,
     giscoR,
     httr,
+    httr2,
     jsonlite,
     odbc,
     officer,

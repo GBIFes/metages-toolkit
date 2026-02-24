@@ -5,7 +5,7 @@ template:
 
 navbar:
   structure:
-    left:  [reference, articles, pkgnet]
+    left:  [reference, articles, architecture]
     right: [search, github]
 
 
@@ -23,14 +23,22 @@ navbar:
           href: articles/guia-uso-dev.html
         - text: "Mapas y visualización"
           href: articles/crear-mapas.html
+        - text: "Dashboard de métricas"
+          href: articles/dashboard-metricas.html
           
-    pkgnet:
+    architecture:
       text: "Arquitectura"
-      href: pkgnet-report.html
+      menu:
+        - text: "pkgnet Report"
+          href: pkgnet-report.html
+        - text: "Function Dependencies"
+          href: dependency_map.html
+
       
     github:
       icon: fa-github
       href: https://github.com/GBIFes/metages-toolkit
+      aria-label: Repositorio en GitHub
       
       
 
@@ -50,7 +58,7 @@ reference:
   - '`conectar_metages`'
   - '`extraer_colecciones_mapa`'
 
-- title: Crear mapas y graficos
+- title: Crear mapas y graficos desde MetaGES
   contents:
   - '`crear_mapa`'
   - '`crear_mapa_simple`'
@@ -61,7 +69,7 @@ reference:
   - '`crear_barplot_publicacion`'
   - '`crear_piechart`'
 
-- title: Crear y modificar Informe
+- title: Crear y modificar Informe de colecciones
   contents:
   - '`render_informe`'
   - '`insertar_tablas_colecciones`'
@@ -69,10 +77,14 @@ reference:
   - '`crear_flextable_colecciones`'
   - '`insertar_tabla_en_doc`'
 
-- title: Extraer datos externos a MetaGES
+- title: Extraer datos y crear gráficas externas a MetaGES
   contents:
   - '`get_top10_countries_rgbif`'
   - '`get_top_publishing_countries_gbif`'
+  - '`conteo_registros_por_taxon`'
+  - '`crear_plots_evolucion_basisOfRecord`'
+  - '`extraer_tipos_recursos_ipt_pais`'
+  - '`extraer_resumen_taxonomico_gbif`'
 
 
 
