@@ -33,10 +33,10 @@ Esta vignette muestra distintas gráficas para mostrar métricas de MetaGES, usa
 ![](figures/registros_por_sector.png){width="100%"}
 
 ## Evolución del número de registros por basisOfRecord
-![](figures/registros_evolucion_BasisOfRecord.png){width="100%"}
+![](figures/registros_evolucion_basisOfRecord.png){width="100%"}
 
 ## Evolución (logarítmica) del número de registros por basisOfRecord 
-![](figures/registros_evolucion_BasisOfRecord_log.png){width="100%"}
+![](figures/registros_evolucion_basisOfRecord_log.png){width="100%"}
 
 
 ## Colecciones biológicas
