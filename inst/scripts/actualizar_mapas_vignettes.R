@@ -6,7 +6,7 @@
 # - El script en sí NO requiere credenciales.
 # - Las credenciales solo son necesarias porque se llama a
 #   extraer_colecciones_mapa().
-# - Las imágenes se SOBREESCRIBEN en cada ejecución.
+# - Las imágenes y tablas se SOBREESCRIBEN en cada ejecución.
 # ============================================================
 
 library(metagesToolkit)
@@ -120,6 +120,17 @@ save_plot <- function(plot, filename, width = 10) {
     )
   }
 }
+
+
+
+
+# ------------------------------------------------------------
+# 1.0 Extraer y guardar metricas manuales
+# ------------------------------------------------------------
+message(" - Extrayendo metricas manuales")
+source(paste0(pkg_root,
+              "/inst/scripts/extraer_metricas_manuales.R"))
+
 
 
 # ------------------------------------------------------------
@@ -439,7 +450,48 @@ save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/colecciones_po
           width = 12)
 
 
+# ------------------------------------------------------------
+# 2.0 Guardar graficos de ALA
+# ------------------------------------------------------------
+message("==> Iniciando descarga de datos de ALA y creación de gráficos")
 
+datos_ala <- crear_plots_evolucion_basisOfRecord()
+
+save_plot(plot = datos_ala$lineal, filename = "registros_evolucion_basisOfRecord.png")
+save_plot(plot = datos_ala$log, filename = "registros_evolucion_basisOfRecord_log.png")
+saveRDS(datos_ala$data, file = fs::path(dir_data_maps, "registros_evolucion_basisOfRecord_data.rds"))
+
+
+# ------------------------------------------------------------
+# 2.1 Guardar graficos de GBIF.org
+# ------------------------------------------------------------
+message("==> Iniciando descarga de datos de GBIF.org pesados")
+
+df <- extraer_resumen_taxonomico_gbif()
+saveRDS(df, file = fs::path(dir_data_maps, "resumen_tax_gbif_total.rds"))
+
+
+df <- extraer_resumen_taxonomico_gbif(basisOfRecord = c("OBSERVATION",
+                                                        "HUMAN_OBSERVATION",
+                                                        "MACHINE_OBSERVATION"))
+saveRDS(df, file = fs::path(dir_data_maps, "resumen_tax_gbif_obs.rds"))
+
+
+df <- extraer_resumen_taxonomico_gbif(basisOfRecord = c("PRESERVED_SPECIMEN",
+                                                        "MATERIAL_SAMPLE",
+                                                        "FOSSIL_SPECIMEN"))
+saveRDS(df, file = fs::path(dir_data_maps, "resumen_tax_gbif_spec.rds"))
+
+
+
+
+df <- conteo_registros_por_taxon(facet = "classKey", 
+                                           basisOfRecord = c("OBSERVATION",
+                                                             "HUMAN_OBSERVATION",
+                                                             "MACHINE_OBSERVATION"), 
+                                           taxonKey = 1)
+
+saveRDS(df, file = fs::path(dir_data_maps, "n_clases_obs.rds"))
 
 # ------------------------------------------------------------
 # 3.0 Mapa entidades
@@ -450,7 +502,7 @@ message(" - Generando mapa total")
 mapa_entidades <- crear_mapa_entidades()
 
 save_map(
-  plot     = mapa_entidades,
+  plot     = mapa_entidades$plot,
   filename = "mapa-entidades.png"
 )
 
@@ -483,7 +535,7 @@ mapa_col_pub <- crear_mapa_entidades(
   tipo_coleccion = "coleccion")
 
 save_map(
-  plot     = mapa_col_pub,
+  plot     = mapa_col_pub$plot,
   filename = "mapa_col_pub.png"
 )
 

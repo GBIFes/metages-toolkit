@@ -19,7 +19,7 @@ stopifnot(requireNamespace("devtools", quietly = TRUE))
 # ------------------------------------------------------------
 # OPCIÓN A — USAR REPOSITORIO LOCAL (desarrollo)
 # ------------------------------------------------------------
-
+message(" - Instalando repo local")
 src <- "."  # repo local
 devtools::install(".", upgrade = "never", dependencies = FALSE, quiet = TRUE)
 
@@ -28,6 +28,7 @@ devtools::install(".", upgrade = "never", dependencies = FALSE, quiet = TRUE)
 # OPCIÓN B — CLONAR REPOSITORIO OFICIAL (CI / publicación)
 # ------------------------------------------------------------
 
+# message(" - Instalando repo oficial")
 # repo_url <- "https://github.com/GBIFes/metages-toolkit.git"
 # src <- tempfile("metagesToolkit-official-")
 # git2r::clone(repo_url, src)
@@ -66,8 +67,18 @@ pkgnet::CreatePackageReport(
   report_path = out_file
 )
 
+
 # ------------------------------------------------------------
-# 5. Mensaje final
+# Generar mapa de dependencias personalizado
+# ------------------------------------------------------------
+message("Generando grafo personalizado de dependencias")
+source(paste0(here::here(),
+              "/inst/scripts/crear_mapa_dependencias.R"))
+
+
+
+# ------------------------------------------------------------
+# Mensaje final
 # ------------------------------------------------------------
 
 message("Reporte pkgnet generado correctamente:")

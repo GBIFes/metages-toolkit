@@ -17,7 +17,11 @@
 #'   Si es \code{NULL}, se muestran todas.
 #'   
 #'
-#' @return Un objeto \code{ggplot}.
+#' @return Invisiblemente, una lista con:
+#' \describe{
+#'   \item{plot}{Objeto `ggplot`.}
+#'   \item{data_map}{data.frame con los datos tras filtros.}
+#' }
 #'
 #' @import ggplot2
 #' @import dplyr

@@ -12,7 +12,11 @@ crear_mapa_entidades(tipo_coleccion = NULL)
 Si es \code{NULL}, se muestran todas.}
 }
 \value{
-Un objeto \code{ggplot}.
+Invisiblemente, una lista con:
+\describe{
+\item{plot}{Objeto \code{ggplot}.}
+\item{data_map}{data.frame con los datos tras filtros.}
+}
 }
 \description{
 Genera un mapa del país que muestra la localizacion de las entidades
