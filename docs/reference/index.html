@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">metagesToolkit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,11 +21,16 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-art-culos"><li><a class="dropdown-item" href="../articles/guia-uso-usr.html">Guia de uso - USUARIOS</a></li>
     <li><a class="dropdown-item" href="../articles/guia-uso-dev.html">Guia de uso - DESARROLLADORES</a></li>
     <li><a class="dropdown-item" href="../articles/crear-mapas.html">Mapas y visualización</a></li>
+    <li><a class="dropdown-item" href="../articles/dashboard-metricas.html">Dashboard de métricas</a></li>
   </ul></li>
-<li class="nav-item"><a class="nav-link" href="../pkgnet-report.html">Arquitectura</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-arquitectura" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Arquitectura</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-arquitectura"><li><a class="dropdown-item" href="../pkgnet-report.html">pkgnet Report</a></li>
+    <li><a class="dropdown-item" href="../dependency_map.html">Function Dependencies</a></li>
+  </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/GBIFes/metages-toolkit"><span class="fa fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/GBIFes/metages-toolkit" aria-label="Repositorio en GitHub"><span class="fa fa-github"></span></a></li>
       </ul></div>
 
 
@@ -61,7 +66,7 @@
         </dt>
         <dd>Extraer colecciones desde METAGES para mapas</dd>
       </dl></div><div class="section level2">
-      <h2 id="crear-mapas-y-graficos">Crear mapas y graficos<a class="anchor" aria-label="anchor" href="#crear-mapas-y-graficos"></a></h2>
+      <h2 id="crear-mapas-y-graficos-desde-metages">Crear mapas y graficos desde MetaGES<a class="anchor" aria-label="anchor" href="#crear-mapas-y-graficos-desde-metages"></a></h2>
 
 
 
@@ -126,7 +131,7 @@
         </dt>
         <dd>Crear grafico de sectores (pie chart) a partir de tablas agregadas</dd>
       </dl></div><div class="section level2">
-      <h2 id="crear-y-modificar-informe">Crear y modificar Informe<a class="anchor" aria-label="anchor" href="#crear-y-modificar-informe"></a></h2>
+      <h2 id="crear-y-modificar-informe-de-colecciones">Crear y modificar Informe de colecciones<a class="anchor" aria-label="anchor" href="#crear-y-modificar-informe-de-colecciones"></a></h2>
 
 
 
@@ -170,7 +175,7 @@
         </dt>
         <dd>Insertar una tabla en un documento Word</dd>
       </dl></div><div class="section level2">
-      <h2 id="extraer-datos-externos-a-metages">Extraer datos externos a MetaGES<a class="anchor" aria-label="anchor" href="#extraer-datos-externos-a-metages"></a></h2>
+      <h2 id="extraer-datos-y-crear-gr-ficas-externas-a-metages">Extraer datos y crear gráficas externas a MetaGES<a class="anchor" aria-label="anchor" href="#extraer-datos-y-crear-gr-ficas-externas-a-metages"></a></h2>
 
 
 
@@ -192,6 +197,34 @@
 
         </dt>
         <dd>Top paises publicadores de datos en GBIF</dd>
+
+        <dt>
+
+          <code><a href="conteo_registros_por_taxon.html">conteo_registros_por_taxon()</a></code>
+
+        </dt>
+        <dd>Conteo de registros GBIF agregados por nivel taxonomico</dd>
+
+        <dt>
+
+          <code><a href="crear_plots_evolucion_basisOfRecord.html">crear_plots_evolucion_basisOfRecord()</a></code>
+
+        </dt>
+        <dd>Evolucion anual de registros GBIF por naturaleza (Observaciones vs Especimenes)</dd>
+
+        <dt>
+
+          <code><a href="extraer_tipos_recursos_ipt_pais.html">extraer_tipos_recursos_ipt_pais()</a></code>
+
+        </dt>
+        <dd>Numero de juegos de datos por pais publicador divididos por tipo de recurso.</dd>
+
+        <dt>
+
+          <code><a href="extraer_resumen_taxonomico_gbif.html">extraer_resumen_taxonomico_gbif()</a></code>
+
+        </dt>
+        <dd>Tabla resumen taxonomico de registros GBIF publicados por Espanha</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

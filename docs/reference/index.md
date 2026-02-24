@@ -7,7 +7,7 @@
 - [`extraer_colecciones_mapa()`](https://gbifes.github.io/metages-toolkit/reference/extraer_colecciones_mapa.md)
   : Extraer colecciones desde METAGES para mapas
 
-## Crear mapas y graficos
+## Crear mapas y graficos desde MetaGES
 
 - [`crear_mapa()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa.md)
   : Crear mapa de colecciones METAGES
@@ -27,7 +27,7 @@
 - [`crear_piechart()`](https://gbifes.github.io/metages-toolkit/reference/crear_piechart.md)
   : Crear grafico de sectores (pie chart) a partir de tablas agregadas
 
-## Crear y modificar Informe
+## Crear y modificar Informe de colecciones
 
 - [`render_informe()`](https://gbifes.github.io/metages-toolkit/reference/render_informe.md)
   : Renderiza el informe METAGES
@@ -40,9 +40,19 @@
 - [`insertar_tabla_en_doc()`](https://gbifes.github.io/metages-toolkit/reference/insertar_tabla_en_doc.md)
   : Insertar una tabla en un documento Word
 
-## Extraer datos externos a MetaGES
+## Extraer datos y crear gráficas externas a MetaGES
 
 - [`get_top10_countries_rgbif()`](https://gbifes.github.io/metages-toolkit/reference/get_top10_countries_rgbif.md)
   : Top 10 paises con mayor numero de registros en GBIF
 - [`get_top_publishing_countries_gbif()`](https://gbifes.github.io/metages-toolkit/reference/get_top_publishing_countries_gbif.md)
   : Top paises publicadores de datos en GBIF
+- [`conteo_registros_por_taxon()`](https://gbifes.github.io/metages-toolkit/reference/conteo_registros_por_taxon.md)
+  : Conteo de registros GBIF agregados por nivel taxonomico
+- [`crear_plots_evolucion_basisOfRecord()`](https://gbifes.github.io/metages-toolkit/reference/crear_plots_evolucion_basisOfRecord.md)
+  : Evolucion anual de registros GBIF por naturaleza (Observaciones vs
+  Especimenes)
+- [`extraer_tipos_recursos_ipt_pais()`](https://gbifes.github.io/metages-toolkit/reference/extraer_tipos_recursos_ipt_pais.md)
+  : Numero de juegos de datos por pais publicador divididos por tipo de
+  recurso.
+- [`extraer_resumen_taxonomico_gbif()`](https://gbifes.github.io/metages-toolkit/reference/extraer_resumen_taxonomico_gbif.md)
+  : Tabla resumen taxonomico de registros GBIF publicados por Espanha

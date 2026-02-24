@@ -12,13 +12,13 @@
 ## Citation
 
 Perez Perez R (2026). *metagesToolkit: Herramientas internas para
-METAGES*. R package version 1.1.6,
+METAGES*. R package version 1.1.8,
 <https://gbifes.github.io/metages-toolkit>.
 
     @Manual{,
       title = {metagesToolkit: Herramientas internas para METAGES},
       author = {Ruben {Perez Perez}},
       year = {2026},
-      note = {R package version 1.1.6},
+      note = {R package version 1.1.8},
       url = {https://gbifes.github.io/metages-toolkit},
     }

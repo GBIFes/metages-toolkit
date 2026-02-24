@@ -20,7 +20,15 @@ crear_mapa_entidades(tipo_coleccion = NULL)
 
 ## Value
 
-Un objeto `ggplot`.
+Invisiblemente, una lista con:
+
+- plot:
+
+  Objeto `ggplot`.
+
+- data_map:
+
+  data.frame con los datos tras filtros.
 
 ## Details
 

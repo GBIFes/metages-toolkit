@@ -23,14 +23,18 @@ avanzada.
 
 ## Datos de ejemplo
 
+Desplegar datos
+
+  
+
 Para los ejemplos se utilizan datos extraídos del Registro de
 colecciones mediante la función `extraer_colecciones_mapa()$data`.
 
 ## Mapa básico por estado de publicación
 
-Ejemplo mínimo de uso de
+En `metagesToolkit` existe otra función para crear mapas usando
 [`crear_mapa_entidades()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa_entidades.md),
-mostrando la distribución espacial de las entidades del Registro segun
+que muestra la distribución espacial de las entidades del Registro segun
 su estado de publicación en GBIF.
 
 ![](figures/mapa-entidades.png)

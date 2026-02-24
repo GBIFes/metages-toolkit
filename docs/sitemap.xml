@@ -1,15 +1,18 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://gbifes.github.io/metages-toolkit/404.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/articles/crear-mapas.html</loc></url>
+<url><loc>https://gbifes.github.io/metages-toolkit/articles/dashboard-metricas.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/articles/guia-uso-dev.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/articles/guia-uso-usr.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/articles/index.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/authors.html</loc></url>
+<url><loc>https://gbifes.github.io/metages-toolkit/dependency_map.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/index.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/LICENSE-text.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/pkgnet-report.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/compute_legend_params.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/conectar_metages.html</loc></url>
+<url><loc>https://gbifes.github.io/metages-toolkit/reference/conteo_registros_por_taxon.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/crear_barplot_colecciones_por_anno.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/crear_barplot_publicacion.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/crear_barplot_top_colecciones_pub.html</loc></url>
@@ -18,8 +21,11 @@
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/crear_mapa_entidades.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/crear_mapa_simple.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/crear_piechart.html</loc></url>
+<url><loc>https://gbifes.github.io/metages-toolkit/reference/crear_plots_evolucion_basisOfRecord.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/crear_tabla_colecciones.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/extraer_colecciones_mapa.html</loc></url>
+<url><loc>https://gbifes.github.io/metages-toolkit/reference/extraer_resumen_taxonomico_gbif.html</loc></url>
+<url><loc>https://gbifes.github.io/metages-toolkit/reference/extraer_tipos_recursos_ipt_pais.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/get_basemap_es.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/get_top10_countries_rgbif.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/get_top_publishing_countries_gbif.html</loc></url>
