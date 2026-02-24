@@ -207,5 +207,9 @@ crear_mapa_entidades <- function(tipo_coleccion = NULL) {
     " entidades representadas"
   )
   
-  return(plot)
+  
+  return(invisible(list(
+    plot = plot,
+    data_map = data_points)))
+  
 }

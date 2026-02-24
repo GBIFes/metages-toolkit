@@ -37,7 +37,7 @@
 #' @import jsonlite
 #' @import httr
 #' @import dplyr
-#' @import purrr
+#' @importFrom purrr map_dfr
 #'
 #' @export
 extraer_tipos_recursos_ipt_pais <- function(country = "ES") {
