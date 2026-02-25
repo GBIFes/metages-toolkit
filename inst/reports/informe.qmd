@@ -67,6 +67,7 @@ library(giscoR, quietly = TRUE, warn.conflicts = FALSE)
 library(ggrepel)
 library(forcats)
 library(processx)
+library(tibble)
 
 
 
@@ -1426,7 +1427,44 @@ fitoplancton, zooplancton, etc.
 
 Dentro de cada categoría, se organizan por orden alfabético de la institución o proyecto. Aparecen indicados, además, los centros y proyectos cuyos datos están publicados a través del Nodo Nacional de Información en Biodiversidad.
 
-TABLA AQUI (LEYENDA TABLAS)
+```{r}
+#| label: tbl-leyenda-anexo
+#| tbl-cap: "Leyenda de las tablas del Anexo I"
+#| message: false
+#| warning: false
+
+
+tabla_leyenda <- tibble(
+  Campo = c(
+    "Institución / Proyecto",
+    "Colección / Base de datos",
+    "Código",
+    "Localidad",
+    "Ejemplares / Registros (año)",
+    "Registros publicados en GBIF (año)",
+    "Informat.",
+    "Georref.",
+    "Tipo (tipos de recursos)"
+  ),
+  `Descripción` = c(
+    "Nombre de la entidad: institución, centro o proyecto general.",
+    "Nombre de la colección o base de datos.",
+    "Código de la colección o base de datos. Se indican también los códigos de las colecciones que publican más de un recurso.",
+    "Municipio (en su caso, la provincia figura entre paréntesis).",
+    "Número de ejemplares o registros de la colección. En ocasiones no está disponible y figura un guión (-). A veces la colección, que suele ser un herbario, incluye imágenes y aparece su número separado por una barra.
+(Entre paréntesis figura la última actualización de metadatos en el Registro).",
+    "Registros o juego de datos publicados en GBIF. En las colecciones o bases de datos que tengan varios recursos publicados aparece la suma de estos juegos de datos.
+(Entre paréntesis figura la última actualización de datos en el Portal).",
+    "Porcentaje de datos informatizados utilizando las aplicaciones Elysia, Zoorbar, Herbar u otros sistemas para manejar sus registros.
+En ocasiones no están informatizados y figura un guión (-).",
+    "Porcentaje de datos georreferenciados.
+En ocasiones no están georreferenciados y figura un guión (-).",
+    "BD: Base de Datos (virtual). CB: Colección Biológica (físico)."
+  )
+)
+
+ft_tbl(tabla_leyenda)
+```
 
 ## Colecciones y bases de datos zoológicas
 

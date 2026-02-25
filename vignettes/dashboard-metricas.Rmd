@@ -11,7 +11,60 @@ vignette: >
 
 ## Introducción
 
-Esta vignette muestra distintas gráficas para mostrar métricas de MetaGES, usando el paquete `metagesToolkit` mediante las siguientes [funciones](reference/index.html) .
+Esta vignette muestra distintas tablas y gráficas para mostrar métricas de MetaGES, usando el paquete `metagesToolkit` mediante las siguientes [funciones](../reference/index.html) .
+
+## Métricas básicas de MetaGES
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(DT)
+library(dplyr)
+library(bit64)
+
+
+colbd <- readRDS("../inst/reports/data/mapas/mapa-total.rds")
+reg <- readRDS("../inst/reports/data/vistas_sql/registros.rds")
+
+
+n_entidades_actual <- colbd %>% select (institucion_proyecto) %>% distinct() %>% nrow()
+n_entidades_actual_pub <- colbd %>% filter(publica_en_gbif == 1) %>% select(institucion_proyecto) %>% distinct() %>% nrow()
+n_colbd_actual <- nrow(colbd)
+n_colbd_actual_pub <- colbd %>% filter(publica_en_gbif == 1) %>% nrow()
+n_recursos_actual <- nrow(reg)
+n_registros_actual <- sum(as.integer(reg$numberOfRecords)) %>% format(decimal.mark = ",", big.mark = ".")
+
+dt <- tibble(
+  Indicador = c(
+    "Nº de entidades",
+    "Nº de entidades que publican",
+    "Nº de colecciones y bases de datos",
+    "Nº de colecciones y bases de datos que publican",
+    "Nº de juegos de datos publicados",
+    "Nº de registros publicados"
+  ),
+  Valor = c(
+    n_entidades_actual,
+    n_entidades_actual_pub,
+    n_colbd_actual,
+    n_colbd_actual_pub,
+    n_recursos_actual,
+    n_registros_actual
+  )
+)
+
+
+
+datatable(
+  dt,
+  options = list(
+    pageLength = 10,
+    lengthMenu = c(5, 10, 25, 50),
+    scrollX = TRUE,
+    autoWidth = FALSE
+  ),
+  width = "100%"
+)
+
+```
 
 
 ## Número de entidades según su estado de publicacion
