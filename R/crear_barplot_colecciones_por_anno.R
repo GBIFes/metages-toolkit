@@ -103,12 +103,14 @@ crear_barplot_colecciones_por_anno <- function(rdspath) {
       legend.position = "bottom",
       panel.grid.major.x = element_blank(),
       panel.grid.minor.x = element_blank(),
-      axis.text.x = element_text(
+      axis.text.x = element_text(size = 12,
         angle = 45,
         hjust = 1,
         vjust = 1
       ),
-      axis.text.y = element_text(size = 10),
-      axis.title.y = element_text(size = 13)
+      axis.text.y = element_text(size = 12),
+      axis.title.y = element_text(size = 16),
+      axis.title.x = element_text(size = 16),
+      legend.text  = ggplot2::element_text(size = 13)
     )
 }

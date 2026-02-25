@@ -76,7 +76,11 @@ crear_barplot_top_colecciones_pub <- function(rds_path) {
         )(value)
       ),
       hjust = -0.05,
-      size = 3
+      size = 4.8
+    ) +
+    scale_x_continuous(
+      expand = expansion(mult = c(0, 0.15)),
+      labels = scales::label_number(big.mark = ".", decimal.mark = ",")
     ) +
     labs(
       x = x_label,
@@ -87,7 +91,12 @@ crear_barplot_top_colecciones_pub <- function(rds_path) {
       panel.grid.major.y = element_blank(),
       panel.grid.minor = element_blank(),
       axis.text.x  = element_blank(),
-      axis.ticks.x = element_blank()
+      axis.ticks.x = element_blank(),
+      
+      
+      axis.text.y = element_text(size = 17),
+      axis.title.x = element_text(size = 19),
+      axis.title.y = element_text(size = 19)
     )
   
   return(plot)

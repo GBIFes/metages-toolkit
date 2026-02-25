@@ -9,6 +9,7 @@
 # - Las imágenes y tablas se SOBREESCRIBEN en cada ejecución.
 # ============================================================
 
+
 library(metagesToolkit)
 library(ggplot2)
 library(dplyr)
@@ -423,29 +424,33 @@ save_plot(plot = crear_barplot_colecciones_por_anno(rdspath = dir_data_sql),
 
 # Registros por sector
 save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/registros_por_sector.rds"),
-                                 categoria = "Sectores",
-                                 valor = "Nº registros publicados"),
+                                categoria = "Sectores",
+                                valor = "Nº registros publicados",
+                                titulo = "Proporción de registros publicados por sector"),
           filename = "registros_por_sector.png",
           width = 12)
 
 # Recursos por sector
 save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/registros_por_sector.rds"),
-                                 categoria = "Sectores",
-                                 valor = "Nº recursos"),
+                                categoria = "Sectores",
+                                valor = "Nº recursos",
+                                titulo = "Proporción de recursos por sector"),
           filename = "recursos_por_sector.png",
           width = 12)
 
 # Bases de datos por categoria
 save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/colecciones_bd_por_disciplina.rds"),
-                                 categoria = "disciplina_def",
-                                 valor = "numero_colecciones"),
+                                categoria = "disciplina_def",
+                                valor = "numero_colecciones",
+                                titulo = "Proporción de bases de datos por disciplina"),
           filename = "colecciones_bd_por_disciplina.png",
           width = 12)
 
 # Colecciones y bases de datos por categoria
 save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/colecciones_por_disciplina.rds"),
                                  categoria = "disciplina_def",
-                                 valor = "numero_colecciones"),
+                                 valor = "numero_colecciones",
+                                titulo = "Proporción de coleciones y bases de datos por disciplina"),
           filename = "colecciones_por_disciplina.png",
           width = 12)
 

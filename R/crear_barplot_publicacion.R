@@ -82,7 +82,7 @@ crear_barplot_publicacion <- function(rdspath,
       ggplot2::aes(label = .data[[total]]),
       position = ggplot2::position_stack(vjust = 0.5),
       color = "white",
-      size = 4.2
+      size = 5
     ) +
     ggplot2::scale_fill_manual(
       values = c(
@@ -99,6 +99,10 @@ crear_barplot_publicacion <- function(rdspath,
     ggplot2::theme(
       legend.position = "bottom",
       panel.grid.major.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = 13),
+      axis.text.y = ggplot2::element_text(size = 15),
+      axis.text.x = ggplot2::element_text(size = 12),
+      axis.title.x = ggplot2::element_text(size = 16),
+      legend.text  = ggplot2::element_text(size = 13)
     )
 }
+

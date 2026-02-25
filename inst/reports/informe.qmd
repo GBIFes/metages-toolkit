@@ -55,6 +55,7 @@ bibliography: []
 #devtools::load_all(here::here())
 library(metagesToolkit)
 
+
 library(dplyr)
 library(ggplot2)
 library(sf)
@@ -863,7 +864,7 @@ invertebrados, representadas en función de la localidad donde se ubica la entid
 
 Destaca la colección *`r top_col_inv[1,1]`* (`r top_col_inv[1,2]`) del *`r top_col_inv[1,4]`*, con `r top_col_inv[1,3]` ejemplares; seguida de las coleccines *`r top_col_inv[2,1]`* (`r top_col_inv[2,2]`), con `r top_col_inv[2,3]` ejemplares y *`r top_col_inv[3,1]`* (`r top_col_inv[3,2]`), con `r top_col_inv[3,3]` ejemplares. La @fig-barplot-inv muestra las 10 colecciones de vertebrados que más ejemplares albergan ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-![Las 10 colecciones zoológicas de invertebrados que más ejemplares albergan en el Registro.](assets/images/generated/barplot-colecciones-inv.png){#fig-barplot-inv}
+![Las 10 colecciones zoológicas de invertebrados que más registros albergan en el Registro.](assets/images/generated/barplot-colecciones-inv.png){#fig-barplot-inv}
 
 ### Colecciones zoológicas: vertebrados
 
@@ -884,7 +885,7 @@ vertebrados, representadas en función de la localidad donde se ubica la entidad
 
 De las grandes colecciones zoológicas de vertebrados del Registro, destaca en primer lugar *`r top_col_ver[1,1]`* (`r top_col_ver[1,2]`) del *`r top_col_ver[1,4]`*, con `r top_col_ver[1,3]` ejemplares; seguida de *`r top_col_ver[2,1]`* (`r top_col_ver[2,2]`), con `r top_col_ver[2,3]` ejemplares y de *`r top_col_ver[3,1]`* (`r top_col_ver[3,2]`), con `r top_col_ver[3,3]` ejemplares. La @fig-barplot-ver muestra las 10 colecciones de vertebrados que más ejemplares albergan ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-![Las 10 colecciones zoológicas de vertebrados que más ejemplares albergan en el Registro.](assets/images/generated/barplot-colecciones-vert.png){#fig-barplot-ver}
+![Las 10 colecciones zoológicas de vertebrados que más registros albergan en el Registro.](assets/images/generated/barplot-colecciones-vert.png){#fig-barplot-ver}
 
 ### Colecciones zoológicas conjuntas de invertebrados y vertebrados
 
@@ -911,7 +912,7 @@ Registro, destaca en primer lugar *`r top_col_invver[1,1]`* (`r top_col_invver[1
 
 En la @fig-barplot-zoo podemos ver las diez colecciones zoológicas que más registros publican en los portales de GBIF ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-![](assets/images/generated/barplot-colecciones-zoo.png){#fig-barplot-zoo}
+![Las 10 colecciones zoológicas que más registros publican en GBIF.](assets/images/generated/barplot-colecciones-zoo.png){#fig-barplot-zoo}
 
 ## COLECCIONES BOTÁNICAS
 
@@ -980,7 +981,7 @@ En @fig-map-col-pla y @fig-map-col-pla-pub se muestran las colecciones botánica
 
 De las grandes colecciones botánicas de plantas del Registro, destaca en primer lugar *`r top_col_pla[1,1]`* (`r top_col_pla[1,2]`) del *`r top_col_pla[1,4]`*, con `r top_col_pla[1,3]` ejemplares; seguida de *`r top_col_pla[2,1]`* (`r top_col_pla[2,2]`), con `r top_col_pla[2,3]` ejemplares y de *`r top_col_pla[3,1]`* (`r top_col_pla[3,2]`), con `r top_col_pla[3,3]` ejemplares. La @fig-barplot-pla muestra las 10 colecciones botánicas que más ejemplares albergan ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-![Las 10 colecciones botánicas que más ejemplares albergan en el Registro.](assets/images/generated/barplot-colecciones-pla.png){#fig-barplot-pla}
+![Las 10 colecciones botánicas que más registros albergan en el Registro.](assets/images/generated/barplot-colecciones-pla.png){#fig-barplot-pla}
 
 ### Colecciones de algas
 
@@ -1020,7 +1021,7 @@ En la @fig-map-col-hong y @fig-map-col-hong-pub se muestran las colecciones de h
 
 De las grandes colecciones de hongos y líquenes del Registro, destaca en primer lugar *`r top_col_hong[1,1]`* (`r top_col_hong[1,2]`) del *`r top_col_hong[1,4]`*, con `r top_col_hong[1,3]` ejemplares; seguida de *`r top_col_hong[2,1]`* (`r top_col_hong[2,2]`), con `r top_col_hong[2,3]` ejemplares y de *`r top_col_hong[3,1]`* (`r top_col_hong[3,2]`), con `r top_col_hong[3,3]` ejemplares. La @fig-barplot-hong muestra las 10 colecciones de hongos que más ejemplares albergan ordenadas por nº de registros. En la @sec-anexo-1 figura el listado de estas colecciones asociadas a sus códigos y entidades.
 
-![Las 10 colecciones de hongos y líquenes que más ejemplares albergan en el Registro.](assets/images/generated/barplot-colecciones-hong.png){#fig-barplot-hong}
+![Las 10 colecciones de hongos y líquenes que más registros albergan en el Registro.](assets/images/generated/barplot-colecciones-hong.png){#fig-barplot-hong}
 
 ### Colecciones Botánicas mixtas
 

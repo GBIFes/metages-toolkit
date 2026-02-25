@@ -28,3 +28,41 @@ Se descarga desde https://www.gbif.org/occurrence/taxonomy?basis_of_record=PRESE
 - evolucion_registros_publicados.png
 Generada por Katia Cezon anualmente desde su tabla de datos personal.
 
+- mapa_portal_all_bor.png
+Generada mediante montaje de imagenes extraidas de:
+https://registros.gbif.es/occurrences/search?fq=(basis_of_record%3A%22HUMAN_OBSERVATION%22%20OR%20basis_of_record%3A%22LIVING_SPECIMEN%22%20OR%20basis_of_record%3A%22MACHINE_OBSERVATION%22%20OR%20basis_of_record%3A%22MATERIAL_CITATION%22%20OR%20basis_of_record%3A%22MATERIAL_SAMPLE%22%20OR%20basis_of_record%3A%22OCCURRENCE%22%20OR%20basis_of_record%3A%22PRESERVED_SPECIMEN%22)&fq=country%3A%22Spain%22&fq=-data_resource_uid%3A%22dr603%22&lang=en&q=*%3A*&qc=-_nest_parent_%3A*&qualityProfile=LA#tab_mapView
+
+- mapa_portal_obs.png
+Generada mediante montaje de imagenes extraidas de:
+
+- mapa_portal_spec.png
+Generada mediante montaje de imagenes extraidas de:
+
+- mapa_portal_zoo.png
+Generada mediante montaje de imagenes extraidas de:
+
+- mapa_portal_bot.png
+Generada mediante montaje de imagenes extraidas de:
+
+
+
+
+## MAPAS DEL PORTAL DE DATOS
+
+El zoom correcto será una combinación de:
+  - Zoom del portal que controla el tamaño de los puntos. 
+  - Zoom de la pantalla (ctrl+rueda_del_raton).
+  
+Instrucciones para cuadrar imagen:  
+  - Poner URL deseada del portal (no el portal espacial) en el buscador
+  - Tener el Zoom de tu pantalla al 100% en la web del portal
+  - Clicar en el icono de "Pantalla completa" del mapa
+  - Parametro "Size" del portal = 1
+  - Centrar mapa en Península Ibérica
+  - 4 clicks al +
+  - Reducir el Zoom de tu pantalla usando ctrl+rueda_del_raton al 50% (esto mantiene el tamaño de los puntos)
+  - Hacer y guardar pantallazo "rectangulo" a la Península (amplio, por si hay que recortar)
+  - Centrar mapa en Canarias
+  - Hacer y guardar pantallazo "forma libre" a las islas (evitando tierra)
+  - Unir con Photoshop magic, incluir rectangulo blanco para canarias
+

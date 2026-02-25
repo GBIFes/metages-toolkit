@@ -4,7 +4,7 @@
 \alias{crear_piechart}
 \title{Crear grafico de sectores (pie chart) a partir de tablas agregadas}
 \usage{
-crear_piechart(rds_path, categoria, valor)
+crear_piechart(rds_path, categoria, valor, titulo = NULL)
 }
 \arguments{
 \item{rds_path}{Ruta a un archivo \code{.rds} que contiene un

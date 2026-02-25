@@ -32,7 +32,7 @@
 #' @import ggplot2
 #'
 #' @export
-crear_piechart <- function(rds_path, categoria, valor) {
+crear_piechart <- function(rds_path, categoria, valor, titulo = NULL) {
 
   data <- readRDS(rds_path)
     
@@ -129,10 +129,15 @@ crear_piechart <- function(rds_path, categoria, valor) {
         override.aes = list(
           shape = 21,
           alpha = 0.8,        # visible en la leyenda aunque alpha=0 en el geom
-          size  = 5,
+          size  = 10,
           colour = "grey70" # borde del circulo (opcional)
         )
       )
+    ) +
+    
+    # Titulo y subtitulo del grafico dinamicos
+    labs(
+      title = titulo
     ) +
     
     theme_minimal() +
@@ -143,7 +148,15 @@ crear_piechart <- function(rds_path, categoria, valor) {
       panel.grid = element_blank(),
       legend.title = element_blank(),
       plot.background  = element_rect(fill = "white", color = NA),
-      panel.background = element_rect(fill = "white", color = NA)
+      panel.background = element_rect(fill = "white", color = NA),
+      legend.text  = element_text(size = 16),
+      plot.title.position = "plot",
+      plot.title = element_text(
+        hjust = 0.5,
+        size = 17,
+        face = "bold",
+        color = "#4e4d47"
+      )
     )
   
 }

@@ -14,7 +14,6 @@ Repositorio de uso interno para leer, analizar y actualizar el Registro de Insti
 - [Descripción](#descripción)
 - [Instalación](#instalación)
 - [Uso](#uso)
-  - [Añadir credenciales](#añadir-credenciales)
   - [Generar informe](#generar-informe)
   - [Crear mapas](#crear-mapas)
 - [Estructura del repositorio](#estructura-del-repositorio)
