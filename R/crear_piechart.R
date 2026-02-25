@@ -10,6 +10,7 @@
 #'   los sectores del grafico (disciplinas o sectores).
 #' @param valor Nombre de la columna numérica que contiene el peso de cada
 #'   categoría (por ejemplo, numero de recursos o colecciones).
+#' @param titulo Titulo del grafico.
 #'
 #' @details
 #' La funcion espera datos ya agregados por categoria. Si existen varias filas
@@ -25,7 +26,8 @@
 #' crear_piechart(
 #'  rds_path = ruta_a_archivo_rds,
 #'  categoria = "sector",
-#'  valor = "n_recursos")
+#'  valor = "n_recursos",
+#'  titulo = "Proporción de recursos por sector")
 #' }
 #'
 #' @import dplyr

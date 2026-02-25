@@ -15,6 +15,8 @@ los sectores del grafico (disciplinas o sectores).}
 
 \item{valor}{Nombre de la columna numérica que contiene el peso de cada
 categoría (por ejemplo, numero de recursos o colecciones).}
+
+\item{titulo}{Titulo del grafico.}
 }
 \value{
 Un objeto \code{ggplot} que representa un grafico de sectores.
@@ -33,7 +35,8 @@ las proporciones.
 crear_piechart(
  rds_path = ruta_a_archivo_rds,
  categoria = "sector",
- valor = "n_recursos")
+ valor = "n_recursos",
+ titulo = "Proporción de recursos por sector")
 }
 
 }
