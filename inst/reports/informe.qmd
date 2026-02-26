@@ -578,9 +578,9 @@ ft_tbl(
 )
 ```
 
-~~En la gráfica 3.3.1.b.~~ podemos ver la progresión del número de registros publicados en GBIF desde 2005 hasta `r mes_anno_actual` hasta alcanzar los `r n_registros_actual` registros actuales.
+En la @fig-evo-reg podemos ver la progresión del número de registros publicados en GBIF desde 2005 hasta `r mes_anno_actual` hasta alcanzar los `r n_registros_actual` registros actuales.
 
-GRAFICA AQUI (Katia la hace con sus tabla de datos)
+![Proporción de colecciones biológicas y bases de datos en España que participan en GBIF, en función de su tipo de datos.](assets/images/external/evolucion_numero_registros_publicados.jpg){#fig-evo-reg}
 
 Otro punto de vista bajo el que analizar las entidades, colecciones y datos de
 biodiversidad del Registro, es el ámbito o sector en el que se enmarcan las mismas, y así se han distinguido los siguientes:
@@ -1313,20 +1313,17 @@ nuevos" y masivos, mientras que las colecciones proporcionan series temporales m
 
 ## Comparativa espacial
 
-Si observamos en un mapa de España las instituciones y recursos representados en el
-Registro, se observa que de las 17 comunidades autónomas la representación es muy
-heterogénea. Además, las ciudades autónomas de Ceuta y Melilla no disponen de ninguna
-entidad con colecciones ni recursos asociados al Registro. Las comunidades de Madrid y Cataluña están a la cabeza en cuanto a representación institucional de entidades, colecciones, registros asociados y registros publicados.
+Si observamos en un mapa de España las instituciones y recursos representados en el Registro, se observa que de las 17 comunidades autónomas la representación es muy heterogénea. Además, las ciudades autónomas de Ceuta y Melilla no disponen de ninguna entidad con colecciones ni recursos asociados al Registro. Las comunidades de Madrid y Cataluña están a la cabeza en cuanto a representación institucional de entidades, colecciones, registros asociados y registros publicados.
 
-En el mapa 6.3.a. se puede ver la distribución geográfica de los registros publicados en GBIF para España procedente de entidades españolas.
+En la @fig-portal_all_bor se puede ver la distribución geográfica de los registros publicados en GBIF para España procedente de entidades españolas.
 
-MAPA AQUI
+![Distribución geográfica de los registros publicados en GBIF para España procedente de entidades españolas.](assets/images/external/portal_all_bor.png){#fig-portal_all_bor}
 
 ### Observaciones
 
-También se observa un sesgo espacial y taxonómico en la distribución de los datos para los registros de tipo observacional (HumanObservation y MachineObservation), como se puede apreciar en el mapa ~~6.3.1.a. y la @tbl-conteo-registros-observaciones-reinos . Así, las CC.AA. que presentan mayor número de registros basados en observaciones directas o indirectas son Andalucía y Cataluña, seguidas por el País Vasco (mapa 6.3.1.a.). Las capturas procedentes de dispositivos o medios digitales suponen una representación ínfima de las observaciones (y tienen una acumulación importante en la provincia de Huesca). Los grupos taxonómicos más representados en observaciones son, como cabía esperar, animales y plantas, muy por encima en número de registros de los otros grupos taxonómicos como puede apreciarse en la @tbl-conteo-registros-observaciones-reinos .
+También se observa un sesgo espacial y taxonómico en la distribución de los datos para los registros de tipo observacional (HumanObservation y MachineObservation), como se puede apreciar en el @fig-portal_obs y la @tbl-conteo-registros-observaciones-reinos . Así, las CC.AA. que presentan mayor número de registros basados en observaciones directas o indirectas son Andalucía y Cataluña, seguidas por el País Vasco ( @fig-portal_obs ). Las capturas procedentes de dispositivos o medios digitales suponen una representación ínfima de las observaciones (y tienen una acumulación importante en la provincia de Huesca). Los grupos taxonómicos más representados en observaciones son, como cabía esperar, animales y plantas, muy por encima en número de registros de los otros grupos taxonómicos como puede apreciarse en la @tbl-conteo-registros-observaciones-reinos .
 
-MAPA AQUI
+![Distribución geográfica de los registros publicados sobre observaciones directas o indirectas (HumanObservation) o capturas realizadas por algún dispositivo o medio digital (MachineObservation) procedentes de entidades españolas.](assets/images/external/portal_obs.png){#fig-portal_obs}
 
 ```{r}
 #| label: tbl-conteo-registros-observaciones-reinos
@@ -1342,7 +1339,7 @@ safe_ft_tbl(
 
 ### Especímenes preservados en colecciones
 
-MAPA AQUI
+![Distribución geográfica de los registros publicados sobre especímenes PreservedSpecimen), muestras (MaterialSample) y registros fósiles (FossilSpecimen) preservados en colecciones biológicas procedentes de entidades españolas.](assets/images/external/portal_spec.png){#fig-portal_spec}
 
 ```{r}
 #| label: tbl-conteo-registros-especimenes-reinos
@@ -1356,11 +1353,11 @@ safe_ft_tbl(
 
 #### Colecciones zoológicas
 
-MAPA AQUI
+![Distribución geográfica de los registros publicados sobre especímenes PreservedSpecimen), muestras (MaterialSample) y registros fósiles (FossilSpecimen) preservados en colecciones biológicas procedentes de entidades españolas.](assets/images/external/portal_zoo.png){#fig-portal_zoo}
 
 ```{r}
 #| label: tbl-conteo-registros-especimenes-zoo
-#| tbl-cap: "Distribución en grupos taxonómicos Distribución en grupos taxonómicos de los registros publicados en GBIF.ORG para especímenes preservados en colecciones zoológicas."
+#| tbl-cap: "Distribución en grupos taxonómicos de los registros publicados en GBIF.ORG para especímenes preservados en colecciones zoológicas."
 
 safe_ft_tbl(
   conteo_registros_por_taxon(facet = "phylumKey", taxonKey = 1)
@@ -1370,11 +1367,11 @@ safe_ft_tbl(
 
 #### Colecciones botánicas
 
-MAPA AQUI
+![Distribución geográfica de los registros botánicos (reino Plantae) publicados sobre especímenes (PreservedSpecimen), muestras (MaterialSample) y registros fósiles (FossilSpecimen) preservados en colecciones biológicas procedentes de entidades españolas.](assets/images/external/portal_plant.png){#fig-portal_plant}
 
 ```{r}
 #| label: tbl-conteo-registros-especimenes-pla
-#| tbl-cap: "Distribución en grupos taxonómicos Distribución en grupos taxonómicos de los registros publicados en GBIF.ORG para especímenes preservados en colecciones botánicas de plantas"
+#| tbl-cap: "Distribución en grupos taxonómicos de los registros publicados en GBIF.ORG para especímenes preservados en colecciones botánicas de plantas"
 
 safe_ft_tbl(
   conteo_registros_por_taxon(facet = "phylumKey", taxonKey = 6)
@@ -1383,9 +1380,12 @@ safe_ft_tbl(
 ```
 
 
+![Distribución geográfica de los registros botánicos (reino Fungi) publicados sobre especímenes (PreservedSpecimen), muestras (MaterialSample) y registros fósiles (FossilSpecimen) preservados en colecciones biológicas procedentes de entidades españolas.](assets/images/external/portal_hong.png){#fig-portal_hong}
+
+
 ```{r}
 #| label: tbl-conteo-registros-especimenes-hong
-#| tbl-cap: "Distribución en grupos taxonómicos Distribución en grupos taxonómicos de los registros publicados en GBIF.ORG para especímenes preservados en colecciones botánicas de hongos"
+#| tbl-cap: "Distribución en grupos taxonómicos de los registros publicados en GBIF.ORG para especímenes preservados en colecciones botánicas de hongos"
 
 safe_ft_tbl(
   conteo_registros_por_taxon(facet = "phylumKey", taxonKey = 5)
@@ -1393,8 +1393,7 @@ safe_ft_tbl(
 
 ```
 
-Parejo al volumen de datos de observaciones, su cobertura espacial es considerable,
-más teniendo en cuenta el poco tiempo transcurrido desde que esta fuente de información resulta cuantitativamente significativa. También lo es la diferencia de patrones en cuanto a distribución espacial de los registros que presenta respecto de los datos procedentes de colecciones. Si los especímenes de colecciones —generados casi exclusivamente como fruto de la investigación científica— se concentran en zonas de mayor riqueza y mejor conservadas (macizos montañosos, espacios protegidos, zonas no explotadas agrícolamente, etc.), las observaciones van impulsadas por la actividades conocidas colectivamente como de ciencia ciudadana o participativa. Así, Cataluña, Madrid y País Vasco aparecen particularmente "observadas" ~~(ver Mapa 6.3.1.a.)~~. A este patrón de observaciones se superponen los datos de censos y seguimientos promovidos desde las administraciones. Es conspicuo el caso de los datos
+Parejo al volumen de datos de observaciones, su cobertura espacial es considerable, más teniendo en cuenta el poco tiempo transcurrido desde que esta fuente de información resulta cuantitativamente significativa. También lo es la diferencia de patrones en cuanto a distribución espacial de los registros que presenta respecto de los datos procedentes de colecciones. Si los especímenes de colecciones —generados casi exclusivamente como fruto de la investigación científica— se concentran en zonas de mayor riqueza y mejor conservadas (macizos montañosos, espacios protegidos, zonas no explotadas agrícolamente, etc.), las observaciones van impulsadas por la actividades conocidas colectivamente como de ciencia ciudadana o participativa. Así, Cataluña, Madrid y País Vasco aparecen particularmente "observadas" ~~(ver Mapa 6.3.1.a.)~~. A este patrón de observaciones se superponen los datos de censos y seguimientos promovidos desde las administraciones. Es conspicuo el caso de los datos
 publicados desde la Junta de Andalucía.
 
 ## Síntesis y conclusiones
