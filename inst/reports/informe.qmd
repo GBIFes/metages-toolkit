@@ -130,6 +130,10 @@ ft_tbl <- function(x, caption = NULL) {
   # Footer vacío para mantener separación visual
   ft <- flextable::add_footer_lines(ft, values = "")
   
+    # Formato
+  ft <- flextable::bold(ft, part = "header") 
+  ft <- flextable::fontsize(ft, size = 10, part = "all")
+  
   ft
 }
 

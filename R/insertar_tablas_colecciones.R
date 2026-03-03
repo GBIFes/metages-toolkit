@@ -113,6 +113,8 @@ crear_flextable_colecciones <- function(tabla) {
   
   ft <- flextable::flextable(tabla)
   
+  ft <- flextable::fontsize(ft,  size = 10, part = "all")
+  
   ft <- flextable::compose(
     ft,
     part = "body",
@@ -121,7 +123,8 @@ crear_flextable_colecciones <- function(tabla) {
       flextable::hyperlink_text(
         x   = institucion_proyecto,
         url = url_institucion,
-        style = officer::fp_text(color = "blue", underlined = TRUE)
+        props = officer::fp_text(color = "#467886", 
+                                 underlined = TRUE)
       )
     )
   )
@@ -134,7 +137,8 @@ crear_flextable_colecciones <- function(tabla) {
       flextable::hyperlink_text(
         x   = coleccion_base,
         url = coleccion_url,
-        style = officer::fp_text(color = "blue", underlined = TRUE)
+        props = officer::fp_text(color = "#467886", 
+                                 underlined = TRUE)
       )
     )
   )
