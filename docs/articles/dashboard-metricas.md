@@ -2,40 +2,50 @@
 
 ## Introducción
 
-Esta vignette muestra distintas gráficas para mostrar métricas de
-MetaGES, usando el paquete `metagesToolkit` mediante las siguientes
-[funciones](https://gbifes.github.io/metages-toolkit/articles/reference/index.md)
+Esta vignette muestra distintas tablas y gráficas para mostrar métricas
+de MetaGES, usando el paquete `metagesToolkit` mediante las siguientes
+[funciones](https://gbifes.github.io/metages-toolkit/reference/index.md)
 .
 
-## Número de entidades según su estado de publicacion
+## Métricas básicas de MetaGES
+
+## Entidades
+
+### Número de entidades según su estado de publicacion
 
 ![](figures/entidades_per_publican.png)
 
-## Número de colecciones y bases de datos según su estado de publicacion
+## Colecciones y Bases de datos
+
+### Número de colecciones y bases de datos según su estado de publicacion
 
 ![](figures/colecciones_per_publican.png)
 
-## Evolución del número de colecciones y bases de datos registradas por año
+### Evolución del número de colecciones y bases de datos registradas por año
 
 ![](figures/colecciones_per_anno.png)
 
-## Proporción de colecciones y bases de datos por disciplina
+### Proporción de colecciones y bases de datos por disciplina
 
 ![](figures/colecciones_por_disciplina.png)
 
-## Proporción de recursos por sector
+## Recursos (Juegos de datos)
+
+### Proporción de recursos por sector
 
 ![](figures/recursos_por_sector.png)
 
-## Proporción de registros por sector
+## Registros
+
+### Proporción de registros por sector
 
 ![](figures/registros_por_sector.png)
 
-## Evolución del número de registros por basisOfRecord
+### Evolución del número de registros por basisOfRecord
 
 ![](figures/registros_evolucion_basisOfRecord.png)
 
-## Evolución (logarítmica) del número de registros por basisOfRecord
+### Evolución (logarítmica) del número de registros por basisOfRecord
 
 ![](figures/registros_evolucion_basisOfRecord_log.png)
 

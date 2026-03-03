@@ -7,7 +7,6 @@ España
 - [Descripción](#descripci%C3%B3n)
 - [Instalación](#instalaci%C3%B3n)
 - [Uso](#uso)
-  - [Añadir credenciales](#a%C3%B1adir-credenciales)
   - [Generar informe](#generar-informe)
   - [Crear mapas](#crear-mapas)
 - [Estructura del repositorio](#estructura-del-repositorio)

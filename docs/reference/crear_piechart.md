@@ -6,7 +6,7 @@ recursos o colecciones por categoria a partir de una tabla agregada.
 ## Usage
 
 ``` r
-crear_piechart(rds_path, categoria, valor)
+crear_piechart(rds_path, categoria, valor, titulo = NULL)
 ```
 
 ## Arguments
@@ -26,6 +26,10 @@ crear_piechart(rds_path, categoria, valor)
   Nombre de la columna numérica que contiene el peso de cada categoría
   (por ejemplo, numero de recursos o colecciones).
 
+- titulo:
+
+  Titulo del grafico.
+
 ## Value
 
 Un objeto `ggplot` que representa un grafico de sectores.
@@ -43,6 +47,7 @@ if (FALSE) { # \dontrun{
 crear_piechart(
  rds_path = ruta_a_archivo_rds,
  categoria = "sector",
- valor = "n_recursos")
+ valor = "n_recursos",
+ titulo = "Proporción de recursos por sector")
 } # }
 ```

@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">metagesToolkit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,8 +61,11 @@
 
 
 
-
-<div class="row">
+<script src="dashboard-metricas_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="dashboard-metricas_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="dashboard-metricas_files/datatables-binding-0.34.0/datatables.js"></script><link href="dashboard-metricas_files/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="dashboard-metricas_files/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="dashboard-metricas_files/dt-core-1.13.6/js/jquery.dataTables.min.js"></script><link href="dashboard-metricas_files/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+<script src="dashboard-metricas_files/crosstalk-1.2.2/js/crosstalk.min.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Dashboard estático de métricas de MetaGES</h1>
@@ -77,52 +80,75 @@
 <div class="section level2">
 <h2 id="introducción">Introducción<a class="anchor" aria-label="anchor" href="#introducci%C3%B3n"></a>
 </h2>
-<p>Esta vignette muestra distintas gráficas para mostrar métricas de
-MetaGES, usando el paquete <code>metagesToolkit</code> mediante las
-siguientes <a href="reference/index.html">funciones</a> .</p>
+<p>Esta vignette muestra distintas tablas y gráficas para mostrar
+métricas de MetaGES, usando el paquete <code>metagesToolkit</code>
+mediante las siguientes <a href="../reference/index.html">funciones</a>
+.</p>
 </div>
 <div class="section level2">
-<h2 id="número-de-entidades-según-su-estado-de-publicacion">Número de entidades según su estado de publicacion<a class="anchor" aria-label="anchor" href="#n%C3%BAmero-de-entidades-seg%C3%BAn-su-estado-de-publicacion"></a>
+<h2 id="métricas-básicas-de-metages">Métricas básicas de MetaGES<a class="anchor" aria-label="anchor" href="#m%C3%A9tricas-b%C3%A1sicas-de-metages"></a>
 </h2>
+<div id="htmlwidget-ac96cb3ee4656e2e9ec3" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6"],["Nº de entidades","Nº de entidades que publican","Nº de colecciones y bases de datos","Nº de colecciones y bases de datos que publican","Nº de juegos de datos publicados","Nº de registros publicados"],["211","116","489","239","539","39.764.354"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Indicador<\/th>\n      <th>Valor<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"lengthMenu":[5,10,25,50],"scrollX":true,"autoWidth":false,"columnDefs":[{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Indicador","targets":1},{"name":"Valor","targets":2}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div class="section level2">
+<h2 id="entidades">Entidades<a class="anchor" aria-label="anchor" href="#entidades"></a>
+</h2>
+<div class="section level3">
+<h3 id="número-de-entidades-según-su-estado-de-publicacion">Número de entidades según su estado de publicacion<a class="anchor" aria-label="anchor" href="#n%C3%BAmero-de-entidades-seg%C3%BAn-su-estado-de-publicacion"></a>
+</h3>
 <p><img src="figures/entidades_per_publican.png" style="width:100.0%"></p>
 </div>
+</div>
 <div class="section level2">
-<h2 id="número-de-colecciones-y-bases-de-datos-según-su-estado-de-publicacion">Número de colecciones y bases de datos según su estado de
-publicacion<a class="anchor" aria-label="anchor" href="#n%C3%BAmero-de-colecciones-y-bases-de-datos-seg%C3%BAn-su-estado-de-publicacion"></a>
+<h2 id="colecciones-y-bases-de-datos">Colecciones y Bases de datos<a class="anchor" aria-label="anchor" href="#colecciones-y-bases-de-datos"></a>
 </h2>
+<div class="section level3">
+<h3 id="número-de-colecciones-y-bases-de-datos-según-su-estado-de-publicacion">Número de colecciones y bases de datos según su estado de
+publicacion<a class="anchor" aria-label="anchor" href="#n%C3%BAmero-de-colecciones-y-bases-de-datos-seg%C3%BAn-su-estado-de-publicacion"></a>
+</h3>
 <p><img src="figures/colecciones_per_publican.png" style="width:100.0%"></p>
 </div>
-<div class="section level2">
-<h2 id="evolución-del-número-de-colecciones-y-bases-de-datos-registradas-por-año">Evolución del número de colecciones y bases de datos registradas por
+<div class="section level3">
+<h3 id="evolución-del-número-de-colecciones-y-bases-de-datos-registradas-por-año">Evolución del número de colecciones y bases de datos registradas por
 año<a class="anchor" aria-label="anchor" href="#evoluci%C3%B3n-del-n%C3%BAmero-de-colecciones-y-bases-de-datos-registradas-por-a%C3%B1o"></a>
-</h2>
+</h3>
 <p><img src="figures/colecciones_per_anno.png" style="width:100.0%"></p>
 </div>
-<div class="section level2">
-<h2 id="proporción-de-colecciones-y-bases-de-datos-por-disciplina">Proporción de colecciones y bases de datos por disciplina<a class="anchor" aria-label="anchor" href="#proporci%C3%B3n-de-colecciones-y-bases-de-datos-por-disciplina"></a>
-</h2>
+<div class="section level3">
+<h3 id="proporción-de-colecciones-y-bases-de-datos-por-disciplina">Proporción de colecciones y bases de datos por disciplina<a class="anchor" aria-label="anchor" href="#proporci%C3%B3n-de-colecciones-y-bases-de-datos-por-disciplina"></a>
+</h3>
 <p><img src="figures/colecciones_por_disciplina.png" style="width:100.0%"></p>
 </div>
+</div>
 <div class="section level2">
-<h2 id="proporción-de-recursos-por-sector">Proporción de recursos por sector<a class="anchor" aria-label="anchor" href="#proporci%C3%B3n-de-recursos-por-sector"></a>
+<h2 id="recursos-juegos-de-datos">Recursos (Juegos de datos)<a class="anchor" aria-label="anchor" href="#recursos-juegos-de-datos"></a>
 </h2>
+<div class="section level3">
+<h3 id="proporción-de-recursos-por-sector">Proporción de recursos por sector<a class="anchor" aria-label="anchor" href="#proporci%C3%B3n-de-recursos-por-sector"></a>
+</h3>
 <p><img src="figures/recursos_por_sector.png" style="width:100.0%"></p>
 </div>
+</div>
 <div class="section level2">
-<h2 id="proporción-de-registros-por-sector">Proporción de registros por sector<a class="anchor" aria-label="anchor" href="#proporci%C3%B3n-de-registros-por-sector"></a>
+<h2 id="registros">Registros<a class="anchor" aria-label="anchor" href="#registros"></a>
 </h2>
+<div class="section level3">
+<h3 id="proporción-de-registros-por-sector">Proporción de registros por sector<a class="anchor" aria-label="anchor" href="#proporci%C3%B3n-de-registros-por-sector"></a>
+</h3>
 <p><img src="figures/registros_por_sector.png" style="width:100.0%"></p>
 </div>
-<div class="section level2">
-<h2 id="evolución-del-número-de-registros-por-basisofrecord">Evolución del número de registros por basisOfRecord<a class="anchor" aria-label="anchor" href="#evoluci%C3%B3n-del-n%C3%BAmero-de-registros-por-basisofrecord"></a>
-</h2>
+<div class="section level3">
+<h3 id="evolución-del-número-de-registros-por-basisofrecord">Evolución del número de registros por basisOfRecord<a class="anchor" aria-label="anchor" href="#evoluci%C3%B3n-del-n%C3%BAmero-de-registros-por-basisofrecord"></a>
+</h3>
 <p><img src="figures/registros_evolucion_basisOfRecord.png" style="width:100.0%"></p>
 </div>
-<div class="section level2">
-<h2 id="evolución-logarítmica-del-número-de-registros-por-basisofrecord">Evolución (logarítmica) del número de registros por
+<div class="section level3">
+<h3 id="evolución-logarítmica-del-número-de-registros-por-basisofrecord">Evolución (logarítmica) del número de registros por
 basisOfRecord<a class="anchor" aria-label="anchor" href="#evoluci%C3%B3n-logar%C3%ADtmica-del-n%C3%BAmero-de-registros-por-basisofrecord"></a>
-</h2>
+</h3>
 <p><img src="figures/registros_evolucion_basisOfRecord_log.png" style="width:100.0%"></p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="colecciones-biológicas">Colecciones biológicas<a class="anchor" aria-label="anchor" href="#colecciones-biol%C3%B3gicas"></a>

@@ -92,11 +92,11 @@ conteo_registros_por_taxon()
 #>    Filo           `Nº registros`
 #>    <chr>          <chr>         
 #>  1 Tracheophyta   3.133.757     
-#>  2 Arthropoda     903.506       
-#>  3 Chordata       501.660       
+#>  2 Arthropoda     910.159       
+#>  3 Chordata       518.712       
 #>  4 Ascomycota     225.366       
 #>  5 Basidiomycota  157.217       
-#>  6 Mollusca       125.216       
+#>  6 Mollusca       130.290       
 #>  7 Bryophyta      118.810       
 #>  8 Rhodophyta     42.463        
 #>  9 Proteobacteria 32.229        
@@ -119,7 +119,7 @@ conteo_registros_por_taxon(
 #>  6 Pinopsida         25.860        
 #>  7 Jungermanniopsida 15.522        
 #>  8 Lycopodiopsida    8.241         
-#>  9 Ulvophyceae       7.407         
+#>  9 Ulvophyceae       7.408         
 #> 10 Sphagnopsida      6.290         
 #> # ℹ 25 more rows
 

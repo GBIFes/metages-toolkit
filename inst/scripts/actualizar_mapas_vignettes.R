@@ -197,11 +197,11 @@ df %>%
   mutate(
     tipo_body = recode(
       tipo_body,
-      "coleccion" = "Colecciones biológicas",
-      "base_datos" = "Bases de datos"
+      "coleccion" = "Colección biológica",
+      "base de datos" = "Base de datos"
     )
   ) %>%
-  count(`2º nivel: colección / base de datos` = tipo_body) %>%
+  count(`Tipo de colección` = tipo_body) %>%
   mutate(
     Porcentaje = n / sum(n) * 100
   ) %>%
@@ -210,7 +210,7 @@ df %>%
   )  %>%
   bind_rows(
     tibble(
-      `2º nivel: colección / base de datos` = "TOTAL",
+      `Tipo de colección` = "TOTAL",
       n = sum(.$n),
       Porcentaje = "100 %"
     )

@@ -89,13 +89,13 @@ crear_barplot_colecciones_por_anno <- function(rdspath) {
         "total_colecciones" = "#3B6AA0"
       ),
       labels = c(
-        "acumulado" = "Colecciones totales por a\u00f1o",
-        "total_colecciones" = "Colecciones creadas por a\u00f1o"
+        "acumulado" = "Incremento acumulado",
+        "total_colecciones" = "Incremento anual"
       )
     ) +
     labs(
       x = "A\u00f1o",
-      y = "N\u00ba colecciones",
+      y = "N\u00ba colecciones y bases de datos",
       fill = NULL
     ) +
     theme_minimal() +

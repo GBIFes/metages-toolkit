@@ -2,9 +2,9 @@
 title: "Guia de uso de metagesToolkit — USUARIOS"
 output: rmarkdown::html_vignette
 vignette: >
-  %\\VignetteIndexEntry{Usage guide}
-  %\\VignetteEngine{knitr::rmarkdown}
-  %\\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Usage guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 Esta vignette documenta **cómo usar y explorar el paquete de R `metagesToolkit`** como **USUARIO**. Está pensada como documento vivo y referencia operativa.

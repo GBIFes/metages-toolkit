@@ -2,9 +2,9 @@
 title: "Guia de uso de metages-toolkit — DESARROLLADORES"
 output: rmarkdown::html_vignette
 vignette: >
-  %\\VignetteIndexEntry{Dev guide}
-  %\\VignetteEngine{knitr::rmarkdown}
-  %\\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Dev guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 Esta vignette documenta **cómo usar y mantener el repositorio `metages-toolkit`** como **DESARROLLADOR**. Está pensada como documento vivo y referencia operativa.

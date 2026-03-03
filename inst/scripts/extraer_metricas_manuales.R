@@ -24,7 +24,7 @@ n_gbif_paises = 69,
 n_gbif_organizaciones = 42,
 
 # Ranking de España en GBIF.org. Extraer de get_top_publishing_countries_gbif()
-n_ranking_gbifes = "duodécimo",
+n_ranking_gbifes = "undécimo",
 
 
 # ------------------------------------------------------------
@@ -36,11 +36,11 @@ n_edicion_informe_actual = "septima",
 n_edicion_informe_anterior = "sexta",
 
 # Fecha de extraccion de datos para generacion del informe anterior
-anno_informe_anterior = 2019,
-mes_anno_informe_anterior = "diciembre de 2019",
+anno_data_informe_anterior = 2019,
 
 # Fecha de publicacion del informe anterior
-anno_publi_informe_anterior = 2021,
+anno_informe_anterior = 2021,
+mes_anno_informe_anterior = "octubre de 2021",
 
 
 # ------------------------------------------------------------
