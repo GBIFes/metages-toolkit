@@ -85,10 +85,13 @@ crear_tabla_colecciones <- function(filtro = list(), driver = NULL) {
         tipo_body == "base de datos" ~ "BD"
       )
     ) |>
-    dplyr::rename_with(~ c("Ejemplares/Registros (a\u00F1o)",
-                           "Registros publicados en GBIF (a\u00F1o)"),
+    dplyr::arrange(institucion_proyecto) |>
+    dplyr::rename_with(~ c("Ejemplares / Registros (a\u00F1o)",
+                           "Registros publicados en GBIF (a\u00F1o)",
+                           "C\u00F3digo"),
                        .cols = c(ejemplares_registros_ano,
-                                 registros_gbif_ano)) |>
+                                 registros_gbif_ano,
+                                 codigo)) |>
     dplyr::distinct()
 }
 
