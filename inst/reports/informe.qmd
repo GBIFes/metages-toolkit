@@ -1317,9 +1317,9 @@ La @tbl-resumen-tax-obs y la @tbl-resumen-tax-spec muestran el número de regist
 
 Bajo la perspectiva temporal, se puede decir que las observaciones son los datos más novedosos y masivos, mientras que las colecciones proporcionan series temporales mucho más largas. Aunque en el gráfico se parte del año 1840, hay ejemplares catalogados -así como sus datos en línea- que datan de mediados del siglo XVIII. Sin entrar en detalles o causas, el declive en los trabajos de recolección y el auge en las observaciones en tiempos recientes es patente, como se puede observar en la @fig-reg-evo y la @fig-reg-evo-log .
 
-![*Comparativa temporal, por año de colecta/observación, del número de registros publicados en GBIF atendiendo a su naturaleza: especímenes preservados en colecciones y observaciones. Las escalas en el eje de ordenadas son propias de cada serie de datos y su magnitud se ha ajustado para facilitar la comparación.*](assets/images/generated/registros_evolucion_basisOfRecord.png){#fig-reg-evo}
+![*Comparativa temporal, por año de colecta/observación, del número de registros publicados en GBIF atendiendo a su naturaleza: especímenes preservados en colecciones y observaciones. Las escalas en el eje de ordenadas son propias de cada serie de datos y su magnitud se ha ajustado para facilitar la comparación.*](assets/images/generated/registros_evolucion_basisofrecord.png){#fig-reg-evo}
 
-![*Representación logarítmica de la comparativa temporal, por año de colecta/observación, del número de registros publicados en GBIF atendiendo a su naturaleza: especímenes preservados en colecciones y observaciones. Aparecen indicados los valores mínimos y máximos de registros.*](assets/images/generated/registros_evolucion_basisOfRecord_log.png){#fig-reg-evo-log}
+![*Representación logarítmica de la comparativa temporal, por año de colecta/observación, del número de registros publicados en GBIF atendiendo a su naturaleza: especímenes preservados en colecciones y observaciones. Aparecen indicados los valores mínimos y máximos de registros.*](assets/images/generated/registros_evolucion_basisofrecord_log.png){#fig-reg-evo-log}
 
 ## Comparativa espacial
 
