@@ -1363,7 +1363,7 @@ safe_ft_tbl(
 
 #### Colecciones zoológicas
 
-![*Distribución geográfica de los registros publicados sobre especímenes PreservedSpecimen), muestras (MaterialSample) y registros fósiles (FossilSpecimen) preservados en colecciones biológicas procedentes de entidades españolas.*](assets/images/external/portal_zoo.png){#fig-portal_zoo}
+![*Distribución geográfica de los registros publicados sobre especímenes PreservedSpecimen), muestras (MaterialSample) y registros fósiles (FossilSpecimen) preservados en colecciones biológicas procedentes de entidades españolas.*](assets/images/external/portal_spec_zoo.png){#fig-portal_spec_zoo}
 
 ```{r}
 #| label: tbl-conteo-registros-especimenes-zoo
@@ -1377,7 +1377,7 @@ safe_ft_tbl(
 
 #### Colecciones botánicas
 
-![*Distribución geográfica de los registros botánicos (reino Plantae) publicados sobre especímenes (PreservedSpecimen), muestras (MaterialSample) y registros fósiles (FossilSpecimen) preservados en colecciones biológicas procedentes de entidades españolas.*](assets/images/external/portal_plant.png){#fig-portal_plant}
+![*Distribución geográfica de los registros botánicos (reino Plantae) publicados sobre especímenes (PreservedSpecimen), muestras (MaterialSample) y registros fósiles (FossilSpecimen) preservados en colecciones biológicas procedentes de entidades españolas.*](assets/images/external/portal_spec_plant.png){#fig-portal_spec_plant}
 
 ```{r}
 #| label: tbl-conteo-registros-especimenes-pla
@@ -1390,7 +1390,7 @@ safe_ft_tbl(
 ```
 
 
-![*Distribución geográfica de los registros botánicos (reino Fungi) publicados sobre especímenes (PreservedSpecimen), muestras (MaterialSample) y registros fósiles (FossilSpecimen) preservados en colecciones biológicas procedentes de entidades españolas. Las líneas de puntos en el eje Oeste-este no son puntos reales sino artefactos producidos por la herramienta de visualización de datos.*](assets/images/external/portal_hong.png){#fig-portal_hong}
+![*Distribución geográfica de los registros botánicos (reino Fungi) publicados sobre especímenes (PreservedSpecimen), muestras (MaterialSample) y registros fósiles (FossilSpecimen) preservados en colecciones biológicas procedentes de entidades españolas. Las líneas de puntos en el eje Oeste-este no son puntos reales sino artefactos producidos por la herramienta de visualización de datos.*](assets/images/external/portal_spec_hong.png){#fig-portal_spec_hong}
 
 
 ```{r}
