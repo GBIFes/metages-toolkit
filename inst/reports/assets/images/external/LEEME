@@ -30,7 +30,7 @@ Generada por Katia Cezon anualmente desde su tabla de datos personal.
 
 - portal_all_bor.png
 Generada mediante montaje de imagenes extraidas de:
-https://registros.gbif.es/occurrences/search?fq=(basis_of_record%3A%22HUMAN_OBSERVATION%22%20OR%20basis_of_record%3A%22LIVING_SPECIMEN%22%20OR%20basis_of_record%3A%22MACHINE_OBSERVATION%22%20OR%20basis_of_record%3A%22MATERIAL_CITATION%22%20OR%20basis_of_record%3A%22MATERIAL_SAMPLE%22%20OR%20basis_of_record%3A%22OCCURRENCE%22%20OR%20basis_of_record%3A%22PRESERVED_SPECIMEN%22)&fq=country%3A%22Spain%22&fq=-data_resource_uid%3A%22dr603%22&lang=en&q=*%3A*&qc=-_nest_parent_%3A*&qualityProfile=LA#tab_mapView
+https://registros.gbif.es/occurrence/search?fq=country%3A%22Spain%22&fq=-data_resource_uid%3A%22dr603%22&lang=en&q=*%3A*&qc=-_nest_parent_%3A*&qualityProfile=LA&disableQualityFilter=record-type#tab_mapView
 
 - portal_obs.png
 Generada mediante montaje de imagenes extraidas de:
@@ -38,19 +38,19 @@ https://registros.gbif.es/occurrence/search?fq=country%3A%22Spain%22&fq=-data_re
 
 - portal_spec.png
 Generada mediante montaje de imagenes extraidas de:
-https://registros.gbif.es/occurrence/search?q=*%3A*&qualityProfile=LA&fq=country%3A%22Spain%22&fq=-data_resource_uid%3A%22dr603%22&qc=-_nest_parent_%3A*&fq=(basis_of_record%3A%22MATERIAL_SAMPLE%22%20OR%20basis_of_record%3A%22PRESERVED_SPECIMEN%22)#tab_mapView
+https://registros.gbif.es/occurrence/search?q=*%3A*&qualityProfile=LA&disableQualityFilter=record-type&fq=country%3A%22Spain%22&fq=-data_resource_uid%3A%22dr603%22&qc=-_nest_parent_%3A*&fq=(basis_of_record%3A%22FOSSIL_SPECIMEN%22%20OR%20basis_of_record%3A%22MATERIAL_SAMPLE%22%20OR%20basis_of_record%3A%22PRESERVED_SPECIMEN%22)#tab_mapView
 
 - portal_spec_zoo.png
 Generada mediante montaje de imagenes extraidas de:
-https://registros.gbif.es/occurrence/search?q=*%3A*&qualityProfile=LA&fq=country%3A%22Spain%22&fq=-data_resource_uid%3A%22dr603%22&qc=-_nest_parent_%3A*&fq=kingdom%3A%22Animalia%22#tab_mapView
+https://registros.gbif.es/occurrence/search?q=*%3A*&qualityProfile=LA&disableQualityFilter=record-type&fq=country%3A%22Spain%22&fq=-data_resource_uid%3A%22dr603%22&fq=(basis_of_record%3A%22FOSSIL_SPECIMEN%22%20OR%20basis_of_record%3A%22MATERIAL_SAMPLE%22%20OR%20basis_of_record%3A%22PRESERVED_SPECIMEN%22)&qc=-_nest_parent_%3A*&fq=kingdom%3A%22Animalia%22#tab_mapView
 
 - portal_spec_plant.png
 Generada mediante montaje de imagenes extraidas de:
-https://registros.gbif.es/occurrence/search?q=*%3A*&qualityProfile=LA&fq=country%3A%22Spain%22&fq=-data_resource_uid%3A%22dr603%22&fq=kingdom%3A%22Plantae%22&qc=-_nest_parent_%3A*&lang=es#tab_mapView
+https://registros.gbif.es/occurrence/search?q=*%3A*&qualityProfile=LA&disableQualityFilter=record-type&fq=country%3A%22Spain%22&fq=-data_resource_uid%3A%22dr603%22&fq=(basis_of_record%3A%22FOSSIL_SPECIMEN%22%20OR%20basis_of_record%3A%22MATERIAL_SAMPLE%22%20OR%20basis_of_record%3A%22PRESERVED_SPECIMEN%22)&qc=-_nest_parent_%3A*&fq=kingdom%3A%22Plantae%22#tab_mapView
 
 - portal_spec_hong.png
 Generada mediante montaje de imagenes extraidas de:
-https://registros.gbif.es/occurrence/search?q=*%3A*&qualityProfile=LA&fq=country%3A%22Spain%22&fq=-data_resource_uid%3A%22dr603%22&qc=-_nest_parent_%3A*&fq=kingdom%3A%22Fungi%22#tab_mapView
+https://registros.gbif.es/occurrence/search?q=*%3A*&qualityProfile=LA&disableQualityFilter=record-type&fq=country%3A%22Spain%22&fq=-data_resource_uid%3A%22dr603%22&fq=(basis_of_record%3A%22FOSSIL_SPECIMEN%22%20OR%20basis_of_record%3A%22MATERIAL_SAMPLE%22%20OR%20basis_of_record%3A%22PRESERVED_SPECIMEN%22)&qc=-_nest_parent_%3A*&fq=kingdom%3A%22Fungi%22#tab_mapView
 
 
 
@@ -64,7 +64,7 @@ El zoom correcto será una combinación de:
   - Zoom de la pantalla (ctrl+rueda_del_raton).
   
 Instrucciones para cuadrar imagen:  
-  - Poner URL deseada del portal (no el portal espacial) en el buscador
+  - Poner URL deseada del portal biocache (no el portal espacial) en el buscador
   - Incluir variable para la leyenda en "Personalizar filtros" si no estuviera por defecto.
   - Tener el Zoom de tu pantalla al 100% en la web del portal
   - Clicar en el icono de "Pantalla completa" del mapa
@@ -76,7 +76,7 @@ Instrucciones para cuadrar imagen:
   - Centrar mapa en Canarias
   - Hacer y guardar pantallazo "forma libre" a las islas (evitando tierra)
   - Desplegar leyenda, ajustar zoom y hacer pantallazo de ella.
-  - Unir con Photoshop/Powerpoint magic, incluir rectangulo blanco para canarias
+  - Unir con Photoshop/Powerpoint magic, incluir rectangulo blanco para canarias 
 
 
 

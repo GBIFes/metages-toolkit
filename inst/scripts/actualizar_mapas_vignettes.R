@@ -462,9 +462,9 @@ message("==> Iniciando descarga de datos de ALA y creación de gráficos")
 
 datos_ala <- crear_plots_evolucion_basisOfRecord()
 
-save_plot(plot = datos_ala$lineal, filename = "registros_evolucion_basisOfRecord.png")
-save_plot(plot = datos_ala$log, filename = "registros_evolucion_basisOfRecord_log.png")
-saveRDS(datos_ala$data, file = fs::path(dir_data_maps, "registros_evolucion_basisOfRecord_data.rds"))
+save_plot(plot = datos_ala$lineal, filename = "registros_evolucion_basisofrecord.png")
+save_plot(plot = datos_ala$log, filename = "registros_evolucion_basisofrecord_log.png")
+saveRDS(datos_ala$data, file = fs::path(dir_data_maps, "registros_evolucion_basisofrecord_data.rds"))
 
 
 # ------------------------------------------------------------
