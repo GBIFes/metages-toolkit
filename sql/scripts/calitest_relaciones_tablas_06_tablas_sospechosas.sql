@@ -1,0 +1,86 @@
+-- Estos scripts ayudarán a identificar tablas con problemas
+
+-- Tablas no referenciadas (muertas?)
+SELECT
+    t.TABLE_NAME
+FROM information_schema.TABLES t
+LEFT JOIN information_schema.KEY_COLUMN_USAGE k
+ON t.TABLE_SCHEMA = k.REFERENCED_TABLE_SCHEMA
+AND t.TABLE_NAME = k.REFERENCED_TABLE_NAME
+WHERE t.TABLE_SCHEMA = DATABASE()
+AND k.REFERENCED_TABLE_NAME IS NULL
+AND t.TABLE_NAME LIKE 'metages_%'
+ORDER BY t.TABLE_NAME;
+
+-- Tablas que no referencian a nadie (aisladas? o tablas catalogo, temporales u olvidadas)
+SELECT
+    t.TABLE_NAME
+FROM information_schema.TABLES t
+LEFT JOIN information_schema.KEY_COLUMN_USAGE k
+ON t.TABLE_SCHEMA = k.TABLE_SCHEMA
+AND t.TABLE_NAME = k.TABLE_NAME
+AND k.REFERENCED_TABLE_NAME IS NOT NULL
+WHERE t.TABLE_SCHEMA = DATABASE()
+AND k.REFERENCED_TABLE_NAME IS NULL
+AND t.TABLE_NAME LIKE 'metages_%'
+ORDER BY t.TABLE_NAME;
+
+
+-- Completamente aisladas (ni referencian ni son referenciadas)
+SELECT t.TABLE_NAME
+FROM information_schema.TABLES t
+LEFT JOIN information_schema.KEY_COLUMN_USAGE k1
+ON t.TABLE_SCHEMA = k1.TABLE_SCHEMA
+AND t.TABLE_NAME = k1.TABLE_NAME
+AND k1.REFERENCED_TABLE_NAME IS NOT NULL
+LEFT JOIN information_schema.KEY_COLUMN_USAGE k2
+ON t.TABLE_SCHEMA = k2.REFERENCED_TABLE_SCHEMA
+AND t.TABLE_NAME = k2.REFERENCED_TABLE_NAME
+WHERE t.TABLE_SCHEMA = DATABASE()
+AND k1.TABLE_NAME IS NULL
+AND k2.REFERENCED_TABLE_NAME IS NULL
+AND t.TABLE_NAME LIKE 'metages_%';
+
+
+-- Tablas con 0 registros
+SELECT
+TABLE_NAME,
+TABLE_ROWS
+FROM information_schema.TABLES
+WHERE TABLE_SCHEMA = DATABASE()
+AND TABLE_ROWS = 0
+AND TABLE_NAME LIKE 'metages_%'
+ORDER BY TABLE_NAME;
+
+
+-- Tablas con nombres sospechosos
+SELECT TABLE_NAME
+FROM information_schema.TABLES
+WHERE TABLE_SCHEMA = DATABASE()
+AND TABLE_NAME LIKE 'metages_%'
+AND (
+TABLE_NAME LIKE '%tmp%'
+OR TABLE_NAME LIKE '%temp%'
+OR TABLE_NAME LIKE '%old%'
+OR TABLE_NAME LIKE '%backup%'
+OR TABLE_NAME LIKE '%copy%'
+OR TABLE_NAME LIKE '%test%'
+);
+
+
+-- Tablas con nombres parecidos
+SELECT
+t1.TABLE_NAME AS table_a,
+t2.TABLE_NAME AS table_b
+FROM information_schema.TABLES t1
+JOIN information_schema.TABLES t2
+ON t1.TABLE_SCHEMA = t2.TABLE_SCHEMA
+AND t1.TABLE_NAME < t2.TABLE_NAME
+WHERE t1.TABLE_SCHEMA = DATABASE()
+AND t1.TABLE_NAME LIKE 'metages_%'
+AND (
+t1.TABLE_NAME LIKE CONCAT('%', t2.TABLE_NAME, '%')
+OR t2.TABLE_NAME LIKE CONCAT('%', t1.TABLE_NAME, '%')
+);
+
+
