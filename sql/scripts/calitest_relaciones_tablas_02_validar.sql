@@ -2,7 +2,7 @@
    VALIDACIÓN DEL MAPEO
    ============================================================
 
-   Este script valida cada relación de qa_fk_mapping y guarda
+   Este script valida cada relación de metages_qa_fk_mapping y guarda
    el resultado directamente en la tabla.
 
    Se verifican:
@@ -15,7 +15,7 @@
    ============================================================ */
 
 
-UPDATE qa_fk_mapping m
+UPDATE metages_qa_fk_mapping m
 
 LEFT JOIN information_schema.tables ct
 ON ct.table_schema = DATABASE()

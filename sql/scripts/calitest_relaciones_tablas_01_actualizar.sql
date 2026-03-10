@@ -3,7 +3,7 @@
    ============================================================
 
    Este script detecta columnas *_fk en tablas metages_*
-   y las añade a qa_fk_mapping si no existen.
+   y las añade a metages_qa_fk_mapping si no existen.
 
    Puede ejecutarse múltiples veces sin riesgo.
 
@@ -22,7 +22,7 @@
    ============================================================ */
 
 
-INSERT IGNORE INTO qa_fk_mapping (
+INSERT IGNORE INTO metages_qa_fk_mapping (
 
     child_table,
     child_column,
@@ -57,7 +57,7 @@ AND c.column_name LIKE '%\\_fk';
    RELACIONES ESPECIALES
    ============================================================
 
-UPDATE qa_fk_mapping
+UPDATE metages_qa_fk_mapping
 SET
     parent_table = 'metages_body',
     parent_column = 'body_id',
@@ -69,7 +69,7 @@ WHERE child_table = 'metages_ispartof'
 AND child_column = 'child_body_fk';
 
 
-UPDATE qa_fk_mapping
+UPDATE metages_qa_fk_mapping
 SET
     parent_table = 'metages_body',
     parent_column = 'body_id',

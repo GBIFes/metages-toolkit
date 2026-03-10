@@ -2,7 +2,7 @@
    INICIALIZACIÓN DEL SISTEMA QA DE RELACIONES
    ============================================================
 
-   Este script crea la tabla persistente `qa_fk_mapping`.
+   Este script crea la tabla persistente `metages_qa_fk_mapping`.
 
    Se ejecuta UNA SOLA VEZ.
 
@@ -11,11 +11,11 @@
 
    No se debe volver a ejecutar salvo que se quiera recrear
    completamente el sistema. Por ejemplo, si se ha eliminado
-   la tablas `qa_fk_mapping` por error.
+   la tablas `metages_qa_fk_mapping` por error.
    ============================================================ */
 
 
-CREATE TABLE IF NOT EXISTS qa_fk_mapping (
+CREATE TABLE IF NOT EXISTS metages_qa_fk_mapping (
 
     id INT AUTO_INCREMENT PRIMARY KEY,
 
@@ -75,10 +75,10 @@ CREATE TABLE IF NOT EXISTS qa_fk_mapping (
    ÍNDICES ÚTILES
    ============================================================ */
 
-CREATE INDEX idx_fk_child ON qa_fk_mapping(child_table);
+CREATE INDEX idx_fk_child ON metages_qa_fk_mapping(child_table);
 
-CREATE INDEX idx_fk_parent ON qa_fk_mapping(parent_table);
+CREATE INDEX idx_fk_parent ON metages_qa_fk_mapping(parent_table);
 
-CREATE INDEX idx_fk_enabled ON qa_fk_mapping(enabled);
+CREATE INDEX idx_fk_enabled ON metages_qa_fk_mapping(enabled);
 
-CREATE INDEX idx_fk_validation_status ON qa_fk_mapping(validation_status);
+CREATE INDEX idx_fk_validation_status ON metages_qa_fk_mapping(validation_status);

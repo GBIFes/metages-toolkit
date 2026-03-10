@@ -1,15 +1,15 @@
 /* ============================================================
-   SCRIPT 04 — AUDITOR DE HUÉRFANOS
+   AUDITOR DE HUÉRFANOS
    ============================================================
 
-   Este script audita huérfanos usando qa_fk_mapping.
+   Este script audita huérfanos usando metages_qa_fk_mapping.
 
    Solo evalúa relaciones:
    - enabled = TRUE
    - validation_status = 'VALID'
 
    El resultado se guarda en la tabla permanente:
-       qa_orphan_report
+       metages_qa_orphan_report
 
    ============================================================ */
 
@@ -18,7 +18,7 @@
    1. CREAR TABLA DE RESULTADOS SI NO EXISTE
    ============================================================ */
 
-CREATE TABLE IF NOT EXISTS qa_orphan_report (
+CREATE TABLE IF NOT EXISTS metages_qa_orphan_report (
 
     child_table VARCHAR(255) NOT NULL,
     child_column VARCHAR(255) NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS qa_orphan_report (
    2. LIMPIAR RESULTADOS ANTERIORES
    ============================================================ */
 
-TRUNCATE TABLE qa_orphan_report;
+TRUNCATE TABLE metages_qa_orphan_report;
 
 
 /* ============================================================
@@ -44,7 +44,7 @@ TRUNCATE TABLE qa_orphan_report;
 SET SESSION group_concat_max_len = 1000000;
 
 SELECT CONCAT(
-    'INSERT INTO qa_orphan_report ',
+    'INSERT INTO metages_qa_orphan_report ',
     '(child_table, child_column, parent_table, parent_column, orphan_count) ',
     GROUP_CONCAT(
         CONCAT(
@@ -63,7 +63,7 @@ SELECT CONCAT(
         SEPARATOR ' UNION ALL '
     )
 ) INTO @sql_audit
-FROM qa_fk_mapping
+FROM metages_qa_fk_mapping
 WHERE enabled = TRUE
   AND validation_status = 'VALID';
 
@@ -91,5 +91,5 @@ DEALLOCATE PREPARE stmt;
    ============================================================ */
 
 SELECT *
-FROM qa_orphan_report
+FROM metages_qa_orphan_report
 ORDER BY orphan_count DESC, child_table, child_column;

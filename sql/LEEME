@@ -1,4 +1,7 @@
+-----------------------
 ATENCIÓN:
+-----------------------
+
 - No se debe modificar el contenido de "scripts" manualmente ya que proviene de 
   la carpeta Scripts de DBeaver y la sincronización solo occurre SQL>R y no al revés,
   por lo que actualizar "scripts" manualmente crearía discordancia entre los scripts
@@ -25,3 +28,17 @@ Instrucciones de uso:
 - Correr el archivo "actualizar_SQL_scripts.R" para actualizar el contenido de la 
   carpeta "sql/scripts".
 
+
+
+
+-----------------------
+INSTRUCCIONES CALITESTS
+-----------------------
+
+- relaciones_tablas
+Son 5 scripts que detectan y examinan huerfanos entre tablas.
+00 - solo se corre una vez
+01 - genera la tabla qa_fk_mapping (esta tabla se puede modificar manualmente para anhadir otras relaciones no identificadas)
+02 - valida las relaciones generadas y manuales
+03 - cuantifica el numero de huerfanos por relacion
+04 - crea consultas para examinar los huerfanos

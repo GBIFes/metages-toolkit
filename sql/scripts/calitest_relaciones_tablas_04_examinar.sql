@@ -21,6 +21,6 @@ CONVERT(parent_table USING utf8mb4), '.', CONVERT(parent_column USING utf8mb4),
 
 ) AS inspection_query
 
-FROM qa_orphan_report
+FROM metages_qa_orphan_report
 WHERE orphan_count > 0
 ORDER BY orphan_count DESC;
