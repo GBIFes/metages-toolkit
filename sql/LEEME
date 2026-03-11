@@ -37,8 +37,16 @@ INSTRUCCIONES CALITESTS
 
 - relaciones_tablas
 Son 5 scripts que detectan y examinan huerfanos entre tablas.
-00 - solo se corre una vez
-01 - genera la tabla qa_fk_mapping (esta tabla se puede modificar manualmente para anhadir otras relaciones no identificadas)
+00 - solo se corre una vez (crea qa_fk_mapping vacia)
+01 - detecta relaciones entre tablas y actualiza la tabla qa_fk_mapping 
+      - esta tabla se puede modificar manualmente para anhadir otras relaciones no identificadas automaticamente
 02 - valida las relaciones generadas y manuales
 03 - cuantifica el numero de huerfanos por relacion
 04 - crea consultas para examinar los huerfanos
+05 - muestra las relaciones (integridad referencial real) de metages
+06 - muestra tablas sospechosas
+      - sin integridad referencial
+      - sin datos
+      - con nombres sospechosos (tmp, copy, test, old...)
+      - con nombres parecidos a los de otras tablas (duplicas?)
+07 - detecta fk potenciales que no se han detectado en el paso "01"
