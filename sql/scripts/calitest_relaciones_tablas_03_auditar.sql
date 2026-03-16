@@ -11,6 +11,9 @@
    El resultado se guarda en la tabla permanente:
        metages_qa_orphan_report
 
+   Se añade una columna extra al final para examinar los huerfanos:
+       inspection_query
+
    ============================================================ */
 
 
@@ -25,7 +28,8 @@ CREATE TABLE IF NOT EXISTS metages_qa_orphan_report (
     parent_table VARCHAR(255) NOT NULL,
     parent_column VARCHAR(255) NOT NULL,
     orphan_count INT NOT NULL,
-    audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    inspection_query LONGTEXT
 
 );
 
@@ -87,7 +91,32 @@ DEALLOCATE PREPARE stmt;
 
 
 /* ============================================================
-   6. VER INFORME FINAL
+   6. GENERAR CONSULTAS DE INSPECCIÓN
+   ============================================================ */
+
+UPDATE metages_qa_orphan_report
+SET inspection_query = CONCAT(
+
+'/* ',
+CONVERT(child_table USING utf8mb4), '.', CONVERT(child_column USING utf8mb4),
+' -> ',
+CONVERT(parent_table USING utf8mb4), '.', CONVERT(parent_column USING utf8mb4),
+' | huerfanos: ', orphan_count,
+' */\n',
+
+'SELECT c.* \n',
+'FROM ', CONVERT(child_table USING utf8mb4),' c \n',
+'LEFT JOIN ', CONVERT(parent_table USING utf8mb4),' p \n',
+'ON c.',CONVERT(child_column USING utf8mb4),' = p.',CONVERT(parent_column USING utf8mb4),' \n',
+'WHERE p.',CONVERT(parent_column USING utf8mb4),' IS NULL \n',
+'AND c.',CONVERT(child_column USING utf8mb4),' IS NOT NULL;\n\n'
+
+)
+WHERE orphan_count > 0;
+
+
+/* ============================================================
+   7. VER INFORME FINAL
    ============================================================ */
 
 SELECT *
