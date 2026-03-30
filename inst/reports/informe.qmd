@@ -362,16 +362,16 @@ clase_obs_mayor_x100 <- paste0(round(as.numeric(gsub("\\.", "", (n_clases_obs %>
 \newpage
 # RESUMEN EJECUTIVO
 
-En el presente **Informe de Colecciones Biológicas y Bases de Datos de Biodiversidad en España. Año `r anno_actual`**, se muestra la situación de las colecciones biológicas y las bases de datos de biodiversidad publicados en el [Registro de colecciones, proyectos y bases de datos de biodiversidad en España](https://gbif.es/registro-colecciones/) hasta `r mes_anno_actual`. Se ofrecen los datos y estadísticas en relación a las entidades (instituciones o centros), colecciones y bases de datos adscritos a la **Unidad de Coordinación del Nodo Nacional de Información en Biodiversidad** (UdC). Se hace una síntesis y valoración de las entidades, sus colecciones y datos asociados, con especial relevancia de aquellas que publican datos en el Portal Nacional de GBIF España. 
+En el presente **Informe de Colecciones Biológicas y Bases de Datos de Biodiversidad en España. Año `r anno_actual`**, se muestra la situación de las colecciones biológicas y las bases de datos de biodiversidad publicados en el [Registro de colecciones y bases de datos de biodiversidad en España](https://gbif.es/registro-colecciones/) hasta `r mes_anno_actual`. Se ofrecen los datos y estadísticas en relación a las entidades (instituciones o centros), colecciones y bases de datos adscritos a la **Unidad de Coordinación del Nodo Nacional de Información en Biodiversidad** (UdC). Se hace una síntesis y valoración de las entidades, sus colecciones y datos asociados, con especial relevancia de aquellas que publican datos en el Portal Nacional de GBIF España. 
 
-La información referente a las entidades y proyectos, y a las colecciones biológicas o bases de datos de biodiversidad se obtiene mediante [formularios](https://gbif.es/datos-biodiversidad/accede-a-los-datos/registro/cuestionario-para-colecciones-biologicas-y-bases-de-datos/) que cumplimentan las propias instituciones, tal como se refleja en dicho Registro, si bien y de forma puntual, se tienen en cuenta las modificaciones y correcciones de los metadatos enviadas por los respectivos responsables a través de los correos de contacto de GBIF.ES. 
+La información referente a las entidades y a las colecciones biológicas o bases de datos de biodiversidad se obtiene mediante [formularios](https://gbif.es/datos-biodiversidad/accede-a-los-datos/registro/cuestionario-para-colecciones-biologicas-y-bases-de-datos/) que cumplimentan las propias instituciones, tal como se refleja en dicho Registro, si bien y de forma puntual, se tienen en cuenta las modificaciones y correcciones de los metadatos enviadas por los respectivos responsables a través de los correos de contacto de GBIF.ES. 
 
-Hay **`r n_entidades_actual`** entidades (instituciones, centros y proyectos) vinculadas al Nodo Nacional de Información en Biodiversidad, referidas y actualizadas hasta `r mes_anno_actual`, de las cuales **`r n_entidades_actual_pub` (el `r n_entidades_actual_pub_x100`) publican datos**. Con respecto al informe anterior se han incorporado `r n_entidades_incremento`, es decir, un `r n_entidades_incremento_x100` más. Estas entidades poseen en conjunto **`r n_colbd_actual`** colecciones biológicas o bases de datos y **`r n_recursos_actual`** recursos o juegos de datos con un total de **`r n_registros_actual`** registros en línea, que publican a través de los portales GBIF. Con respecto al informe anterior (`r mes_anno_informe_anterior`) se han incorporado **`r n_colbd_incremento`** colecciones (un `r n_colbd_incremento_x100` más) y `r n_recursos_incremento` recursos (un `r n_recursos_incremento_x100` más) a la infraestructura de GBIF, y el número de registros publicados ha crecido en `r n_registros_incremento`, lo que supone un incremento del `r n_registros_incremento_x100`, de manera que en este periodo España se mantiene en el `r n_ranking_gbifes` país del mundo que más contribuye a GBIF, tal como se puede ver en la @tbl-ranking-gbif-org y @fig-gbif-ranking.
+Hay **`r n_entidades_actual`** entidades (instituciones y centros) vinculadas al Nodo Nacional de Información en Biodiversidad, referidas y actualizadas hasta `r mes_anno_actual`, de las cuales **`r n_entidades_actual_pub` (el `r n_entidades_actual_pub_x100`) publican datos**. Con respecto al informe anterior se han incorporado `r n_entidades_incremento`, es decir, un `r n_entidades_incremento_x100` más. Estas entidades poseen en conjunto **`r n_colbd_actual`** colecciones biológicas o bases de datos y **`r n_recursos_actual`** recursos o juegos de datos con un total de **`r n_registros_actual`** registros en línea, que publican a través de los portales GBIF. Con respecto al informe anterior (`r mes_anno_informe_anterior`) se han incorporado **`r n_colbd_incremento`** colecciones (un `r n_colbd_incremento_x100` más) y `r n_recursos_incremento` recursos (un `r n_recursos_incremento_x100` más) a la infraestructura de GBIF, y el número de registros publicados ha crecido en `r n_registros_incremento`, lo que supone un incremento del `r n_registros_incremento_x100`, de manera que en este periodo España se mantiene en el `r n_ranking_gbifes` país del mundo que más contribuye a GBIF, tal como se puede ver en la @tbl-ranking-gbif-org .
 
 \newpage
 ```{r}
 #| label: tbl-ranking-gbif-org
-#| tbl-cap: "*Ranking de países publicadores en GBIF.*"
+#| tbl-cap: "*Ranking de países publicadores en GBIF. El desfase de registros entre los cálculos de GBIF.ORG y GBIF.ES se debe a que GBIF.ORG suma los datos de eBird tomados por ciudadanos españoles.*"
 
 # safe_ft_tbl(
 #   get_top10_countries_rgbif(),
@@ -379,7 +379,7 @@ Hay **`r n_entidades_actual`** entidades (instituciones, centros y proyectos) vi
 # )
 
 safe_ft_tbl(
-  get_top_publishing_countries_gbif(n = 12) %>% transmute(Ranking = row_number(),
+  get_top_publishing_countries_gbif(n = 10) %>% transmute(Ranking = row_number(),
                                                           País = pais_publicador, 
                                                           `Registros totales` = count, 
                                                           `Posición en año previo` = posicion_prev_cum)
@@ -387,8 +387,6 @@ safe_ft_tbl(
 
 ```
 
-
-![*Registros de datos de biodiversidad publicados en GBIF.ORG. El desfase de registros entre los cálculos de GBIF.ORG y GBIF.ES se debe a que GBIF.ORG suma los datos de eBird tomados por ciudadanos españoles.*](../reports/assets/images/external/ranking_occurrences.png){#fig-gbif-ranking width=50%}
 
 Un resumen de los principales datos del Registro en `r anno_actual` y su incremento con respecto al informe anterior de `r anno_informe_anterior` se muestra en la @tbl-comparativa-informes Durante este periodo, algunas entidades han reestructurado sus colecciones biológicas y bases de datos. Aquí presentamos la información más relevante, que se verá en detalle en el desarrollo de este informe. 
 
@@ -441,11 +439,11 @@ La Infraestructura Mundial de Información en Biodiversidad (GBIF, de sus siglas
 
 A `r mes_anno_actual`, GBIF cuenta entre sus miembros con `r n_gbif_paises` países y `r n_gbif_organizaciones` organizaciones internacionales. España es miembro fundador de GBIF, representada por el [Ministerio de Ciencia, Innovación y Universidades](https://www.ciencia.gob.es/), el cual encomendó al CSIC la gestión científico-técnica del “Nodo Nacional de Información en Biodiversidad para la participación en el Programa Internacional Global Biodiversity Information Facility (BOE, 12 de junio de 2002) y para lo que constituyó la Unidad de Coordinación de GBIF en España, sita en el Real Jardín Botánico de Madrid. 
 
-Para cumplir con sus objetivos, esta Unidad de Coordinación recopila y publica información sobre las entidades que producen, agregan o administran datos e información sobre biodiversidad. Esta información da contexto a los datos publicados sobre biodiversidad en España, permite determinar el estado del conocimiento y establecer sus prioridades, bien de índole científica, bien desde el punto de vista de la gestión y conservación de la biodiversidad y el medioambiente. En el año 2005, la Unidad de Coordinación abrió un registro de las instituciones y proyectos con sede en el territorio español que cuenta con información ligada al conocimiento y la conservación de la biodiversidad. Esta información se encuentra, en unos casos, en **colecciones biológicas** de distintos tipos (zoológicas, botánicas, microbiológicas, paleontológicas y mixtas) que, como tales, contienen ejemplares físicos que sirven de respaldo a la información (ejemplares preservados o sus partes, fósiles, bancos de germoplasma, de tejidos…). En otros casos la información se recoge en **bases de datos** creadas en el ámbito de proyectos de investigación, o de otra índole, sin contar con el respaldo físico de ejemplares (inventarios, listados, eventos de muestreo…). 
+Para cumplir con sus objetivos, esta Unidad de Coordinación recopila y publica información sobre las entidades que producen, agregan o administran datos e información sobre biodiversidad. Esta información da contexto a los datos publicados sobre biodiversidad en España, permite determinar el estado del conocimiento y establecer sus prioridades, bien de índole científica, bien desde el punto de vista de la gestión y conservación de la biodiversidad y el medioambiente. En el año 2005, la Unidad de Coordinación abrió un registro de las instituciones con sede en el territorio español que cuenta con información ligada al conocimiento y la conservación de la biodiversidad. Esta información se encuentra, en unos casos, en **colecciones biológicas** de distintos tipos (zoológicas, botánicas, microbiológicas, paleontológicas y mixtas) que, como tales, contienen ejemplares físicos que sirven de respaldo a la información (ejemplares preservados o sus partes, fósiles, bancos de germoplasma, de tejidos…). En otros casos la información se recoge en **bases de datos** creadas en el ámbito de proyectos de investigación, o de otra índole, sin contar con el respaldo físico de ejemplares (inventarios, listados, eventos de muestreo…). 
 
 Los contenidos de este informe y del sistema informático subyacente se organizan en tres niveles: 
 
-1. entidades (instituciones o centros) y proyectos, 
+1. entidades (instituciones o centros), 
 2. colecciones biológicas o bases de datos de biodiversidad,
 3. juegos de datos publicados en línea. 
 
@@ -465,9 +463,9 @@ La mayoría de los mapas, gráficas y tablas se han realizado de manera dinámic
 
 ## METODOLOGÍA Y TÉRMINOS USADOS
 
-### Entidades, proyectos, colecciones y bases de datos
+### Entidades, colecciones y bases de datos
 
-MetaGES contiene información sobre instituciones, proyectos, colecciones biológicas, bases de datos y juegos de datos. Estos conceptos se relacionan entre sí mediante una jerarquía definida y dividida en tres niveles:
+MetaGES contiene información sobre instituciones, colecciones biológicas, bases de datos y juegos de datos. Estos conceptos se relacionan entre sí mediante una jerarquía definida y dividida en tres niveles:
 
 
 - El **_tercer nivel_** comprende los juegos de datos que se publican en el [Portal de Datos de Biodiversidad del Nodo Nacional GBIF.ES](https://datos.gbif.es/) y en el [Portal Internacional de GBIF](https://www.gbif.org/). Estos juegos de datos contienen registros espaciotemporales de presencia (y en ocasiones de ausencia) de biodiversidad.
@@ -479,17 +477,12 @@ MetaGES contiene información sobre instituciones, proyectos, colecciones bioló
 
 En anteriores versiones de este informe se incluían **proyectos** en el *primer nivel*. Sin embargo, estos proyectos y sus bases y juegos de datos están siempre vinculados a una entidad, garantizando coherencia organizativa y trazabilidad institucional, por lo que se ha decidido simplificar MetaGES estructuralmente integrándolos bajo la entidad correspondiente.
 
-En la @fig-jerarquia y la @fig-jerarquiav2 se muestra la estructura jerárquica de los tres niveles descritos, mediante dos ejemplos que ilustran una institución junto con las colecciones biológicas y bases de datos que administra, así como los juegos de datos que estas publican.
-
-
-![*Ejemplo de diagrama de jerarquía de entidades, colecciones y juegos de datos en MetaGES. La Sociedad de Ciencias Aranzadi (*nivel 1*) alberga 3 colecciones biológicas y 4 bases de datos (*nivel 2*), y comparte 5 recursos en los portales (*nivel 3*).*](../reports/assets/images/external/jerarquia.png){#fig-jerarquia}
-
-[Versión del diagrama de jerarquía con enlaces clicables](https://app.xmind.com/share/hSxg29nP)
+En la @fig-jerarquiav2 se muestra la estructura jerárquica de los tres niveles descritos, mediante dos ejemplos que ilustran una institución junto con las colecciones biológicas y bases de datos que administra, así como los juegos de datos que estas publican.
 
 ![*Ejemplo de diagrama de jerarquía de entidades, colecciones y juegos de datos en MetaGES. La Estación Biológica de Doñana (*nivel 1*) alberga 4 colecciones biológicas y 2 bases de datos (*nivel 2*), y comparte 42 recursos en los portales (*nivel 3*).*](../reports/assets/images/external/jerarquia_v2.png){#fig-jerarquiav2}
 
 
-En la @sec-anexo-1 *(Anexo I)*, se pueden ver todas las entidades y proyectos incluidos en el Registro, con sus colecciones y bases de datos asociadas. Es importante indicar que los nombres empleados para instituciones, proyectos, colecciones y recursos, son los proporcionados por los propios responsables vía formularios y mensajes electrónicos, y son también los que figuran en el [Registro de colecciones](https://www.gbif.es/registro-colecciones/). No obstante, en algunos casos concretos se especifica, más allá de la información proporcionada por los responsables, la procedencia de los datos o la vinculación de los proyectos con las instituciones para una mejor comprensión de la información.
+En la @sec-anexo-1 *(Anexo I)*, se pueden ver todas las entidades incluidos en el Registro, con sus colecciones y bases de datos asociadas. Es importante indicar que los nombres empleados para instituciones, colecciones y recursos, son los proporcionados por los propios responsables vía formularios y mensajes electrónicos, y son también los que figuran en el [Registro de colecciones](https://www.gbif.es/registro-colecciones/). No obstante, en algunos casos concretos se especifica, más allá de la información proporcionada por los responsables, la procedencia de los datos para una mejor comprensión de la información.
 
 ### Disciplinas biológicas de las entidades en el Registro {#sec-disciplinas}
 
@@ -511,9 +504,9 @@ La disciplina **Microbiológica** incluye microorganismos, en general bacterias,
 ## ENTIDADES: SITUACIÓN GENERAL Y MAPA DE LOCALIZACIÓN
 
 ### Situación general de las entidades
-Desde su inicio, el número de entidades (instituciones, centros y proyectos) incluidas en el **Registro de Colecciones Biológicas y Bases de Datos de Biodiversidad en España**  se ha ido incrementando de manera constante, de igual manera que las colecciones, bases de datos, registros y datos publicados.
+Desde su inicio, el número de entidades (instituciones y centros) incluidas en el **Registro de Colecciones Biológicas y Bases de Datos de Biodiversidad en España**  se ha ido incrementando de manera constante, de igual manera que las colecciones, bases de datos, registros y datos publicados.
 
-A fecha de `r mes_anno_actual` hay `r n_entidades_actual` entidades (instituciones, centros y proyectos) que forman parte del Nodo Nacional de Información en Biodiversidad de las cuáles `r n_entidades_actual_pub` (el `r n_entidades_actual_pub_x100`) publican datos. Con respecto al informe anterior (`r mes_anno_informe_anterior`) ha habido `r n_entidades_incremento` nuevas incorporaciones.
+A fecha de `r mes_anno_actual` hay `r n_entidades_actual` entidades (instituciones y centros) que forman parte del Nodo Nacional de Información en Biodiversidad de las cuáles `r n_entidades_actual_pub` (el `r n_entidades_actual_pub_x100`) publican datos. Con respecto al informe anterior (`r mes_anno_informe_anterior`) ha habido `r n_entidades_incremento` nuevas incorporaciones.
 
 En la @fig-ent-pub se enumeran las entidades por disciplina biológica. Así mismo, se especifica para cada una el número de entidades que publican datos en GBIF.
 
@@ -750,7 +743,7 @@ ft_tbl(
 
 #### Accesibilidad a los datos informatizados
 
-#### Posibilidad de acceso a los datos
+##### Posibilidad de acceso a los datos
 
 Se representa, a continuación, el grado de acceso a los datos informatizados de las
 colecciones que facilitaron dicha información (el `r acceso_informatizado_proporcionada_x100`).
@@ -767,7 +760,7 @@ ft_tbl(
 )
 ```
 
-#### Medio de acceso a los datos informatizados
+##### Medio de acceso a los datos informatizados
 
 A continuación, puede verse representada la manera de acceder a los registros
 informatizados de las colecciones según lo dispuesto por cada entidad responsable, basada en las respuestas proporcionadas por el `r medio_acceso_informatizado_proporcionada_x100` de las colecciones. Una misma colección pudo proporcionar respuestas incluidas en más de una categoría. (Ejemplo: “a través del responsable” y “a través de Intranet”).
@@ -1419,7 +1412,7 @@ hacer cualquier persona allá donde se encuentre con solo disponer de un disposi
 \newpage
 # ANEXO I: COLECCIONES BIOLÓGICAS Y BASES DE DATOS SOBRE BIODIVERSIDAD REGISTRADAS EN ESPAÑA {#sec-anexo-1}
 
-A continuación, listamos las colecciones biológicas y bases de datos sobre biodiversidad, con las entidades (instituciones o proyectos) responsables, recogidas en el Registro de Colecciones, Proyectos y Bases de Datos de Biodiversidad en España. Son `r n_colbd_actual` colecciones y bases de datos —con `r n_recursos_actual` recursos publicados—, que se presentan ordenadas en función de las disciplinas indicadas en la tabla @fig-disciplinas :
+A continuación, listamos las colecciones biológicas y bases de datos sobre biodiversidad, con las instituciones responsables, recogidas en el Registro de Colecciones y Bases de Datos de Biodiversidad en España. Son `r n_colbd_actual` colecciones y bases de datos —con `r n_recursos_actual` recursos publicados—, que se presentan ordenadas en función de las disciplinas indicadas en la tabla @fig-disciplinas :
 
 1. **ZOOLÓGICA**. En este apartado se incluyen `r n_colbd_zoo` colecciones y bases de datos de animales en general. Se han desglosado en tres grupos:
     - Invertebrados. Son `r n_colbd_inv`.
@@ -1436,7 +1429,7 @@ fitoplancton, zooplancton, etc.
 4. **PALEONTOLÓGICA**. Se incluyen `r n_colbd_paleo`, en este caso todas colecciones de organismos fósiles.
 5. **MIXTA**. Se incluyen en este apartado `r n_colbd_mix` colecciones y bases de datos que albergan ejemplares o registros con más de una de las disciplinas anteriores.
 
-Dentro de cada disciplina, se organizan por orden alfabético de la institución o proyecto. Aparecen indicados, además, los centros y proyectos cuyos datos están publicados a través del Nodo Nacional de Información en Biodiversidad.
+Dentro de cada disciplina, se organizan por orden alfabético de la institución. Aparecen indicados, además, los centros cuyos datos están publicados a través del Nodo Nacional de Información en Biodiversidad.
 
 ```{r}
 #| label: tbl-leyenda-anexo
@@ -1447,7 +1440,7 @@ Dentro de cada disciplina, se organizan por orden alfabético de la institución
 
 tabla_leyenda <- tibble(
   Campo = c(
-    "Institución / Proyecto",
+    "Institución",
     "Colección / Base de datos",
     "Código",
     "Localidad",
@@ -1458,7 +1451,7 @@ tabla_leyenda <- tibble(
     "Tipo (tipos de recursos)"
   ),
   `Descripción` = c(
-    "Nombre de la entidad: institución, centro o proyecto general.",
+    "Nombre de la entidad: institución o centro.",
     "Nombre de la colección o base de datos.",
     "Código de la colección o base de datos.",
     "Municipio (en su caso, la provincia figura entre paréntesis).",
@@ -1529,14 +1522,10 @@ Si eres responsable de una colección biológica o de una base de datos no repre
 en este informe, y quieres que la información referente a dicho recurso sea recogida en la
 próxima edición, por favor, rellena los formularios disponibles:
 
-- Para entidad, institución o proyecto: [institución](https://gbif.es/datos-biodiversidad/accede-a-los-datos/registro/cuestionario-para-instituciones-y-proyectos/institucion/)/[proyecto](https://gbif.es/datos-biodiversidad/accede-a-los-datos/registro/cuestionario-para-instituciones-y-proyectos/proyecto/).
+- Para institución: [institución](https://gbif.es/datos-biodiversidad/accede-a-los-datos/registro/cuestionario-para-instituciones-y-proyectos/institucion/)/.
 - Para colecciones biológicas (biológica) o base de datos: [colección/BBDD](https://gbif.es/datos-biodiversidad/accede-a-los-datos/registro/cuestionario-para-colecciones-biologicas-y-bases-de-datos/).
 
 Asimismo, para cualquier duda, información o consulta, o si tienes correcciones o
 sugerencias sobre este informe o sobre los datos presentados, por favor, contáctanos en
 [info@gbif.es](mailto:info@gbif.es).
-Para consultar la información acerca de colecciones europeas incluidas en la base de
-datos de BioCASE, visite [http://www.biocase.org/products/portals/simple_ui/](http://www.biocase.org/products/portals/simple_ui/).
-
-
 

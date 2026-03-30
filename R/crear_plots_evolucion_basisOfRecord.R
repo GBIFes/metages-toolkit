@@ -71,6 +71,7 @@
 #' @importFrom galah galah_config galah_call galah_filter 
 #' @importFrom scales label_number
 #' @importFrom grid unit
+#' @importFrom potions brew
 #'
 #' @export
 
@@ -82,6 +83,8 @@ crear_plots_evolucion_basisOfRecord <- function(
   # =========================
   # 1. Configuracion
   # =========================
+  potions::brew(.pkg = "galah")
+  
   galah_config(
     atlas = "GBIF.ES",
     email = Sys.getenv("ala_es_user"),

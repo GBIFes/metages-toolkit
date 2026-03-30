@@ -1,6 +1,8 @@
-
+library(tidygeocoder)
 
 #Conectar R a Metages con conectar_metages.R
+
+con <- conectar_metages()$con
 
 
 # Extraer lugares nuevos
@@ -20,7 +22,7 @@ dfs <- dbGetQuery(con, "SELECT DISTINCT ma.town
                         AND private = 0")
 
 # Extraer todos los lugares para recalcular coordenadas
-dfs <- dbGetQuery(con, "SELECT DISTINCT town
+dfs <- dbGetQuery(con, "SELECT DISTINCT town, region
 	                      FROM metages_towns mt ")
 
 
@@ -69,5 +71,26 @@ dta <- dbExecute(con, "INSERT INTO metages_towns (town, region, country, iso_cou
                         VALUES
                         
                         ")
+
+#------------------------------------------------------------------------------------------------------------
+
+# Testando geo()
+library(tidygeocoder)
+
+#Conectar R a Metages 
+con <- conectar_metages()$con
+
+# Extraer todos los lugares para recalcular coordenadas
+dfs <- dbGetQuery(con, "SELECT DISTINCT town, region
+	                      FROM metages_towns mt ")
+
+# Extraer coordenadas para cada lugar (Filtra registros espanholes)
+coords <- geo(city = as.character(dfs$town),
+              county = as.character(dfs$region),
+              method = "osm",   # usa Nominatim
+              full_results = TRUE)
+
+
+
 
 
