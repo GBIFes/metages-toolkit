@@ -49,10 +49,11 @@ Imports:
     tidyr
 Suggests: 
     covr,
+    DT,
     knitr,
     rmarkdown,
+    shiny,
     testthat (>= 3.0.0),
-    withr,
-    DT
+    withr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
