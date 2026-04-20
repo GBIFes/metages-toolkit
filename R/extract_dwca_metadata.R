@@ -1,4 +1,4 @@
-#' Añadir metadatos EML y número de occurrences a una tabla con columna dwca_url
+#' Anhadir metadatos EML y numero de occurrences a una tabla con columna dwca_url
 #'
 #' @description
 #' Procesa una tabla que debe contener una columna llamada `dwca_url` con URLs a
@@ -6,14 +6,15 @@
 #' \itemize{
 #'   \item descarga el ZIP,
 #'   \item lee `eml.xml`,
-#'   \item extrae `packageId` y parsea solo la versión (por ejemplo `V2.2`),
+#'   \item extrae `title`
+#'   \item extrae `packageId` y parsea solo la version (por ejemplo `V2.2`),
 #'   \item extrae `pubDate`,
 #'   \item lee `meta.xml`,
 #'   \item localiza el fichero de occurrences a partir de `rowType` y `location`,
 #'   \item cuenta sus registros restando `ignoreHeaderLines`.
 #' }
 #'
-#' Para mejorar la eficiencia, cada URL única se procesa una sola vez aunque
+#' Para mejorar la eficiencia, cada URL unica se procesa una sola vez aunque
 #' aparezca repetida en varias filas.
 #'
 #' @param df `data.frame` que debe contener una columna llamada `dwca_url`.
@@ -22,8 +23,9 @@
 #' @param progress Si `TRUE`, muestra progreso por consola.
 #'
 #' @return
-#' El mismo `df` de entrada, conservando sus columnas originales y añadiendo:
+#' El mismo `df` de entrada, conservando sus columnas originales y anhadiendo:
 #' \itemize{
+#'   \item `eml_title`
 #'   \item `eml_version`
 #'   \item `eml_pub_date`
 #'   \item `eml_occurrences`
@@ -31,17 +33,18 @@
 #'   \item `eml_error_message`
 #' }
 #'
-#' Si una URL no puede procesarse correctamente, las columnas extraídas quedarán
+#' Si una URL no puede procesarse correctamente, las columnas extraidas quedarán
 #' como `NA` y el detalle del problema se registrará en `eml_error_message`.
 #'
 #' @details
-#' Esta función asume que:
+#' Esta funcion asume que:
 #' \itemize{
 #'   \item la URL del recurso DwC-A está en la columna `dwca_url`
-#'   \item la versión está en el atributo `packageId` del nodo raíz de `eml.xml`
+#'   \item el titulo está en un nodo `title` de `eml.xml`
+#'   \item la version está en el atributo `packageId` del nodo raiz de `eml.xml`
 #'   \item la fecha está en el nodo `pubDate`
 #'   \item el fichero de occurrences está definido en `meta.xml`
-#'   \item las líneas de cabecera se indican en el atributo `ignoreHeaderLines`
+#'   \item las lineas de cabecera se indican en el atributo `ignoreHeaderLines`
 #' }
 #'
 #' El conteo de occurrences se realiza en streaming, sin cargar el fichero
@@ -54,8 +57,9 @@
 #'
 #' @export
 extract_dwca_metadata <- function(df, progress = TRUE) {
+  
   # Comprobar que el input tiene la columna obligatoria.
-  if (!"dwca_url" %in% names(df)) {
+   if (!"dwca_url" %in% names(df)) {
     stop("La columna 'dwca_url' no existe en `df`.")
   }
   
@@ -65,16 +69,17 @@ extract_dwca_metadata <- function(df, progress = TRUE) {
       dwca_url = trimws(as.character(dwca_url))
     )
   
-  # Obtener URLs únicas válidas para evitar trabajo duplicado.
+  # Obtener URLs unicas válidas para evitar trabajo duplicado.
   urls_unique <- df |>
     dplyr::distinct(dwca_url) |>
     dplyr::filter(!is.na(dwca_url), nzchar(dwca_url))
   
-  # Si no hay URLs válidas, devolver el df con columnas vacías añadidas.
+  # Si no hay URLs válidas, devolver el df con columnas vacias anhadidas.
   if (nrow(urls_unique) == 0L) {
     return(
       df |>
         dplyr::mutate(
+          eml_title = NA_character_,
           eml_version = NA_character_,
           eml_pub_date = NA_character_,
           eml_occurrences = NA_integer_,
@@ -84,11 +89,13 @@ extract_dwca_metadata <- function(df, progress = TRUE) {
     )
   }
   
-  # Procesar una única URL y devolver una fila con sus metadatos.
+  # Procesar una unica URL y devolver una fila con sus metadatos.
   parse_one_url <- function(url) {
+    
     # Inicializar salida por defecto.
     out <- data.frame(
       dwca_url = url,
+      eml_title = NA_character_,
       eml_version = NA_character_,
       eml_pub_date = NA_character_,
       eml_occurrences = NA_integer_,
@@ -127,10 +134,23 @@ extract_dwca_metadata <- function(df, progress = TRUE) {
           # Leer el XML.
           eml_doc <- xml2::read_xml(file.path(eml_dir, eml_name))
           
-          # Extraer packageId del nodo raíz.
+          # Extraer el primer title bajo dataset.
+          title_node <- xml2::xml_find_first(
+            eml_doc,
+            "//*[local-name()='dataset']/*[local-name()='title'][1]"
+          )
+          
+          if (!inherits(title_node, "xml_missing")) {
+            title_text <- trimws(xml2::xml_text(title_node))
+            if (nzchar(title_text)) {
+              out$eml_title <- title_text
+            }
+          }
+          
+          # Extraer packageId del nodo raiz.
           package_id <- xml2::xml_attr(xml2::xml_root(eml_doc), "packageId")
           
-          # Parsear solo la parte de versión, por ejemplo V2.2.
+          # Parsear solo la parte de version, por ejemplo V2.2.
           if (!is.na(package_id) && nzchar(package_id)) {
             version_match <- regmatches(
               package_id,
@@ -202,22 +222,26 @@ extract_dwca_metadata <- function(df, progress = TRUE) {
                   )[1]
                 }
                 
-                # Si el fichero existe dentro del ZIP, contar líneas en streaming.
+                # Si el fichero existe dentro del ZIP, contar lineas en streaming de forma rápida.
                 if (!is.na(occ_idx)) {
                   occ_name <- zip_listing$Name[occ_idx]
                   con <- unz(tmp_zip, occ_name, open = "rb")
                   on.exit(close(con), add = TRUE)
                   
+                  # Contar saltos de linea a nivel de bytes evita crear strings en R
+                  # y suele ser mucho más rápido que readLines().
                   n_lines <- 0L
                   
                   repeat {
-                    chunk <- readLines(con, n = 100000L, warn = FALSE, encoding = "UTF-8")
+                    chunk <- readBin(con, what = "raw", n = 1024 * 1024 * 16)  # 16 MB por bloque
                     
                     if (length(chunk) == 0L) {
                       break
                     }
                     
-                    n_lines <- n_lines + length(chunk)
+                    # Contamos bytes LF (\n). Para CRLF también funciona,
+                    # porque cada linea termina igualmente en \n.
+                    n_lines <- n_lines + sum(chunk == as.raw(0x0A))
                   }
                   
                   # Restar cabecera y evitar valores negativos.
@@ -240,10 +264,10 @@ extract_dwca_metadata <- function(df, progress = TRUE) {
     )
   }
   
-  # Reservar una lista para los resultados por URL única.
+  # Reservar una lista para los resultados por URL unica.
   results <- vector("list", nrow(urls_unique))
   
-  # Procesar cada URL única una sola vez.
+  # Procesar cada URL unica una sola vez.
   for (i in seq_len(nrow(urls_unique))) {
     if (isTRUE(progress)) {
       message(sprintf("[%d/%d] Procesando: %s", i, nrow(urls_unique), urls_unique$dwca_url[i]))
@@ -255,28 +279,32 @@ extract_dwca_metadata <- function(df, progress = TRUE) {
   # Unir los resultados en una tabla auxiliar por dwca_url.
   metadata_df <- dplyr::bind_rows(results)
   
-  # Añadir los metadatos al data frame original conservando todas sus columnas.
+  # Anhadir los metadatos al data frame original conservando todas sus columnas.
   df |>
     dplyr::left_join(metadata_df, by = "dwca_url")
 }
 
 
 
-#' Comparar snapshot nuevo con el estado actual de monitorización
+#' Comparar snapshot nuevo con baseline de referencia
 #'
 #' @description
-#' Compara un snapshot nuevo extraído desde los DwC-A con el estado actual de
-#' `metages_recurso_monitor` ya cargado en memoria y construye dos objetos:
+#' Compara un snapshot nuevo extraido desde los DwC-A con el baseline de
+#' referencia que ya viene incluido en `snapshot_df`.
+#'
+#' Se comparan exactamente estos cuatro campos:
 #' \itemize{
-#'   \item una tabla para actualizar `metages_recurso_monitor`
-#'   \item una tabla para insertar eventos en `metages_recurso_monitor_log`
+#'   \item titulo
+#'   \item version
+#'   \item fecha
+#'   \item numero de occurrences
 #' }
 #'
 #' @param snapshot_df `data.frame` con al menos las columnas:
-#'   `recurso_fk`, `eml_version`, `eml_pub_date`, `eml_occurrences`,
-#'   `eml_status`, `eml_error_message`.
-#' @param current_df `data.frame` con el estado actual de
-#'   `metages_recurso_monitor`.
+#'   `recurso_fk`, `tipo_recurso`, `eml_title`, `eml_version`, `eml_pub_date`,
+#'   `eml_occurrences`, `eml_status`, `eml_error_message`,
+#'   `baseline_reference_date`, `baseline_version`, `baseline_occurrences`,
+#'   `baseline_title`.
 #' @param checked_at Fecha-hora del chequeo. Por defecto `Sys.time()`.
 #'
 #' @return
@@ -288,15 +316,20 @@ extract_dwca_metadata <- function(df, progress = TRUE) {
 #' }
 #'
 #' @export
-compare_recurso_monitor_snapshot <- function(snapshot_df, current_df, checked_at = Sys.time()) {
-  # Comprobar que el snapshot tiene las columnas mínimas esperadas.
+compare_recurso_monitor_snapshot <- function(snapshot_df, checked_at = Sys.time()) {
   required_snapshot_cols <- c(
     "recurso_fk",
+    "tipo_recurso",
+    "eml_title",
     "eml_version",
     "eml_pub_date",
     "eml_occurrences",
     "eml_status",
-    "eml_error_message"
+    "eml_error_message",
+    "baseline_title",
+    "baseline_reference_date",
+    "baseline_version",
+    "baseline_occurrences"
   )
   
   missing_snapshot_cols <- setdiff(required_snapshot_cols, names(snapshot_df))
@@ -310,128 +343,126 @@ compare_recurso_monitor_snapshot <- function(snapshot_df, current_df, checked_at
     )
   }
   
-  # Si current_df viene vacío, crear estructura mínima esperada.
-  if (nrow(current_df) == 0L) {
-    current_df <- data.frame(
-      recurso_fk = integer(),
-      last_checked_at = as.POSIXct(character()),
-      last_change_at = as.POSIXct(character()),
-      eml_version_detected = character(),
-      eml_pub_date_detected = as.Date(character()),
-      occurrences_detected = numeric(),
-      monitor_status = character(),
-      monitor_error_message = character(),
-      stringsAsFactors = FALSE
-    )
-  }
-  
-  # Renombrar columnas del estado actual para distinguirlas del snapshot nuevo.
-  current_df <- current_df |>
-    dplyr::rename(
-      current_last_checked_at = last_checked_at,
-      current_last_change_at = last_change_at,
-      current_eml_version_detected = eml_version_detected,
-      current_eml_pub_date_detected = eml_pub_date_detected,
-      current_occurrences_detected = occurrences_detected,
-      current_monitor_status = monitor_status,
-      current_monitor_error_message = monitor_error_message
-    )
-  
-  # Unir snapshot nuevo con estado actual por recurso.
-  x <- snapshot_df |>
-    dplyr::left_join(current_df, by = "recurso_fk")
-  
-  # Comparador robusto a NA.
   neq_val <- function(a, b) {
     (is.na(a) & !is.na(b)) |
       (!is.na(a) & is.na(b)) |
       (!is.na(a) & !is.na(b) & a != b)
   }
   
-  # Calcular flags de cambio y diferencias respecto al último chequeo.
-  x <- x |>
+  norm_chr <- function(x) {
+    x <- trimws(as.character(x))
+    x[x == ""] <- NA_character_
+    x
+  }
+  
+  norm_date <- function(x) {
+    x <- norm_chr(x)
+    as.Date(x)
+  }
+  
+  norm_version <- function(x) {
+    x <- norm_chr(x)
+    x <- sub("^[Vv]\\s*=\\s*", "", x)
+    x <- sub("^[Vv]", "", x)
+    x
+  }
+  
+  x <- snapshot_df |>
     dplyr::mutate(
-      is_new = is.na(current_monitor_status),
-      version_changed = neq_val(eml_version, current_eml_version_detected),
-      pubdate_changed = neq_val(eml_pub_date, current_eml_pub_date_detected),
-      occurrences_changed = neq_val(eml_occurrences, current_occurrences_detected),
-      status_changed = neq_val(eml_status, current_monitor_status),
+      eml_title_cmp = norm_chr(eml_title),
+      baseline_title_cmp = norm_chr(baseline_title),
+      eml_version_cmp = norm_version(eml_version),
+      baseline_version_cmp = norm_version(baseline_version),
+      eml_pub_date_cmp = norm_date(eml_pub_date),
+      baseline_reference_date_cmp = norm_date(baseline_reference_date),
+      baseline_occurrences_cmp = suppressWarnings(as.numeric(baseline_occurrences)),
+      eml_occurrences_cmp = suppressWarnings(as.numeric(eml_occurrences)),
+      title_changed = neq_val(eml_title_cmp, baseline_title_cmp),
+      version_changed = neq_val(eml_version_cmp, baseline_version_cmp),
+      pubdate_changed = neq_val(eml_pub_date_cmp, baseline_reference_date_cmp),
+      occurrences_changed = neq_val(eml_occurrences_cmp, baseline_occurrences_cmp),
       occurrences_diff_last_check = dplyr::case_when(
-        !is.na(eml_occurrences) & !is.na(current_occurrences_detected) ~
-          as.numeric(eml_occurrences) - as.numeric(current_occurrences_detected),
+        !is.na(eml_occurrences_cmp) & !is.na(baseline_occurrences_cmp) ~
+          eml_occurrences_cmp - baseline_occurrences_cmp,
         TRUE ~ NA_real_
       )
     )
   
-  # Clasificar el tipo de cambio observado.
+  x$change_type <- mapply(
+    function(status, title_ch, version_ch, pubdate_ch, occ_ch) {
+      if (!is.na(status) && status == "error") {
+        return("error")
+      }
+      
+      parts <- c(
+        if (isTRUE(title_ch)) "title",
+        if (isTRUE(version_ch)) "version",
+        if (isTRUE(pubdate_ch)) "pubdate",
+        if (isTRUE(occ_ch)) "occurrences"
+      )
+      
+      if (length(parts) == 0L) {
+        "unchanged"
+      } else {
+        paste(parts, collapse = ", ")
+      }
+    },
+    x$eml_status,
+    x$title_changed,
+    x$version_changed,
+    x$pubdate_changed,
+    x$occurrences_changed,
+    USE.NAMES = FALSE
+  )
+  
   x <- x |>
     dplyr::mutate(
-      change_type = dplyr::case_when(
-        is_new ~ "initial_snapshot",
-        eml_status == "error" ~ "error",
-        current_monitor_status == "error" & eml_status == "ok" ~ "recovered",
-        occurrences_changed ~ "occurrences_changed",
-        version_changed | pubdate_changed ~ "metadata_changed",
-        TRUE ~ "unchanged"
-      ),
-      change_detail = dplyr::case_when(
-        is_new ~ "initial snapshot",
-        eml_status == "error" ~ "download or parse error",
-        current_monitor_status == "error" & eml_status == "ok" ~ "resource recovered after previous error",
-        version_changed & pubdate_changed & occurrences_changed ~ "version, pubdate, occurrences",
-        version_changed & pubdate_changed ~ "version, pubdate",
-        version_changed & occurrences_changed ~ "version, occurrences",
-        pubdate_changed & occurrences_changed ~ "pubdate, occurrences",
-        version_changed ~ "version",
-        pubdate_changed ~ "pubdate",
-        occurrences_changed ~ "occurrences",
-        TRUE ~ "none"
-      ),
       change_flag = ifelse(change_type == "unchanged", 0L, 1L),
       last_checked_at = checked_at,
       last_change_at = dplyr::case_when(
-        is_new ~ checked_at,
         change_flag == 1L ~ checked_at,
-        TRUE ~ current_last_change_at
+        TRUE ~ as.POSIXct(NA)
       )
     )
   
-  # Preparar la tabla para UPSERT.
   current_upsert_df <- x |>
     dplyr::transmute(
       recurso_fk = recurso_fk,
+      tipo_recurso = tipo_recurso,
       last_checked_at = last_checked_at,
       last_change_at = last_change_at,
+      eml_title_detected = eml_title,
+      previous_eml_title_detected = baseline_title,
       eml_version_detected = eml_version,
+      previous_eml_version_detected = baseline_version,
       eml_pub_date_detected = eml_pub_date,
-      occurrences_detected = eml_occurrences,
-      previous_eml_version_detected = current_eml_version_detected,
-      previous_eml_pub_date_detected = current_eml_pub_date_detected,
-      previous_occurrences_detected = current_occurrences_detected,
+      previous_eml_pub_date_detected = baseline_reference_date,
+      occurrences_detected = eml_occurrences_cmp,
+      previous_occurrences_detected = baseline_occurrences_cmp,
       occurrences_diff_last_check = occurrences_diff_last_check,
       monitor_status = eml_status,
       monitor_error_message = eml_error_message,
       change_flag = change_flag,
-      change_type = change_type,
-      change_detail = change_detail
+      change_type = change_type
     )
   
-  # Preparar la tabla para INSERT en log.
   log_insert_df <- x |>
     dplyr::filter(change_flag == 1L) |>
     dplyr::transmute(
       recurso_fk = recurso_fk,
+      tipo_recurso = tipo_recurso,
       event_at = checked_at,
       event_type = change_type,
-      change_detail = change_detail,
-      previous_eml_version_detected = current_eml_version_detected,
+      previous_eml_title_detected = baseline_title,
+      new_eml_title_detected = eml_title,
+      previous_eml_version_detected = baseline_version,
       new_eml_version_detected = eml_version,
-      previous_eml_pub_date_detected = current_eml_pub_date_detected,
+      previous_eml_pub_date_detected = baseline_reference_date,
       new_eml_pub_date_detected = eml_pub_date,
-      previous_occurrences_detected = current_occurrences_detected,
-      new_occurrences_detected = eml_occurrences,
+      previous_occurrences_detected = baseline_occurrences_cmp,
+      new_occurrences_detected = eml_occurrences_cmp,
       occurrences_diff = occurrences_diff_last_check,
-      previous_monitor_status = current_monitor_status,
+      previous_monitor_status = NA_character_,
       new_monitor_status = eml_status,
       monitor_error_message = eml_error_message
     )
@@ -444,19 +475,21 @@ compare_recurso_monitor_snapshot <- function(snapshot_df, current_df, checked_at
 }
 
 
-#' Ejecutar el workflow completo de monitorización de recursos
+
+#' Ejecutar el workflow completo de monitorizacion de recursos
 #'
 #' @description
-#' Ejecuta el flujo completo de monitorización:
+#' Ejecuta el flujo completo de monitorizacion:
 #' \enumerate{
-#'   \item abre una conexión con [conectar_metages()]
-#'   \item lee recursos públicos desde `metages_recurso`
-#'   \item lee el estado actual desde `metages_recurso_monitor`
-#'   \item cierra la conexión antes del procesamiento largo
+#'   \item abre una conexion con [conectar_metages()]
+#'   \item lee recursos publicos desde `metages_recurso`
+#'   \item construye un baseline por recurso usando `metages_provision_recurso`
+#'         y `metages_recurso`
+#'   \item cierra la conexion antes del procesamiento largo
 #'   \item construye `dwca_url` a partir de `url_ipt`
 #'   \item transforma `resource` en `archive` solo cuando `archive` no exista ya
 #'   \item llama a [extract_dwca_metadata()]
-#'   \item reabre conexión
+#'   \item reabre conexion
 #'   \item actualiza `metages_recurso_monitor`
 #'   \item inserta eventos en `metages_recurso_monitor_log`
 #' }
@@ -477,7 +510,7 @@ compare_recurso_monitor_snapshot <- function(snapshot_df, current_df, checked_at
 #' @export
 run_recurso_monitor_workflow <- function(progress = TRUE, checked_at = Sys.time()) {
   # ------------------------------------------------------------------
-  # 1. Abrir conexión solo para leer datos de entrada y estado actual.
+  # 1. Abrir conexion solo para leer datos de entrada y baseline.
   # ------------------------------------------------------------------
   cx_read <- conectar_metages()
   con_read <- cx_read$con
@@ -490,45 +523,64 @@ run_recurso_monitor_workflow <- function(progress = TRUE, checked_at = Sys.time(
     }
   }, add = TRUE)
   
-  # Leer recursos monitorizables.
+  # Leer recursos monitorizables junto con baseline resuelto.
   input_df <- DBI::dbGetQuery(
     con_read,
     "
-    SELECT
-        r.recurso_id AS recurso_fk,
-        TRIM(r.url_ipt) AS url_ipt
-    FROM metages_recurso r
-    WHERE r.private = 0
-      AND r.url_ipt IS NOT NULL
-      AND TRIM(r.url_ipt) <> ''
-    "
+  SELECT
+      r.recurso_id AS recurso_fk,
+      mt.name AS tipo_recurso,
+      TRIM(r.url_ipt) AS url_ipt,
+      TRIM(r.title) AS baseline_title,
+
+      COALESCE(
+          NULLIF(TRIM(p.provision_fecha), ''),
+          NULLIF(SUBSTRING(TRIM(r.created_when), 1, 10), '')
+      ) AS baseline_reference_date,
+
+      COALESCE(
+          NULLIF(TRIM(p.provision_cantidad), ''),
+          NULLIF(TRIM(r.numberOfRecords), '')
+      ) AS baseline_occurrences,
+
+      COALESCE(
+          NULLIF(TRIM(p.version), ''),
+          NULLIF(REPLACE(TRIM(r.datapaper_version), 'v=', ''), '')
+      ) AS baseline_version
+
+  FROM metages_recurso r
+  LEFT JOIN metages_types mt
+    ON r.Tipo_recurso = mt.types_id
+  LEFT JOIN (
+      SELECT pr1.*
+      FROM metages_provision_recurso pr1
+      INNER JOIN (
+          SELECT
+              recurso_fk,
+              MAX(provision_fecha) AS max_provision_fecha
+          FROM metages_provision_recurso
+          WHERE NULLIF(TRIM(provision_fecha), '') IS NOT NULL
+          GROUP BY recurso_fk
+      ) pr2
+        ON pr1.recurso_fk = pr2.recurso_fk
+       AND pr1.provision_fecha = pr2.max_provision_fecha
+  ) p
+    ON r.recurso_id = p.recurso_fk
+  WHERE r.url_ipt IS NOT NULL
+    AND TRIM(r.url_ipt) <> ''
+    AND r.private = 0
+       -- LIMIT 10 -- Para pruebas
+  "
   )
   
-  # Leer el estado actual antes del procesamiento largo.
-  current_df <- DBI::dbGetQuery(
-    con_read,
-    "
-    SELECT
-        m.recurso_fk,
-        m.last_checked_at,
-        m.last_change_at,
-        m.eml_version_detected,
-        m.eml_pub_date_detected,
-        m.occurrences_detected,
-        m.monitor_status,
-        m.monitor_error_message
-    FROM metages_recurso_monitor m
-    "
-  )
-  
-  # Cerrar explícitamente conexión y túnel antes del bloque largo.
+  # Cerrar explicitamente conexion y tunel antes del bloque largo.
   try(DBI::dbDisconnect(con_read), silent = TRUE)
   if (!is.null(ssh_read)) {
     try(ssh::ssh_disconnect(ssh_read), silent = TRUE)
   }
   
   # ------------------------------------------------------------------
-  # 2. Si no hay recursos, devolver salida vacía.
+  # 2. Si no hay recursos, devolver salida vacia.
   # ------------------------------------------------------------------
   if (nrow(input_df) == 0L) {
     return(
@@ -545,10 +597,20 @@ run_recurso_monitor_workflow <- function(progress = TRUE, checked_at = Sys.time(
   }
   
   # ------------------------------------------------------------------
-  # 3. Derivar dwca_url y procesar los DwC-A sin conexión abierta.
+  # 3. Normalizar baseline y derivar dwca_url.
   # ------------------------------------------------------------------
   input_df <- input_df |>
     dplyr::mutate(
+      baseline_title = trimws(as.character(baseline_title)),
+      baseline_title = dplyr::na_if(baseline_title, ""),
+      baseline_reference_date = trimws(as.character(baseline_reference_date)),
+      baseline_reference_date = dplyr::na_if(baseline_reference_date, ""),
+      baseline_version = trimws(as.character(baseline_version)),
+      baseline_version = dplyr::na_if(baseline_version, ""),
+      baseline_occurrences = dplyr::case_when(
+        is.na(baseline_occurrences) ~ NA_real_,
+        TRUE ~ suppressWarnings(as.numeric(baseline_occurrences))
+      ),
       dwca_url = dplyr::case_when(
         grepl("archive", url_ipt, fixed = TRUE) ~ url_ipt,
         TRUE ~ sub("resource", "archive", url_ipt, fixed = TRUE)
@@ -556,17 +618,18 @@ run_recurso_monitor_workflow <- function(progress = TRUE, checked_at = Sys.time(
       dwca_url = sub("/manage/", "/", dwca_url, fixed = TRUE)
     )
   
+  # Extraer snapshot actual desde IPT/DwC-A.
   snapshot_df <- extract_dwca_metadata(input_df, progress = progress)
   
-  # Comparar con el estado actual ya cargado en memoria.
+  # Comparar snapshot contra baseline.
+  message("Comparando cambios en recursos IPT...")
   cmp <- compare_recurso_monitor_snapshot(
     snapshot_df = snapshot_df,
-    current_df = current_df,
     checked_at = checked_at
   )
   
   # ------------------------------------------------------------------
-  # 4. Reabrir conexión solo para escribir resultados.
+  # 4. Reabrir conexion solo para escribir resultados.
   # ------------------------------------------------------------------
   cx_write <- conectar_metages()
   con_write <- cx_write$con
@@ -580,67 +643,75 @@ run_recurso_monitor_workflow <- function(progress = TRUE, checked_at = Sys.time(
   }, add = TRUE)
   
   # SQL de UPSERT sobre la tabla current.
+  message("Insertando logs en MetaGES...")
+  
   upsert_sql <- "
-  INSERT INTO metages_recurso_monitor (
-      recurso_fk,
-      last_checked_at,
-      last_change_at,
-      eml_version_detected,
-      eml_pub_date_detected,
-      occurrences_detected,
-      previous_eml_version_detected,
-      previous_eml_pub_date_detected,
-      previous_occurrences_detected,
-      occurrences_diff_last_check,
-      monitor_status,
-      monitor_error_message,
-      change_flag,
-      change_type,
-      change_detail
-  ) VALUES (
-      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-  )
-  ON DUPLICATE KEY UPDATE
-      last_checked_at = VALUES(last_checked_at),
-      last_change_at = VALUES(last_change_at),
-      eml_version_detected = VALUES(eml_version_detected),
-      eml_pub_date_detected = VALUES(eml_pub_date_detected),
-      occurrences_detected = VALUES(occurrences_detected),
-      previous_eml_version_detected = VALUES(previous_eml_version_detected),
-      previous_eml_pub_date_detected = VALUES(previous_eml_pub_date_detected),
-      previous_occurrences_detected = VALUES(previous_occurrences_detected),
-      occurrences_diff_last_check = VALUES(occurrences_diff_last_check),
-      monitor_status = VALUES(monitor_status),
-      monitor_error_message = VALUES(monitor_error_message),
-      change_flag = VALUES(change_flag),
-      change_type = VALUES(change_type),
-      change_detail = VALUES(change_detail),
-      updated_when = CURRENT_TIMESTAMP
-  "
+INSERT INTO metages_recurso_monitor (
+    recurso_fk,
+    tipo_recurso,
+    last_checked_at,
+    last_change_at,
+    eml_title_detected,
+    previous_eml_title_detected,
+    eml_version_detected,
+    previous_eml_version_detected,
+    eml_pub_date_detected,
+    previous_eml_pub_date_detected,
+    occurrences_detected,
+    previous_occurrences_detected,
+    occurrences_diff_last_check,
+    monitor_status,
+    monitor_error_message,
+    change_flag,
+    change_type
+) VALUES (
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+)
+ON DUPLICATE KEY UPDATE
+    tipo_recurso = VALUES(tipo_recurso),
+    last_checked_at = VALUES(last_checked_at),
+    last_change_at = VALUES(last_change_at),
+    eml_title_detected = VALUES(eml_title_detected),
+    previous_eml_title_detected = VALUES(previous_eml_title_detected),
+    eml_version_detected = VALUES(eml_version_detected),
+    previous_eml_version_detected = VALUES(previous_eml_version_detected),
+    eml_pub_date_detected = VALUES(eml_pub_date_detected),
+    previous_eml_pub_date_detected = VALUES(previous_eml_pub_date_detected),
+    occurrences_detected = VALUES(occurrences_detected),
+    previous_occurrences_detected = VALUES(previous_occurrences_detected),
+    occurrences_diff_last_check = VALUES(occurrences_diff_last_check),
+    monitor_status = VALUES(monitor_status),
+    monitor_error_message = VALUES(monitor_error_message),
+    change_flag = VALUES(change_flag),
+    change_type = VALUES(change_type),
+    updated_when = CURRENT_TIMESTAMP
+"
   
   # SQL de INSERT sobre la tabla de log.
-  log_insert_sql <- "
-  INSERT INTO metages_recurso_monitor_log (
-      recurso_fk,
-      event_at,
-      event_type,
-      change_detail,
-      previous_eml_version_detected,
-      new_eml_version_detected,
-      previous_eml_pub_date_detected,
-      new_eml_pub_date_detected,
-      previous_occurrences_detected,
-      new_occurrences_detected,
-      occurrences_diff,
-      previous_monitor_status,
-      new_monitor_status,
-      monitor_error_message
-  ) VALUES (
-      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-  )
-  "
+log_insert_sql <- "
+INSERT INTO metages_recurso_monitor_log (
+    recurso_fk,
+    tipo_recurso,
+    event_at,
+    event_type,
+    previous_eml_title_detected,
+    new_eml_title_detected,
+    previous_eml_version_detected,
+    new_eml_version_detected,
+    previous_eml_pub_date_detected,
+    new_eml_pub_date_detected,
+    previous_occurrences_detected,
+    new_occurrences_detected,
+    occurrences_diff,
+    previous_monitor_status,
+    new_monitor_status,
+    monitor_error_message
+) VALUES (
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+)
+"
   
-  # Escribir en DB en transacción.
+  # Escribir en DB en transaccion.
   DBI::dbBegin(con_write)
   
   tryCatch(
