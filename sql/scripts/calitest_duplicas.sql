@@ -26,4 +26,5 @@ SELECT keyword, COUNT(*)
 FROM metages_keyword mk 
 GROUP BY keyword 
 HAVING keyword IS NOT NULL
-ORDER BY count(*) DESC;
+ORDER BY COUNT(*) DESC;
+

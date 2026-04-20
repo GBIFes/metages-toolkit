@@ -1,14 +1,14 @@
 -- ===================================================================
 -- Autor: Ruben Perez
--- Fecha de Creación: 2025-12-03
--- Descripción: Numero de colecciones y bases de datos por disciplina
+-- Fecha de Creación: 2026-01-30
+-- Descripción: Numero de colecciones por disciplina
 --              
 -- Base de datos: gbif_wp
--- Vista: colecciones_por_disciplina
+-- Vista: col_por_disciplina
 -- ===================================================================
 
 
--- CREATE OR REPLACE VIEW colecciones_por_disciplina AS
+-- CREATE OR REPLACE VIEW col_por_disciplina AS
 
 
 
@@ -17,6 +17,7 @@ WITH totalcol AS (
 
 	SELECT COUNT(*) AS total_colecciones
     FROM colecciones
+    WHERE tipo_body = 'coleccion'
 ),
 
 -- Numero total de ejemplares
@@ -24,6 +25,7 @@ totaleje AS (
 
 	SELECT SUM(number_of_subunits) AS total_ejemplares
     FROM colecciones
+    WHERE tipo_body = 'coleccion'
 )
 
 -- Ensamblaje
@@ -35,6 +37,7 @@ SELECT
 FROM colecciones AS c
 CROSS JOIN totalcol
 CROSS JOIN totaleje
+WHERE tipo_body = 'coleccion'
 GROUP BY c.disciplina_def
 
 

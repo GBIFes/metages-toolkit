@@ -412,8 +412,10 @@ CALL run_fk_candidate_tests();
 
 SELECT
     child_table,
+    tc.TABLE_COMMENT as child_table_class, 
     child_column,
     parent_table,
+    tp.TABLE_COMMENT as parent_table_class, 
     parent_column,
     score,
     reasons,
@@ -423,7 +425,9 @@ SELECT
     pct_child_covered_by_parent,
     pct_parent_used_by_child,
     data_test_sql
-FROM fk_candidates_enriched
+FROM fk_candidates_enriched fk
+left join information_schema.TABLES tc on fk.child_table = tc.TABLE_NAME 
+left join information_schema.TABLES tp on fk.parent_table = tp.TABLE_NAME 
 ORDER BY
     score DESC,
     child_table,

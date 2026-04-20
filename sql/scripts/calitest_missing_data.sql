@@ -30,7 +30,7 @@ AND c.body_id NOT IN (SELECT mbds.body_fk
 
 
 -- Estos bodies no tienen localidad
-SELECT ma.address_id , mb.citation 
+SELECT ma.address_id , mb.citation, mb.body_type_fk, ma.town  
 FROM metages_body mb 
 LEFT JOIN metages_address ma 
 ON mb.address_fk = ma.address_id 

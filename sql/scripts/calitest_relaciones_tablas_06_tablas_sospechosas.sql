@@ -2,7 +2,8 @@
 
 -- Tablas no referenciadas (muertas?)
 SELECT
-    t.TABLE_NAME
+    t.TABLE_NAME,
+    t.TABLE_COMMENT 
 FROM information_schema.TABLES t
 LEFT JOIN information_schema.KEY_COLUMN_USAGE k
 ON t.TABLE_SCHEMA = k.REFERENCED_TABLE_SCHEMA
@@ -14,7 +15,8 @@ ORDER BY t.TABLE_NAME;
 
 -- Tablas que no referencian a nadie (aisladas? o tablas catalogo, temporales u olvidadas)
 SELECT
-    t.TABLE_NAME
+    t.TABLE_NAME,
+    t.TABLE_COMMENT 
 FROM information_schema.TABLES t
 LEFT JOIN information_schema.KEY_COLUMN_USAGE k
 ON t.TABLE_SCHEMA = k.TABLE_SCHEMA
@@ -27,7 +29,8 @@ ORDER BY t.TABLE_NAME;
 
 
 -- Completamente aisladas (ni referencian ni son referenciadas)
-SELECT t.TABLE_NAME
+SELECT t.TABLE_NAME,
+    t.TABLE_COMMENT 
 FROM information_schema.TABLES t
 LEFT JOIN information_schema.KEY_COLUMN_USAGE k1
 ON t.TABLE_SCHEMA = k1.TABLE_SCHEMA
@@ -39,7 +42,9 @@ AND t.TABLE_NAME = k2.REFERENCED_TABLE_NAME
 WHERE t.TABLE_SCHEMA = DATABASE()
 AND k1.TABLE_NAME IS NULL
 AND k2.REFERENCED_TABLE_NAME IS NULL
-AND t.TABLE_NAME LIKE 'metages_%';
+AND t.TABLE_NAME LIKE 'metages_%'
+AND (t.TABLE_COMMENT LIKE '%CORE%'
+	OR t.TABLE_COMMENT LIKE '%CATALOG%');
 
 
 -- Tablas con 0 registros
