@@ -43,11 +43,11 @@ de MetaGES, usando el paquete `metagesToolkit` mediante las siguientes
 
 ### Evolución del número de registros por basisOfRecord
 
-![](figures/registros_evolucion_basisOfRecord.png)
+![](figures/registros_evolucion_basisofrecord.png)
 
 ### Evolución (logarítmica) del número de registros por basisOfRecord
 
-![](figures/registros_evolucion_basisOfRecord_log.png)
+![](figures/registros_evolucion_basisofrecord_log.png)
 
 ## Colecciones biológicas
 

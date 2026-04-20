@@ -10,6 +10,7 @@
 <url><loc>https://gbifes.github.io/metages-toolkit/index.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/LICENSE-text.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/pkgnet-report.html</loc></url>
+<url><loc>https://gbifes.github.io/metages-toolkit/reference/compare_recurso_monitor_snapshot.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/compute_legend_params.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/conectar_metages.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/conteo_registros_por_taxon.html</loc></url>
@@ -23,6 +24,7 @@
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/crear_piechart.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/crear_plots_evolucion_basisOfRecord.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/crear_tabla_colecciones.html</loc></url>
+<url><loc>https://gbifes.github.io/metages-toolkit/reference/extract_dwca_metadata.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/extraer_colecciones_mapa.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/extraer_resumen_taxonomico_gbif.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/extraer_tipos_recursos_ipt_pais.html</loc></url>
@@ -34,5 +36,6 @@
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/insertar_tabla_en_doc.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/pal_categoria.html</loc></url>
 <url><loc>https://gbifes.github.io/metages-toolkit/reference/render_informe.html</loc></url>
+<url><loc>https://gbifes.github.io/metages-toolkit/reference/run_recurso_monitor_workflow.html</loc></url>
 </urlset>
 

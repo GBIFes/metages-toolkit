@@ -1,5 +1,5 @@
 ---
-title: "Guia de uso de metages-toolkit — DESARROLLADORES"
+title: "Guia de Desarrolladores"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Dev guide}

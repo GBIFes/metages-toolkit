@@ -7,6 +7,16 @@
 - [`extraer_colecciones_mapa()`](https://gbifes.github.io/metages-toolkit/reference/extraer_colecciones_mapa.md)
   : Extraer colecciones desde METAGES para mapas
 
+## Testar la calidad de los datos de MetaGES
+
+- [`extract_dwca_metadata()`](https://gbifes.github.io/metages-toolkit/reference/extract_dwca_metadata.md)
+  : Anhadir metadatos EML y numero de occurrences a una tabla con
+  columna dwca_url
+- [`compare_recurso_monitor_snapshot()`](https://gbifes.github.io/metages-toolkit/reference/compare_recurso_monitor_snapshot.md)
+  : Comparar snapshot nuevo con baseline de referencia
+- [`run_recurso_monitor_workflow()`](https://gbifes.github.io/metages-toolkit/reference/run_recurso_monitor_workflow.md)
+  : Ejecutar el workflow completo de monitorizacion de recursos
+
 ## Crear mapas y graficos desde MetaGES
 
 - [`crear_mapa()`](https://gbifes.github.io/metages-toolkit/reference/crear_mapa.md)

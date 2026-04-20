@@ -1,4 +1,4 @@
-# Guia de uso de metages-toolkit — DESARROLLADORES
+# Guia de Desarrolladores
 
 Esta vignette documenta **cómo usar y mantener el repositorio
 `metages-toolkit`** como **DESARROLLADOR**. Está pensada como documento

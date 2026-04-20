@@ -91,16 +91,16 @@ conteo_registros_por_taxon()
 #> # A tibble: 71 × 2
 #>    Filo           `Nº registros`
 #>    <chr>          <chr>         
-#>  1 Tracheophyta   3.133.757     
-#>  2 Arthropoda     910.159       
-#>  3 Chordata       518.712       
-#>  4 Ascomycota     225.366       
-#>  5 Basidiomycota  157.217       
-#>  6 Mollusca       130.290       
-#>  7 Bryophyta      118.810       
-#>  8 Rhodophyta     42.463        
-#>  9 Proteobacteria 32.229        
-#> 10 Ochrophyta     29.629        
+#>  1 Tracheophyta   3.136.429     
+#>  2 Arthropoda     936.644       
+#>  3 Chordata       529.373       
+#>  4 Ascomycota     230.347       
+#>  5 Basidiomycota  157.322       
+#>  6 Mollusca       132.115       
+#>  7 Bryophyta      119.498       
+#>  8 Ochrophyta     59.232        
+#>  9 Rhodophyta     42.740        
+#> 10 Proteobacteria 32.229        
 #> # ℹ 61 more rows
 
 # Conteo por clase para plantas
@@ -111,34 +111,34 @@ conteo_registros_por_taxon(
 #> # A tibble: 35 × 2
 #>    Clase             `Nº registros`
 #>    <chr>             <chr>         
-#>  1 Magnoliopsida     2.467.573     
-#>  2 Liliopsida        516.127       
-#>  3 Polypodiopsida    112.554       
-#>  4 Bryopsida         106.258       
-#>  5 Florideophyceae   41.582        
-#>  6 Pinopsida         25.860        
-#>  7 Jungermanniopsida 15.522        
-#>  8 Lycopodiopsida    8.241         
-#>  9 Ulvophyceae       7.408         
-#> 10 Sphagnopsida      6.290         
+#>  1 Magnoliopsida     2.469.579     
+#>  2 Liliopsida        516.575       
+#>  3 Polypodiopsida    112.730       
+#>  4 Bryopsida         106.826       
+#>  5 Florideophyceae   41.844        
+#>  6 Pinopsida         25.911        
+#>  7 Jungermanniopsida 15.828        
+#>  8 Lycopodiopsida    8.232         
+#>  9 Ulvophyceae       7.498         
+#> 10 Sphagnopsida      6.339         
 #> # ℹ 25 more rows
 
 # Solo observaciones humanas
 conteo_registros_por_taxon(
   basisOfRecord = c("HUMAN_OBSERVATION")
 )
-#> # A tibble: 99 × 2
+#> # A tibble: 100 × 2
 #>    Filo             `Nº registros`
 #>    <chr>            <chr>         
-#>  1 Chordata         48.424.070    
-#>  2 Tracheophyta     15.031.315    
-#>  3 Arthropoda       1.393.434     
+#>  1 Chordata         48.420.632    
+#>  2 Tracheophyta     15.041.835    
+#>  3 Arthropoda       1.399.571     
 #>  4 Actinobacteriota 146.335       
-#>  5 Mollusca         76.575        
-#>  6 Basidiomycota    73.792        
-#>  7 Ascomycota       69.114        
-#>  8 Proteobacteria   68.994        
+#>  5 Mollusca         77.078        
+#>  6 Basidiomycota    76.350        
+#>  7 Ascomycota       70.081        
+#>  8 Proteobacteria   68.995        
 #>  9 Acidobacteriota  57.547        
-#> 10 Mycetozoa        53.916        
-#> # ℹ 89 more rows
+#> 10 Mycetozoa        53.926        
+#> # ℹ 90 more rows
 ```

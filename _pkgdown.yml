@@ -17,9 +17,9 @@ navbar:
     articles:
       text: "Artículos"
       menu:
-        - text: "Guia de uso - USUARIOS"
+        - text: "Guia de Usuarios"
           href: articles/guia-uso-usr.html
-        - text: "Guia de uso - DESARROLLADORES"
+        - text: "Guia de Desarrolladores"
           href: articles/guia-uso-dev.html
         - text: "Mapas y visualización"
           href: articles/crear-mapas.html
@@ -58,6 +58,12 @@ reference:
   contents:
   - '`conectar_metages`'
   - '`extraer_colecciones_mapa`'
+  
+- title: Testar la calidad de los datos de MetaGES
+  contents:
+  - '`extract_dwca_metadata`'
+  - '`compare_recurso_monitor_snapshot`'
+  - '`run_recurso_monitor_workflow`'
 
 - title: Crear mapas y graficos desde MetaGES
   contents:

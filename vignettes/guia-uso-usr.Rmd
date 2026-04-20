@@ -1,5 +1,5 @@
 ---
-title: "Guia de uso de metagesToolkit — USUARIOS"
+title: "Guia de Usuarios"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Usage guide}

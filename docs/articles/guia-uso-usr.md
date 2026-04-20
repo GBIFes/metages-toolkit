@@ -1,4 +1,4 @@
-# Guia de uso de metagesToolkit — USUARIOS
+# Guia de Usuarios
 
 Esta vignette documenta **cómo usar y explorar el paquete de R
 `metagesToolkit`** como **USUARIO**. Está pensada como documento vivo y
@@ -184,20 +184,43 @@ mapa2$data_map
 
 ## Generacion del Informe de Colecciones
 
-El Informe de colecciones de GBIF.ES se genera utilizando un documento
-`.qmd` (Quarto) que utiliza las funciones y recursos de metagesToolkit
-para producir un documento `.docx` editable con toda la informacion
-necesaria para ser validado por un humano.
+El Informe de colecciones de GBIF.ES se genera de manera automatica
+utilizando un documento `.qmd` (Quarto) que utiliza las funciones y
+recursos de metagesToolkit para producir un documento `.docx` editable
+con toda la informacion necesaria para ser validado por un humano. Las
+imágenes y datos que no se pueden crear automaticamente se crean y
+almacenan manualmente.
 
 ### Requerimientos
 
 Para optimizar la produccion del informe, se usan recursos ya generados
 y guardados con anterioridad en metagesToolkit por lo que el primer paso
-sera actualizar estos recursos.
+sera actualizar estos recursos:
 
-Para actualizarlos, 👉 Consulta el artículo [Actualización de datasets,
-mapas y gráficos del
+#### Actualización automática de Recursos en masa
+
+👉 Consulta el artículo [Actualización de datasets, mapas y gráficos del
 repo](https://gbifes.github.io/metages-toolkit/articles/guia-uso-dev.html#actualizaci%C3%B3n-de-datasets-mapas-y-gr%C3%A1ficos-del-repo)
+
+#### Actualización manual de Imagenes
+
+Se encuentran en el [repositorio Github de metages-toolkit
+{Imagenes}](https://github.com/GBIFes/metages-toolkit/tree/6796c102b37ae42374c34ed9f3a0c93efd2ede48/inst/reports/assets/images/external).
+Un archivo LEEME.txt en esa misma carpeta documenta las
+**instrucciones** para obtener cada imagen.
+
+#### Actualización manual de Datos
+
+Se encuentran en el [repositorio Github de metages-toolkit
+{Datos}](https://github.com/GBIFes/metages-toolkit/blob/6796c102b37ae42374c34ed9f3a0c93efd2ede48/inst/scripts/extraer_metricas_manuales.R).
+
+Para actualizarlos, los datos deben cambiarse manualmente y se debe
+correr el siguiente codigo en R:
+
+``` r
+# Guarda las metricas en metages-toolkit como lista de R.
+source("inst/scripts/extraer_metricas_manuales.R")
+```
 
 ### Renderizar informe
 
@@ -254,6 +277,19 @@ insertar_tablas_colecciones(
 #>>   Generando documento Word (puede tardar varios minutos)…
 #>>   Hubo 11 avisos (use warnings() para verlos)
 ```
+
+Tras crear el informe, tendrá que ser revisado manualmente.
+
+### Maquetar informe
+
+Una vez generado el informe, habrá que hacer unos retoques:
+
+- Ajuste de las tablas del Anexo I
+  - Eliminar espacios en blanco entre titulo de sección y tabla
+  - Ajustar ancho de columna de cada tabla
+- Actualizar y añadir `Portada` y `tabla de versiones` manualmente
+  - Se encuentran en el [repositorio Github de metages-toolkit
+    {Portada}](https://github.com/GBIFes/metages-toolkit/tree/6796c102b37ae42374c34ed9f3a0c93efd2ede48/inst/reports/assets/portada)
 
 ## Acceso a recursos internos de metagesToolkit
 
