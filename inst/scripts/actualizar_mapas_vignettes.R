@@ -155,6 +155,8 @@ vistas_sql <- list(
   colecciones_per_publican    = "SELECT * FROM colecciones_per_estado_publicacion",
   colecciones_bd_por_disciplina  = "SELECT * FROM colecciones_bd_por_disciplina",
   colecciones_bd_por_disciplina_y_sub  = "SELECT * FROM colecciones_bd_por_disciplina_y_sub",
+  colecciones_col_por_disciplina_y_sub  = "SELECT * FROM colecciones_col_por_disciplina_y_sub",
+  col_por_disciplina = "SELECT * FROM col_por_disciplina", 
   colecciones_por_disciplina  = "SELECT * FROM colecciones_por_disciplina", 
   colecciones_por_disciplina_y_sub  = "SELECT * FROM colecciones_por_disciplina_y_sub",
   colecciones_por_subdisciplina_botanica  = "SELECT * FROM colecciones_por_subdisciplina_botanica",
@@ -167,8 +169,9 @@ vistas_sql <- list(
   registros    = "SELECT * FROM registros",
   registros_por_disciplina    = "SELECT * FROM registros_por_disciplina",
   registros_por_disciplina_col    = "SELECT * FROM registros_por_disciplina_col",
-  registros_por_disciplina_bd    = "SELECT * FROM registros_por_disciplina_bd",
+  registros_por_disciplina_bd    = "SELECT * FROM registros_por_disciplina_bd",   # en desuso
   registros_por_sector    = "SELECT * FROM registros_por_sector",
+  registros_por_tipo_recurso    = "SELECT * FROM registros_por_tipo_recurso",
   entidades_per_publican    = "SELECT * FROM entidades_per_estado_publicacion"
 )
 
@@ -370,6 +373,34 @@ bd %>% mutate(disciplina = factor(disciplina, levels = orden)) %>%
                `Nº registros publicados` = n_registros_publicados) %>%
         saveRDS(file = fs::path(dir_data_sql, "colecciones_bd_por_disciplina_y_sub.rds"))
 
+# Numero de colecciones y registros por disciplina y subdisciplina
+readRDS("inst/reports/data/vistas_sql/colecciones_col_por_disciplina_y_sub.rds") %>% 
+  mutate(disciplina = factor(disciplina, levels = orden)) %>%
+  arrange(disciplina) %>%
+  mutate(n_colecciones = as.character(n_colecciones),
+         n_colecciones_publican = as.character(n_colecciones_publican),
+         n_registros_publicados = as.character(format(
+           n_registros_publicados, 
+           big.mark = ".",
+           decimal.mark = ",",
+           scientific = FALSE)),
+         disciplina = if_else(disciplina %in% hijos,
+                              paste0("- ", disciplina),
+                              disciplina),
+         n_colecciones = if_else(disciplina %in% padres,
+                                 paste0("(", n_colecciones, ")"),
+                                 n_colecciones),
+         n_colecciones_publican = if_else(disciplina %in% padres,
+                                          paste0("(", n_colecciones_publican, ")"),
+                                          n_colecciones_publican),
+         n_registros_publicados = if_else(disciplina %in% padres,
+                                          paste0("(", n_registros_publicados, ")"),
+                                          n_registros_publicados)) %>%
+  rename(Disciplina = disciplina,
+         `Nº colecciones` = n_colecciones,
+         `Nº colecciones que comparten datos en GBIF` = n_colecciones_publican,
+         `Nº registros publicados` = n_registros_publicados) %>%
+  saveRDS(file = fs::path(dir_data_sql, "colecciones_col_por_disciplina_y_sub.rds"))
 
 # Numero de colecciones, bases de datos y registros por disciplina y subdisciplina
 readRDS("inst/reports/data/vistas_sql/colecciones_por_disciplina_y_sub.rds") %>% 
@@ -438,6 +469,24 @@ save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/registros_por_
           filename = "recursos_por_sector.png",
           width = 12)
 
+
+# Registros por tipo de recurso
+save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/registros_por_tipo_recurso.rds"),
+                                categoria = "Tipo recurso",
+                                valor = "Nº registros publicados",
+                                titulo = "Proporción de registros publicados por tipo de recurso"),
+          filename = "registros_por_tipo_recurso.png",
+          width = 12)
+
+# Recursos por tipo de recurso
+save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/registros_por_tipo_recurso.rds"),
+                                categoria = "Tipo recurso",
+                                valor = "Nº recursos",
+                                titulo = "Proporción de recursos por tipo de recurso"),
+          filename = "recursos_por_tipo_recurso.png",
+          width = 12)
+
+
 # Bases de datos por categoria
 save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/colecciones_bd_por_disciplina.rds"),
                                 categoria = "disciplina_def",
@@ -446,11 +495,19 @@ save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/colecciones_bd
           filename = "colecciones_bd_por_disciplina.png",
           width = 12)
 
+# Colecciones por categoria
+save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/col_por_disciplina.rds"),
+                                categoria = "disciplina_def",
+                                valor = "numero_colecciones",
+                                titulo = "Proporción de colecciones por disciplina"),
+          filename = "col_por_disciplina.png",
+          width = 12)
+
 # Colecciones y bases de datos por categoria
 save_plot(plot = crear_piechart(rds_path = paste0(dir_data_sql, "/colecciones_por_disciplina.rds"),
                                  categoria = "disciplina_def",
                                  valor = "numero_colecciones",
-                                titulo = "Proporción de coleciones y bases de datos por disciplina"),
+                                titulo = "Proporción de colecciones y bases de datos por disciplina"),
           filename = "colecciones_por_disciplina.png",
           width = 12)
 
@@ -470,7 +527,7 @@ saveRDS(datos_ala$data, file = fs::path(dir_data_maps, "registros_evolucion_basi
 # ------------------------------------------------------------
 # 2.1 Guardar graficos de GBIF.org
 # ------------------------------------------------------------
-message("==> Iniciando descarga de datos de GBIF.org pesados")
+message("==> Iniciando descarga de datos pesados de GBIF.org")
 
 df <- extraer_resumen_taxonomico_gbif()
 saveRDS(df, file = fs::path(dir_data_maps, "resumen_tax_gbif_total.rds"))

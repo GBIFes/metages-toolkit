@@ -1,6 +1,6 @@
 Package: metagesToolkit
 Title: Herramientas internas para METAGES
-Version: 1.1.10
+Version: 1.1.11
 Authors@R: c(
     person("Ruben", 
             "Perez Perez", , 
@@ -36,6 +36,7 @@ Imports:
     jsonlite,
     odbc,
     officer,
+    potions,
     processx,
     purrr,
     quarto,
@@ -46,7 +47,8 @@ Imports:
     terra,
     tibble,
     tidygeocoder,
-    tidyr
+    tidyr,
+    xml2
 Suggests: 
     covr,
     knitr,

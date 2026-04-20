@@ -24,7 +24,16 @@ n_gbif_paises = 69,
 n_gbif_organizaciones = 42,
 
 # Ranking de España en GBIF.org. Extraer de get_top_publishing_countries_gbif()
-n_ranking_gbifes = "undécimo",
+n_ranking_gbifes = "décimo",
+
+
+
+# ------------------------------------------------------------
+# Metricas Katia
+# ------------------------------------------------------------
+
+# Numero de ejemplares publicados de colecciones (preservedSpecimen) -> Equivalencia parcial con https://www.gbif.org/occurrence/search?basis_of_record=PRESERVED_SPECIMEN&publishing_country=ES&advanced=1&occurrence_status=present
+n_ejemplares_col_pub = 4897341,
 
 
 # ------------------------------------------------------------
@@ -32,7 +41,7 @@ n_ranking_gbifes = "undécimo",
 # ------------------------------------------------------------
 
 # Numero edicion del informe actual y anterior
-n_edicion_informe_actual = "septima",
+n_edicion_informe_actual = "séptima",
 n_edicion_informe_anterior = "sexta",
 
 # Fecha de extraccion de datos para generacion del informe anterior
