@@ -29,7 +29,7 @@ genera automaticamente con \code{extraer_colecciones_mapa()}}
 \item{disciplina}{Uno de \verb{Zool\\u00F3gica}, \verb{Bot\\u00E1nica}, \verb{Paleontol\\u00F3gica},
 \code{Mixta}, \verb{Microbiol\\u00F3gica} o \code{NULL}.}
 
-\item{subdisciplina}{Uno de \code{Vertebrados}, \code{Invertebrados}, \verb{Invertebrados y vertebrados}, \code{Plantas}, \verb{Hongos y l\\u00EDquenes}, \code{Algas}, \verb{Bot\\u00E1nicas mixtas} o \code{NULL}.}
+\item{subdisciplina}{Uno de \code{Vertebrados}, \code{Invertebrados}, \verb{Zool\\u00F3gicas mixtas}, \code{Plantas}, \verb{Hongos y l\\u00EDquenes}, \code{Algas}, \verb{Bot\\u00E1nicas mixtas} o \code{NULL}.}
 
 \item{publican}{Uno de \code{TRUE}, \code{FALSE} o \code{NULL}.}
 

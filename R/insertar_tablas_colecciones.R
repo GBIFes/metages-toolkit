@@ -216,7 +216,7 @@ insertar_tabla_en_doc <- function(doc, keyword, ft) {
 #'   keywords = c(
 #'     "Colecciones y bases de datos de invertebrados",
 #'     "Colecciones y bases de datos de vertebrados",
-#'     "Colecciones y bases de datos de invertebrados y vertebrados",
+#'     "Colecciones y bases de datos de zool\u00F3gicas mixtas",
 #'     "Colecciones y bases de datos de plantas",
 #'     "Colecciones y bases de datos de algas",
 #'     "Colecciones y bases de datos de hongos y l\u00EDquenes",
@@ -228,7 +228,7 @@ insertar_tabla_en_doc <- function(doc, keyword, ft) {
 #'   filtros = list(
 #'     list(subdisciplina = "Invertebrados"),
 #'     list(subdisciplina = "Vertebrados"),
-#'     list(subdisciplina = "Invertebrados y vertebrados"),
+#'     list(subdisciplina = "Zool\u00F3gicas mixtas"),
 #'     list(subdisciplina = "Plantas"),
 #'     list(subdisciplina = "Algas"),
 #'     list(subdisciplina = "Hongos y l\u00EDquenes"),

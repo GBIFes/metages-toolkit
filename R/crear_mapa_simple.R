@@ -5,7 +5,7 @@
 #'
 #' @param tipo_coleccion `colección`, `base de datos` o `NULL`.
 #' @param disciplina `Zoológica`, `Botánica`, `Paleontológica`, `Mixta`, `Microbiológica` o `NULL`.
-#' @param subdisciplina `Vertebrados`, `Invertebrados`, `Invertebrados y vertebrados`, `Plantas`,  `Hongos y l\u00EDquenes`, `Algas`, `Bot\u00E1nicas mixtas` o `NULL`.
+#' @param subdisciplina `Vertebrados`, `Invertebrados`, `Zool\u00F3gicas mixtas`, `Plantas`,  `Hongos y l\u00EDquenes`, `Algas`, `Bot\u00E1nicas mixtas` o `NULL`.
 #' @param publican `TRUE`, `FALSE` o `NULL`.
 #' @param facet Nombre de columna (string) para facetar o `NULL`.
 #'

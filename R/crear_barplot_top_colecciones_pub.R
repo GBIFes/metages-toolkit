@@ -25,7 +25,13 @@ crear_barplot_top_colecciones_pub <- function(rds_path) {
     ) %>%
     arrange(desc(numberOfRecords)) %>%
     transmute(
-      collection_code = coalesce(collection_code, coleccion_base),
+      collection_code = case_when(
+                          !is.na(collection_code_institucion) &
+                                  !is.na(collection_code) &
+                                  collection_code_institucion != collection_code ~
+                                                                    paste0(collection_code_institucion, "-", collection_code),
+                          !is.na(collection_code) ~ as.character(collection_code),
+                          TRUE ~ as.character(coleccion_base)),
       value = numberOfRecords
     ) %>%
     distinct()
@@ -35,7 +41,7 @@ crear_barplot_top_colecciones_pub <- function(rds_path) {
     df <- df_pub %>%
       head(10)
     
-    x_label <- "N\u00BA registros"
+    x_label <- "N\u00BA registros publicados"
     
   } else {
     
@@ -47,7 +53,13 @@ crear_barplot_top_colecciones_pub <- function(rds_path) {
       ) %>%
       arrange(desc(number_of_subunits)) %>%
       transmute(
-        collection_code = coalesce(collection_code, coleccion_base),
+        collection_code = case_when(
+                            !is.na(collection_code_institucion) &
+                                !is.na(collection_code) &
+                                collection_code_institucion != collection_code ~
+                                                                    paste0(collection_code_institucion, "-", collection_code),
+                            !is.na(collection_code) ~ as.character(collection_code),
+                            TRUE ~ as.character(coleccion_base)),
         value = number_of_subunits
       ) %>%
       distinct() %>%

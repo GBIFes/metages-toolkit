@@ -17,7 +17,7 @@ crear_mapa_simple(
 
 \item{disciplina}{\code{Zoológica}, \code{Botánica}, \code{Paleontológica}, \code{Mixta}, \code{Microbiológica} o \code{NULL}.}
 
-\item{subdisciplina}{\code{Vertebrados}, \code{Invertebrados}, \verb{Invertebrados y vertebrados}, \code{Plantas},  \verb{Hongos y l\\u00EDquenes}, \code{Algas}, \verb{Bot\\u00E1nicas mixtas} o \code{NULL}.}
+\item{subdisciplina}{\code{Vertebrados}, \code{Invertebrados}, \verb{Zool\\u00F3gicas mixtas}, \code{Plantas},  \verb{Hongos y l\\u00EDquenes}, \code{Algas}, \verb{Bot\\u00E1nicas mixtas} o \code{NULL}.}
 
 \item{publican}{\code{TRUE}, \code{FALSE} o \code{NULL}.}
 

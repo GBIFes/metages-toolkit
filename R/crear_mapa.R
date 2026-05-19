@@ -17,7 +17,7 @@
 #'  Uno de `Zool\u00F3gica`, `Bot\u00E1nica`, `Paleontol\u00F3gica`,
 #'  `Mixta`, `Microbiol\u00F3gica` o `NULL`.
 #' @param subdisciplina 
-#'  Uno de `Vertebrados`, `Invertebrados`, `Invertebrados y vertebrados`, `Plantas`, `Hongos y l\u00EDquenes`, `Algas`, `Bot\u00E1nicas mixtas` o `NULL`.
+#'  Uno de `Vertebrados`, `Invertebrados`, `Zool\u00F3gicas mixtas`, `Plantas`, `Hongos y l\u00EDquenes`, `Algas`, `Bot\u00E1nicas mixtas` o `NULL`.
 #' @param publican
 #'  Uno de `TRUE`, `FALSE` o `NULL`.
 #' @param facet Nombre de columna (string) para facetar o `NULL`.
@@ -65,7 +65,7 @@ crear_mapa <- function(data = data,
   subdisciplina <- if (!is.null(subdisciplina)) {
     match.arg(subdisciplina, c(
       "Vertebrados", "Invertebrados",
-      "Invertebrados y vertebrados",
+      "Zool\u00F3gicas mixtas",
       "Plantas", "Hongos y l\u00edquenes", "Algas", "Bot\u00e1nicas mixtas"
     ))
   } else NULL
@@ -97,10 +97,10 @@ crear_mapa <- function(data = data,
   # funcion de los argumentos de crear_mapa()
   if (identical(tipo_coleccion, "base de datos")) {
     value_var   <- "numberOfRecords"
-    value_label <- "N\u00FAmero de registros"
+    value_label <- "N\u00FAmero de registros publicados"
   } else if (isTRUE(publican)) {
     value_var   <- "numberOfRecords"
-    value_label <- "N\u00FAmero de registros"
+    value_label <- "N\u00FAmero de registros publicados"
   } else {
     value_var   <- "number_of_subunits"
     value_label <- "N\u00FAmero de ejemplares"
