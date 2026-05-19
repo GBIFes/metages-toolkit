@@ -48,7 +48,7 @@ crear_mapa(
 
 - subdisciplina:
 
-  Uno de `Vertebrados`, `Invertebrados`, `Invertebrados y vertebrados`,
+  Uno de `Vertebrados`, `Invertebrados`, `Zool\u00F3gicas mixtas`,
   `Plantas`, `Hongos y l\u00EDquenes`, `Algas`, `Bot\u00E1nicas mixtas`
   o `NULL`.
 

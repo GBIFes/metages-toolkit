@@ -127,18 +127,18 @@ conteo_registros_por_taxon(
 conteo_registros_por_taxon(
   basisOfRecord = c("HUMAN_OBSERVATION")
 )
-#> # A tibble: 100 × 2
+#> # A tibble: 99 × 2
 #>    Filo             `Nº registros`
 #>    <chr>            <chr>         
-#>  1 Chordata         48.420.632    
-#>  2 Tracheophyta     15.041.835    
-#>  3 Arthropoda       1.399.571     
+#>  1 Chordata         48.491.637    
+#>  2 Tracheophyta     15.044.405    
+#>  3 Arthropoda       1.402.202     
 #>  4 Actinobacteriota 146.335       
-#>  5 Mollusca         77.078        
-#>  6 Basidiomycota    76.350        
-#>  7 Ascomycota       70.081        
-#>  8 Proteobacteria   68.995        
+#>  5 Mollusca         78.446        
+#>  6 Basidiomycota    76.427        
+#>  7 Ascomycota       70.122        
+#>  8 Proteobacteria   68.997        
 #>  9 Acidobacteriota  57.547        
 #> 10 Mycetozoa        53.926        
-#> # ℹ 90 more rows
+#> # ℹ 89 more rows
 ```

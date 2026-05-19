@@ -1,5 +1,7 @@
 # Dashboard estático de métricas de MetaGES
 
+*Fecha de última actualización:* `19/05/2026`
+
 ## Introducción
 
 Esta vignette muestra distintas tablas y gráficas para mostrar métricas
@@ -83,7 +85,7 @@ de MetaGES, usando el paquete `metagesToolkit` mediante las siguientes
 
 ![](figures/barplot-colecciones-vert.png)
 
-### Número de ejemplares de las mayores colecciones zoológicas de invertebrados y vertebrados
+### Número de ejemplares de las mayores colecciones zoológicas mixtas
 
 ![](figures/barplot-colecciones-invver.png)
 

@@ -1,4 +1,4 @@
-# Generación de mapas con crear_mapa_simple()
+# Generación de mapas
 
 ## Introducción
 
@@ -95,18 +95,18 @@ mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-vert-pub.png)
 
-## Mapa colecciones de invertebrados y vertebrados
+## Mapa colecciones de zoológicas mixtas
 
 Ejemplo de uso de
-`crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Invertebrados y vertebrados")`,
+`crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Zoológicas mixtas")`,
 mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-invver.png)
 
-## Mapa colecciones de invertebrados y vertebrados publicadoras
+## Mapa colecciones de zoológicas mixtas publicadoras
 
 Ejemplo de uso de
-`crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Invertebrados y vertebrados", publican = T)`,
+`crear_mapa_simple(tipo_coleccion = "coleccion", subdisciplina = "Zoológicas mixtas", publican = T)`,
 mostrando la distribución espacial de los recursos del Registro.
 
 ![](figures/mapa-colecciones-invver-pub.png)
