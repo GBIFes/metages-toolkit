@@ -65,7 +65,8 @@ comparar_datasets_gbiforg_metages <- function(con = conectar_metages()$con) {
   metages_df <- dbGetQuery(
     con,
     "SELECT recurso_id, uuid, title, numberOfRecords
-     FROM metages_recurso"
+     FROM metages_recurso
+     WHERE private = 0"
   ) |>
     as_tibble() |>
     mutate(
@@ -140,3 +141,12 @@ comparar_datasets_gbiforg_metages <- function(con = conectar_metages()$con) {
     en_metages = en_metages
   )
 }
+
+
+
+# Queremos detectar:
+# https://ipt.vliz.be/eurobis/?search=csic&sort=name&order=asc
+# https://ipt.vliz.be/eurobis/?sort=organisation&order=asc&page=1&search=ih
+
+
+gbifdata <- comparar_datasets_gbiforg_metages()

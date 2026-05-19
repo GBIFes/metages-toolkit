@@ -24,7 +24,7 @@ n_gbif_paises = 69,
 n_gbif_organizaciones = 42,
 
 # Ranking de España en GBIF.org. Extraer de get_top_publishing_countries_gbif()
-n_ranking_gbifes = "décimo",
+n_ranking_gbifes = "undécimo",
 
 
 

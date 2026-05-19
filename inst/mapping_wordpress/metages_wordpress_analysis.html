@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Análisis de Tablas Metages en el Código PHP de gbifes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="metages_wordpress_analysis_files/libs/clipboard/clipboard.min.js"></script>
+<script src="metages_wordpress_analysis_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="metages_wordpress_analysis_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="metages_wordpress_analysis_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="metages_wordpress_analysis_files/libs/quarto-html/popper.min.js"></script>
+<script src="metages_wordpress_analysis_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="metages_wordpress_analysis_files/libs/quarto-html/anchor.min.js"></script>
+<link href="metages_wordpress_analysis_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="metages_wordpress_analysis_files/libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="metages_wordpress_analysis_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="metages_wordpress_analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="metages_wordpress_analysis_files/libs/bootstrap/bootstrap-4d7f0bce1131f3e5f9547cd857cfbfc8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="metages_wordpress_analysis_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<link href="metages_wordpress_analysis_files/libs/vis-9.1.0/vis-network.min.css" rel="stylesheet">
+
+<script src="metages_wordpress_analysis_files/libs/vis-9.1.0/vis-network.min.js"></script>
+
+<script src="metages_wordpress_analysis_files/libs/visNetwork-binding-2.1.4/visNetwork.js"></script>
+
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#resumen" id="toc-resumen" class="nav-link active" data-scroll-target="#resumen">Resumen</a></li>
+  <li><a href="#inventario-de-tablas-metages" id="toc-inventario-de-tablas-metages" class="nav-link" data-scroll-target="#inventario-de-tablas-metages">1. Inventario de Tablas Metages</a></li>
+  <li><a href="#tabla-de-equivalencias-variables-php-columnas-tablas" id="toc-tabla-de-equivalencias-variables-php-columnas-tablas" class="nav-link" data-scroll-target="#tabla-de-equivalencias-variables-php-columnas-tablas">2. Tabla de Equivalencias: Variables PHP → Columnas → Tablas</a>
+  <ul class="collapse">
+  <li><a href="#metages_body-entidad-principal-instituciones-colecciones-proyectos-bases-de-datos" id="toc-metages_body-entidad-principal-instituciones-colecciones-proyectos-bases-de-datos" class="nav-link" data-scroll-target="#metages_body-entidad-principal-instituciones-colecciones-proyectos-bases-de-datos">2.1 <code>metages_body</code> — Entidad principal (instituciones, colecciones, proyectos, bases de datos)</a></li>
+  <li><a href="#metages_address-direcciones" id="toc-metages_address-direcciones" class="nav-link" data-scroll-target="#metages_address-direcciones">2.2 <code>metages_address</code> — Direcciones</a></li>
+  <li><a href="#metages_body_ext-extensiones-multilingüe-de-body" id="toc-metages_body_ext-extensiones-multilingüe-de-body" class="nav-link" data-scroll-target="#metages_body_ext-extensiones-multilingüe-de-body">2.3 <code>metages_body_ext</code> — Extensiones multilingüe de body</a></li>
+  <li><a href="#metages_person-personas" id="toc-metages_person-personas" class="nav-link" data-scroll-target="#metages_person-personas">2.4 <code>metages_person</code> — Personas</a></li>
+  <li><a href="#metages_personinbody-relación-personabody" id="toc-metages_personinbody-relación-personabody" class="nav-link" data-scroll-target="#metages_personinbody-relación-personabody">2.5 <code>metages_personinbody</code> — Relación persona↔︎body</a></li>
+  <li><a href="#metages_types-tipologías-jerárquicas-genéricas" id="toc-metages_types-tipologías-jerárquicas-genéricas" class="nav-link" data-scroll-target="#metages_types-tipologías-jerárquicas-genéricas">2.6 <code>metages_types</code> — Tipologías jerárquicas genéricas</a></li>
+  <li><a href="#metages_recurso_cat-categorías-de-recurso-tipo-de-institución" id="toc-metages_recurso_cat-categorías-de-recurso-tipo-de-institución" class="nav-link" data-scroll-target="#metages_recurso_cat-categorías-de-recurso-tipo-de-institución">2.7 <code>metages_recurso_cat</code> — Categorías de recurso (tipo de institución)</a></li>
+  <li><a href="#metages_recurso-recursosdatasets" id="toc-metages_recurso-recursosdatasets" class="nav-link" data-scroll-target="#metages_recurso-recursosdatasets">2.8 <code>metages_recurso</code> — Recursos/datasets</a></li>
+  <li><a href="#metages_provision_recurso-fechas-de-provisión-de-recursos" id="toc-metages_provision_recurso-fechas-de-provisión-de-recursos" class="nav-link" data-scroll-target="#metages_provision_recurso-fechas-de-provisión-de-recursos">2.9 <code>metages_provision_recurso</code> — Fechas de provisión de recursos</a></li>
+  <li><a href="#metages_institucion-detalles-de-institución" id="toc-metages_institucion-detalles-de-institución" class="nav-link" data-scroll-target="#metages_institucion-detalles-de-institución">2.10 <code>metages_institucion</code> — Detalles de institución</a></li>
+  <li><a href="#metages_ispartof-relación-padrehijo-entre-bodies" id="toc-metages_ispartof-relación-padrehijo-entre-bodies" class="nav-link" data-scroll-target="#metages_ispartof-relación-padrehijo-entre-bodies">2.11 <code>metages_ispartof</code> — Relación padre/hijo entre bodies</a></li>
+  <li><a href="#metages_disciplina-tipos-de-colecciónbase-de-datos" id="toc-metages_disciplina-tipos-de-colecciónbase-de-datos" class="nav-link" data-scroll-target="#metages_disciplina-tipos-de-colecciónbase-de-datos">2.12 <code>metages_disciplina</code> — Tipos de colección/base de datos</a></li>
+  <li><a href="#metages_cursos_gral-talleres-y-jornadas" id="toc-metages_cursos_gral-talleres-y-jornadas" class="nav-link" data-scroll-target="#metages_cursos_gral-talleres-y-jornadas">2.13 <code>metages_cursos_gral</code> — Talleres y Jornadas</a></li>
+  <li><a href="#metages_proy_tipos-tipos-de-proyecto-convocatoria" id="toc-metages_proy_tipos-tipos-de-proyecto-convocatoria" class="nav-link" data-scroll-target="#metages_proy_tipos-tipos-de-proyecto-convocatoria">2.14 <code>metages_proy_tipos</code> — Tipos de proyecto (convocatoria)</a></li>
+  <li><a href="#metages_proyectos-proyectos" id="toc-metages_proyectos-proyectos" class="nav-link" data-scroll-target="#metages_proyectos-proyectos">2.15 <code>metages_proyectos</code> — Proyectos</a></li>
+  <li><a href="#metages_body_proy-relación-bodyproyecto" id="toc-metages_body_proy-relación-bodyproyecto" class="nav-link" data-scroll-target="#metages_body_proy-relación-bodyproyecto">2.16 <code>metages_body_proy</code> — Relación body↔︎proyecto</a></li>
+  <li><a href="#tablas-solo-usadas-en-forms_callbacks.php-escritura-cuestionarios" id="toc-tablas-solo-usadas-en-forms_callbacks.php-escritura-cuestionarios" class="nav-link" data-scroll-target="#tablas-solo-usadas-en-forms_callbacks.php-escritura-cuestionarios">2.17-2.23 Tablas solo usadas en forms_callbacks.php (escritura cuestionarios)</a></li>
+  </ul></li>
+  <li><a href="#análisis-de-tablascódigo-potencialmente-obsoletos" id="toc-análisis-de-tablascódigo-potencialmente-obsoletos" class="nav-link" data-scroll-target="#análisis-de-tablascódigo-potencialmente-obsoletos">3. Análisis de Tablas/Código Potencialmente Obsoletos</a>
+  <ul class="collapse">
+  <li><a href="#archivos-obsoletos-directorios-admin_old-y-admingbif_old.php" id="toc-archivos-obsoletos-directorios-admin_old-y-admingbif_old.php" class="nav-link" data-scroll-target="#archivos-obsoletos-directorios-admin_old-y-admingbif_old.php">3.1 Archivos obsoletos (directorios <code>admin_old</code> y <code>admin/gbif_old.php</code>)</a></li>
+  <li><a href="#código-comentado-que-referencia-tablascolumnas-ya-no-usadas" id="toc-código-comentado-que-referencia-tablascolumnas-ya-no-usadas" class="nav-link" data-scroll-target="#código-comentado-que-referencia-tablascolumnas-ya-no-usadas">3.2 Código comentado que referencia tablas/columnas ya no usadas</a></li>
+  <li><a href="#columnas-con-uso-cuestionable" id="toc-columnas-con-uso-cuestionable" class="nav-link" data-scroll-target="#columnas-con-uso-cuestionable">3.3 Columnas con uso cuestionable</a></li>
+  </ul></li>
+  <li><a href="#mapa-de-flujo-por-archivo" id="toc-mapa-de-flujo-por-archivo" class="nav-link" data-scroll-target="#mapa-de-flujo-por-archivo">4. Mapa de Flujo por Archivo</a>
+  <ul class="collapse">
+  <li><a href="#archivos-de-lectura-templates-de-frontend" id="toc-archivos-de-lectura-templates-de-frontend" class="nav-link" data-scroll-target="#archivos-de-lectura-templates-de-frontend">Archivos de LECTURA (templates de frontend)</a></li>
+  <li><a href="#archivos-de-escritura-cuestionarios" id="toc-archivos-de-escritura-cuestionarios" class="nav-link" data-scroll-target="#archivos-de-escritura-cuestionarios">Archivos de ESCRITURA (cuestionarios)</a></li>
+  </ul></li>
+  <li><a href="#por-qué-algunas-columnas-no-tienen-variable-php-equivalente" id="toc-por-qué-algunas-columnas-no-tienen-variable-php-equivalente" class="nav-link" data-scroll-target="#por-qué-algunas-columnas-no-tienen-variable-php-equivalente">5. Por qué Algunas Columnas no Tienen Variable PHP Equivalente</a>
+  <ul class="collapse">
+  <li><a href="#columnas-usadas-solo-en-cláusulas-where-filtros" id="toc-columnas-usadas-solo-en-cláusulas-where-filtros" class="nav-link" data-scroll-target="#columnas-usadas-solo-en-cláusulas-where-filtros">5.1 Columnas usadas solo en cláusulas <code>WHERE</code> / filtros</a></li>
+  <li><a href="#columnas-usadas-solo-como-claves-de-join" id="toc-columnas-usadas-solo-como-claves-de-join" class="nav-link" data-scroll-target="#columnas-usadas-solo-como-claves-de-join">5.2 Columnas usadas solo como claves de <code>JOIN</code></a></li>
+  <li><a href="#columnas-usadas-solo-en-escritura-insertupdate-desde-forms_callbacks.php" id="toc-columnas-usadas-solo-en-escritura-insertupdate-desde-forms_callbacks.php" class="nav-link" data-scroll-target="#columnas-usadas-solo-en-escritura-insertupdate-desde-forms_callbacks.php">5.3 Columnas usadas solo en escritura (INSERT/UPDATE) desde <code>forms_callbacks.php</code></a></li>
+  <li><a href="#primary-keys-usadas-en-variables-genéricas-temporales" id="toc-primary-keys-usadas-en-variables-genéricas-temporales" class="nav-link" data-scroll-target="#primary-keys-usadas-en-variables-genéricas-temporales">5.4 Primary keys usadas en variables genéricas temporales</a></li>
+  </ul></li>
+  <li><a href="#origen-del-mapeo-variable-columna" id="toc-origen-del-mapeo-variable-columna" class="nav-link" data-scroll-target="#origen-del-mapeo-variable-columna">6. Origen del Mapeo Variable → Columna</a></li>
+  <li><a href="#resumen-de-recomendaciones" id="toc-resumen-de-recomendaciones" class="nav-link" data-scroll-target="#resumen-de-recomendaciones">7. Resumen de Recomendaciones</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Análisis de Tablas Metages en el Código PHP de gbifes</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<style>
+body, p, li, td, th { font-size: 0.7rem; }
+h1 { font-size: 1.3rem; }
+h2 { font-size: 0.9rem; }
+h3 { font-size: 0.8rem; }
+code, pre { font-size: 0.6rem; }
+
+/* Tabla inventario */
+.tabla-inventario table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Evita solapes en headers */
+.tabla-inventario th {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-height: 1.2;
+  vertical-align: bottom;
+  padding: 0.45rem 0.35rem;
+}
+
+/* Celdas */
+.tabla-inventario td {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  vertical-align: top;
+  padding: 0.45rem 0.35rem;
+}
+
+/* Anchos de columnas */
+.tabla-inventario th:nth-child(1),
+.tabla-inventario td:nth-child(1) {
+  width: 5%;
+  text-align: center;
+}
+
+.tabla-inventario th:nth-child(2),
+.tabla-inventario td:nth-child(2) {
+  width: 22%;
+}
+
+.tabla-inventario th:nth-child(3),
+.tabla-inventario td:nth-child(3) {
+  width: 12%;
+  text-align: center;
+}
+
+.tabla-inventario th:nth-child(4),
+.tabla-inventario td:nth-child(4) {
+  width: 16%;
+  text-align: center;
+}
+
+.tabla-inventario th:nth-child(5),
+.tabla-inventario td:nth-child(5) {
+  width: 45%;
+}
+</style>
+<section id="resumen" class="level2">
+<h2 class="anchored" data-anchor-id="resumen">Resumen</h2>
+<p>Se identificaron <strong>19 tablas reales de metages</strong> utilizadas en el código PHP del tema <code>gbifes</code>. A continuación se presenta el análisis completo.</p>
+<hr>
+</section>
+<section id="inventario-de-tablas-metages" class="level2">
+<h2 class="anchored" data-anchor-id="inventario-de-tablas-metages">1. Inventario de Tablas Metages</h2>
+<div class="tabla-inventario">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 36%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Tabla</th>
+<th style="text-align: center;">Lectura (SELECT)</th>
+<th style="text-align: center;">Escritura (INSERT/UPDATE)</th>
+<th>Archivos que la usan</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><code>metages_body</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>participantes, proyectos, reg-instituciones, reg-colecciones, forms_callbacks</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><code>metages_address</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>participantes, reg-instituciones, reg-colecciones, gbif.php, gbif_old.php, forms_callbacks</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><code>metages_body_ext</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>participantes, proyectos, forms_callbacks</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td><code>metages_person</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>participantes, reg-instituciones, reg-colecciones, forms_callbacks</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td><code>metages_personinbody</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>participantes, reg-instituciones, reg-colecciones, forms_callbacks</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td><code>metages_types</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>proyectos, talleres, forms_callbacks</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td><code>metages_recurso_cat</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>participantes, reg-instituciones</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td><code>metages_recurso</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>participantes, reg-instituciones, reg-colecciones</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td><code>metages_provision_recurso</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>participantes</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td><code>metages_institucion</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>participantes, forms_callbacks</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td><code>metages_ispartof</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>reg-instituciones, reg-colecciones</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td><code>metages_disciplina</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>reg-colecciones</td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td><code>metages_cursos_gral</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>talleres, jornadas</td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td><code>metages_proy_tipos</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>proyectos</td>
+</tr>
+<tr class="odd">
+<td>15</td>
+<td><code>metages_proyectos</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>proyectos</td>
+</tr>
+<tr class="even">
+<td>16</td>
+<td><code>metages_body_proy</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td>proyectos</td>
+</tr>
+<tr class="odd">
+<td>17</td>
+<td><code>metages_communication</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>forms_callbacks</td>
+</tr>
+<tr class="even">
+<td>18</td>
+<td><code>metages_isocountry</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>forms_callbacks</td>
+</tr>
+<tr class="odd">
+<td>19</td>
+<td><code>metages_questionnaire</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>forms_callbacks</td>
+</tr>
+<tr class="even">
+<td>20</td>
+<td><code>metages_keyword_std</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>forms_callbacks</td>
+</tr>
+<tr class="odd">
+<td>21</td>
+<td><code>metages_keyword</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>forms_callbacks</td>
+</tr>
+<tr class="even">
+<td>22</td>
+<td><code>metages_bodykeyword</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>forms_callbacks</td>
+</tr>
+<tr class="odd">
+<td>23</td>
+<td><code>metages_version_software_informati</code></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>forms_callbacks</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</section>
+<section id="tabla-de-equivalencias-variables-php-columnas-tablas" class="level2">
+<h2 class="anchored" data-anchor-id="tabla-de-equivalencias-variables-php-columnas-tablas">2. Tabla de Equivalencias: Variables PHP → Columnas → Tablas</h2>
+<section id="metages_body-entidad-principal-instituciones-colecciones-proyectos-bases-de-datos" class="level3">
+<h3 class="anchored" data-anchor-id="metages_body-entidad-principal-instituciones-colecciones-proyectos-bases-de-datos">2.1 <code>metages_body</code> — Entidad principal (instituciones, colecciones, proyectos, bases de datos)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$institucion</code> / <code>$coleccion</code></td>
+<td><code>citation</code></td>
+<td><code>metages_body</code></td>
+<td>Nombre/cita de la entidad</td>
+</tr>
+<tr class="even">
+<td><code>$institucionurl</code> / <code>$coleccionurl</code> / <code>$url</code></td>
+<td><code>url</code></td>
+<td><code>metages_body</code></td>
+<td>Slug URL de la entidad</td>
+</tr>
+<tr class="odd">
+<td><code>$image</code> / <code>$urlimg</code></td>
+<td><code>image</code></td>
+<td><code>metages_body</code></td>
+<td>URL de imagen</td>
+</tr>
+<tr class="even">
+<td><code>$fecha</code> / <code>$fecha_taller</code></td>
+<td><code>created_when</code></td>
+<td><code>metages_body</code></td>
+<td>Fecha de creación</td>
+</tr>
+<tr class="odd">
+<td><code>body_id</code> (PK)</td>
+<td><code>body_id</code></td>
+<td><code>metages_body</code></td>
+<td>ID primario</td>
+</tr>
+<tr class="even">
+<td><code>body_type_fk</code></td>
+<td><code>body_type_fk</code></td>
+<td><code>metages_body</code></td>
+<td>Tipo: 2=Institución, 3=Colección, 4=Proyecto, 5=BaseDatos</td>
+</tr>
+<tr class="odd">
+<td><code>private</code></td>
+<td><code>private</code></td>
+<td><code>metages_body</code></td>
+<td>0=público, filtra registros visibles</td>
+</tr>
+<tr class="even">
+<td><code>address_fk</code></td>
+<td><code>address_fk</code></td>
+<td><code>metages_body</code></td>
+<td>FK a metages_address</td>
+</tr>
+<tr class="odd">
+<td><code>communication_fk</code></td>
+<td><code>communication_fk</code></td>
+<td><code>metages_body</code></td>
+<td>FK a metages_communication</td>
+</tr>
+<tr class="even">
+<td><code>collection_code</code></td>
+<td><code>collection_code</code></td>
+<td><code>metages_body</code></td>
+<td>Código de colección</td>
+</tr>
+<tr class="odd">
+<td><code>purpose</code></td>
+<td><code>purpose</code></td>
+<td><code>metages_body</code></td>
+<td>Objetivos (cuest_goals)</td>
+</tr>
+<tr class="even">
+<td><code>strength</code></td>
+<td><code>strength</code></td>
+<td><code>metages_body</code></td>
+<td>Líneas investigación (cuest_lines)</td>
+</tr>
+<tr class="odd">
+<td><code>proy_imagen</code></td>
+<td><code>proy_imagen</code></td>
+<td><code>metages_body</code></td>
+<td>Imagen de proyecto (alias <code>image</code>)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metages_address-direcciones" class="level3">
+<h3 class="anchored" data-anchor-id="metages_address-direcciones">2.2 <code>metages_address</code> — Direcciones</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$direccion</code></td>
+<td><code>address_line_1</code></td>
+<td><code>metages_address</code></td>
+<td>Dirección postal</td>
+</tr>
+<tr class="even">
+<td><code>$region</code></td>
+<td><code>region</code></td>
+<td><code>metages_address</code></td>
+<td>Comunidad Autónoma / Región</td>
+</tr>
+<tr class="odd">
+<td><code>$town</code> / <code>$ciudad</code></td>
+<td><code>town</code></td>
+<td><code>metages_address</code></td>
+<td>Ciudad</td>
+</tr>
+<tr class="even">
+<td><code>$cuest_cp</code></td>
+<td><code>zip</code></td>
+<td><code>metages_address</code></td>
+<td>Código postal</td>
+</tr>
+<tr class="odd">
+<td><code>$cuest_country</code></td>
+<td><code>country</code></td>
+<td><code>metages_address</code></td>
+<td>País</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>address_id</code> (PK)</td>
+<td><code>metages_address</code></td>
+<td>ID primario</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>iso_country_fk</code></td>
+<td><code>metages_address</code></td>
+<td>FK a metages_isocountry</td>
+</tr>
+<tr class="even">
+<td><code>$cuest_phone</code></td>
+<td><code>pers_tlf_movil</code></td>
+<td><code>metages_address</code></td>
+<td>Teléfono (duplicado de person)</td>
+</tr>
+<tr class="odd">
+<td><code>$cuest_email</code></td>
+<td><code>pers_email_pref</code></td>
+<td><code>metages_address</code></td>
+<td>Email (duplicado de person)</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>url_map</code></td>
+<td><code>metages_address</code></td>
+<td>URL de Google Maps</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metages_body_ext-extensiones-multilingüe-de-body" class="level3">
+<h3 class="anchored" data-anchor-id="metages_body_ext-extensiones-multilingüe-de-body">2.3 <code>metages_body_ext</code> — Extensiones multilingüe de body</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$link_web_es</code> / <code>$link_web_en</code></td>
+<td><code>extension</code></td>
+<td><code>metages_body_ext</code></td>
+<td>Contenido de la extensión (URL, descripción, logo)</td>
+</tr>
+<tr class="even">
+<td><code>$content_es</code> / <code>$content_en</code></td>
+<td><code>extension</code></td>
+<td><code>metages_body_ext</code></td>
+<td>Descripción del body (ext_cat_fk=1)</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>body_ext_id</code> (PK)</td>
+<td><code>metages_body_ext</code></td>
+<td>ID primario</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>body_fk</code></td>
+<td><code>metages_body_ext</code></td>
+<td>FK a metages_body</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>iso_639_1_fk</code></td>
+<td><code>metages_body_ext</code></td>
+<td>Idioma: ‘es’, ‘en’</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>ext_cat_fk</code></td>
+<td><code>metages_body_ext</code></td>
+<td>Categoría: 1=Descripción, 2=Web, 8=Logo</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metages_person-personas" class="level3">
+<h3 class="anchored" data-anchor-id="metages_person-personas">2.4 <code>metages_person</code> — Personas</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$cuest_contact_name</code></td>
+<td><code>family_name</code></td>
+<td><code>metages_person</code></td>
+<td>Apellido(s) de la persona</td>
+</tr>
+<tr class="even">
+<td><code>$cuest_contact_app</code></td>
+<td><code>given_name</code></td>
+<td><code>metages_person</code></td>
+<td>Nombre + segundo apellido</td>
+</tr>
+<tr class="odd">
+<td><code>$cuest_contact_position</code></td>
+<td><code>job_title</code></td>
+<td><code>metages_person</code></td>
+<td>Cargo en la institución</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>person_id</code> (PK)</td>
+<td><code>metages_person</code></td>
+<td>ID primario</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>url</code></td>
+<td><code>metages_person</code></td>
+<td>Slug URL de la persona</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>private</code></td>
+<td><code>metages_person</code></td>
+<td>0=público</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>pers_tlf_movil</code></td>
+<td><code>metages_person</code></td>
+<td>Teléfono</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>pers_email_pref</code></td>
+<td><code>metages_person</code></td>
+<td>Email preferido</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metages_personinbody-relación-personabody" class="level3">
+<h3 class="anchored" data-anchor-id="metages_personinbody-relación-personabody">2.5 <code>metages_personinbody</code> — Relación persona↔︎body</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>—</td>
+<td><code>person_in_body_id</code> (PK)</td>
+<td><code>metages_personinbody</code></td>
+<td>ID primario</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>person_fk</code></td>
+<td><code>metages_personinbody</code></td>
+<td>FK a metages_person</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>body_fk</code></td>
+<td><code>metages_personinbody</code></td>
+<td>FK a metages_body</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>person_role_fk</code></td>
+<td><code>metages_personinbody</code></td>
+<td>Rol: 9=contacto cuestionario</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metages_types-tipologías-jerárquicas-genéricas" class="level3">
+<h3 class="anchored" data-anchor-id="metages_types-tipologías-jerárquicas-genéricas">2.6 <code>metages_types</code> — Tipologías jerárquicas genéricas</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$catislug</code> / <code>$categ</code></td>
+<td><code>types_id</code> (PK)</td>
+<td><code>metages_types</code></td>
+<td>ID del tipo</td>
+</tr>
+<tr class="even">
+<td><code>$cati</code> / <code>$categn</code></td>
+<td><code>name</code></td>
+<td><code>metages_types</code></td>
+<td>Nombre en español</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>name_eng</code></td>
+<td><code>metages_types</code></td>
+<td>Nombre en inglés</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>types_fk</code></td>
+<td><code>metages_types</code></td>
+<td>FK padre (jerárquico)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Valores de <code>types_fk</code> usados:</strong></p>
+<ul>
+<li><code>4</code> = Nivel de taller</li>
+<li><code>5</code> = Ámbito de taller / Tipo de taller (comentado)</li>
+<li><code>6</code> = Estado de taller / Convocatoria proyectos</li>
+<li><code>7</code> = Categoría de taller</li>
+<li><code>8</code> = Temática de taller</li>
+<li>Dinámico via <code>get_id_type()</code>: Temática/Estado/Ámbito de proyectos</li>
+</ul>
+</section>
+<section id="metages_recurso_cat-categorías-de-recurso-tipo-de-institución" class="level3">
+<h3 class="anchored" data-anchor-id="metages_recurso_cat-categorías-de-recurso-tipo-de-institución">2.7 <code>metages_recurso_cat</code> — Categorías de recurso (tipo de institución)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$tipodeinstitucion</code></td>
+<td><code>recurso_cat_id</code> (PK)</td>
+<td><code>metages_recurso_cat</code></td>
+<td>ID de categoría</td>
+</tr>
+<tr class="even">
+<td><code>$tipoinstitucionparticipantes</code></td>
+<td><code>categoria</code></td>
+<td><code>metages_recurso_cat</code></td>
+<td>Nombre categoría en español</td>
+</tr>
+<tr class="odd">
+<td><code>$tipoinstitucionparticipantesEng</code></td>
+<td><code>Categoria_Eng</code></td>
+<td><code>metages_recurso_cat</code></td>
+<td>Nombre categoría en inglés</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>type_institucion</code></td>
+<td><code>metages_recurso_cat</code></td>
+<td>Filtro: 1=institución</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metages_recurso-recursosdatasets" class="level3">
+<h3 class="anchored" data-anchor-id="metages_recurso-recursosdatasets">2.8 <code>metages_recurso</code> — Recursos/datasets</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>—</td>
+<td><code>recurso_id</code> (PK implícito)</td>
+<td><code>metages_recurso</code></td>
+<td>ID del recurso</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>body_fk</code> / <code>institucion_fk</code></td>
+<td><code>metages_recurso</code></td>
+<td>FK a metages_body</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>recurso_cat_fk</code></td>
+<td><code>metages_recurso</code></td>
+<td>FK a metages_recurso_cat</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>private</code></td>
+<td><code>metages_recurso</code></td>
+<td>0=público</td>
+</tr>
+<tr class="odd">
+<td><code>$num_reg</code></td>
+<td><code>numberOfRecords</code></td>
+<td><code>metages_recurso</code></td>
+<td>Nro de registros del dataset</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metages_provision_recurso-fechas-de-provisión-de-recursos" class="level3">
+<h3 class="anchored" data-anchor-id="metages_provision_recurso-fechas-de-provisión-de-recursos">2.9 <code>metages_provision_recurso</code> — Fechas de provisión de recursos</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$provision_fecha</code></td>
+<td><code>provision_fecha</code></td>
+<td><code>metages_provision_recurso</code></td>
+<td>Fecha de última publicación</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>recurso_fk</code></td>
+<td><code>metages_provision_recurso</code></td>
+<td>FK a metages_recurso</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metages_institucion-detalles-de-institución" class="level3">
+<h3 class="anchored" data-anchor-id="metages_institucion-detalles-de-institución">2.10 <code>metages_institucion</code> — Detalles de institución</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>—</td>
+<td><code>institucion_id</code> (PK)</td>
+<td><code>metages_institucion</code></td>
+<td>ID primario</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>body_fk</code></td>
+<td><code>metages_institucion</code></td>
+<td>FK a metages_body</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>Institucion_nombre</code></td>
+<td><code>metages_institucion</code></td>
+<td>Nombre de la institución</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>institucion_img</code></td>
+<td><code>metages_institucion</code></td>
+<td>Imagen de la institución</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>publica_en_gbif</code></td>
+<td><code>metages_institucion</code></td>
+<td>1=publica en GBIF</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metages_ispartof-relación-padrehijo-entre-bodies" class="level3">
+<h3 class="anchored" data-anchor-id="metages_ispartof-relación-padrehijo-entre-bodies">2.11 <code>metages_ispartof</code> — Relación padre/hijo entre bodies</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>—</td>
+<td><code>parent_body_fk</code></td>
+<td><code>metages_ispartof</code></td>
+<td>FK body padre (institución)</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>child_body_fk</code></td>
+<td><code>metages_ispartof</code></td>
+<td>FK body hijo (colección)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metages_disciplina-tipos-de-colecciónbase-de-datos" class="level3">
+<h3 class="anchored" data-anchor-id="metages_disciplina-tipos-de-colecciónbase-de-datos">2.12 <code>metages_disciplina</code> — Tipos de colección/base de datos</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$tipodedatos</code></td>
+<td><code>disciplina_id</code> (PK)</td>
+<td><code>metages_disciplina</code></td>
+<td>ID de disciplina</td>
+</tr>
+<tr class="even">
+<td><code>$tipodedatos</code></td>
+<td><code>disciplina_def</code></td>
+<td><code>metages_disciplina</code></td>
+<td>Definición en español</td>
+</tr>
+<tr class="odd">
+<td><code>$tipodedatosEng</code></td>
+<td><code>disciplina_def_eng</code></td>
+<td><code>metages_disciplina</code></td>
+<td>Definición en inglés</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>Tipo</code></td>
+<td><code>metages_disciplina</code></td>
+<td>Filtro: ‘coleccion’</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>disciplina_fk</code></td>
+<td><code>metages_disciplina</code></td>
+<td>FK desde metages_body</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metages_cursos_gral-talleres-y-jornadas" class="level3">
+<h3 class="anchored" data-anchor-id="metages_cursos_gral-talleres-y-jornadas">2.13 <code>metages_cursos_gral</code> — Talleres y Jornadas</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$titulo</code></td>
+<td><code>Nombre</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>Nombre del taller/jornada</td>
+</tr>
+<tr class="even">
+<td><code>$contenido</code></td>
+<td><code>descripcion</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>Descripción</td>
+</tr>
+<tr class="odd">
+<td><code>$urlimg</code></td>
+<td><code>imagen</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>URL de imagen</td>
+</tr>
+<tr class="even">
+<td><code>$url</code></td>
+<td><code>url</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>Slug URL</td>
+</tr>
+<tr class="odd">
+<td><code>$fecha_taller</code></td>
+<td><code>fecha_taller</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>Fecha de inicio</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>fechafin_taller</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>Fecha de fin</td>
+</tr>
+<tr class="odd">
+<td><code>$fecha_jornadas</code></td>
+<td><code>fecha_jornadas</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>Fecha de jornadas</td>
+</tr>
+<tr class="even">
+<td><code>$lugar_celebracion</code></td>
+<td><code>direccion_taller</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>Dirección del evento</td>
+</tr>
+<tr class="odd">
+<td><code>$ciudad_jornada</code></td>
+<td><code>cuidad_in</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>Ciudad (¡nota typo en columna!)</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>cursos_gral_id</code> (PK)</td>
+<td><code>metages_cursos_gral</code></td>
+<td>ID primario</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>type_curso_type_fk</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>Tipo: 221=Jornada</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>niveldetaller_types_fk</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>FK a metages_types (nivel)</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>estadodetaller_types_fk</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>FK a metages_types (estado)</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>ambitodetaller_types_fk</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>FK a metages_types (ámbito)</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>categoriadetaller_types_fk</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>FK a metages_types (comentado)</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>tematicadetaller_types_fk</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>FK a metages_types (comentado)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metages_proy_tipos-tipos-de-proyecto-convocatoria" class="level3">
+<h3 class="anchored" data-anchor-id="metages_proy_tipos-tipos-de-proyecto-convocatoria">2.14 <code>metages_proy_tipos</code> — Tipos de proyecto (convocatoria)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$catislug</code></td>
+<td><code>proy_tipos_id</code> (PK)</td>
+<td><code>metages_proy_tipos</code></td>
+<td>ID del tipo</td>
+</tr>
+<tr class="even">
+<td><code>$cati</code></td>
+<td><code>proy_tipos_nombre</code></td>
+<td><code>metages_proy_tipos</code></td>
+<td>Nombre en español</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>proy_tipos_nombre_eng</code></td>
+<td><code>metages_proy_tipos</code></td>
+<td>Nombre en inglés</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>proy_cat_fk</code></td>
+<td><code>metages_proy_tipos</code></td>
+<td>Filtro: 6=convocatoria</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metages_proyectos-proyectos" class="level3">
+<h3 class="anchored" data-anchor-id="metages_proyectos-proyectos">2.15 <code>metages_proyectos</code> — Proyectos</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>—</td>
+<td><code>proyectos_id</code> (PK)</td>
+<td><code>metages_proyectos</code></td>
+<td>ID del proyecto</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>proy_tipos_fk</code></td>
+<td><code>metages_proyectos</code></td>
+<td>FK a metages_proy_tipos</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>tematicaproyecto_types_fk</code></td>
+<td><code>metages_proyectos</code></td>
+<td>FK a metages_types</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>estadoproyecto_types_fk</code></td>
+<td><code>metages_proyectos</code></td>
+<td>FK a metages_types</td>
+</tr>
+<tr class="odd">
+<td>—</td>
+<td><code>ambitoproyecto_types_fk</code></td>
+<td><code>metages_proyectos</code></td>
+<td>FK a metages_types</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>proy_imagen</code></td>
+<td><code>metages_proyectos</code></td>
+<td>Imagen del proyecto</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="metages_body_proy-relación-bodyproyecto" class="level3">
+<h3 class="anchored" data-anchor-id="metages_body_proy-relación-bodyproyecto">2.16 <code>metages_body_proy</code> — Relación body↔︎proyecto</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable PHP</th>
+<th>Columna(s) DB</th>
+<th>Tabla</th>
+<th>Definición / Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>—</td>
+<td><code>body_fk</code></td>
+<td><code>metages_body_proy</code></td>
+<td>FK a metages_body</td>
+</tr>
+<tr class="even">
+<td>—</td>
+<td><code>proy_fk</code></td>
+<td><code>metages_body_proy</code></td>
+<td>FK a metages_proyectos</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tablas-solo-usadas-en-forms_callbacks.php-escritura-cuestionarios" class="level3">
+<h3 class="anchored" data-anchor-id="tablas-solo-usadas-en-forms_callbacks.php-escritura-cuestionarios">2.17-2.23 Tablas solo usadas en forms_callbacks.php (escritura cuestionarios)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tabla</th>
+<th>Columnas principales</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>metages_communication</code></td>
+<td><code>communication_id</code>, <code>telephone</code>, <code>email</code></td>
+<td>Datos de contacto de institución</td>
+</tr>
+<tr class="even">
+<td><code>metages_isocountry</code></td>
+<td><code>iso_country_id</code>, <code>full_country_name</code>, <code>two_char_code</code></td>
+<td>Catálogo de países ISO</td>
+</tr>
+<tr class="odd">
+<td><code>metages_questionnaire</code></td>
+<td><code>questionnaire_id</code>, <code>type_questionnaire_fk</code>, <code>type_sub_questionnaire_fk</code>, <code>type_other</code>, <code>date</code>, <code>name</code></td>
+<td>Registro de cuestionarios enviados</td>
+</tr>
+<tr class="even">
+<td><code>metages_keyword_std</code></td>
+<td><code>keyword_std_id</code>, <code>keyword_standard</code>, <code>keyword_std_def</code></td>
+<td>Estándares de keywords</td>
+</tr>
+<tr class="odd">
+<td><code>metages_keyword</code></td>
+<td><code>keyword_id</code>, <code>keyword</code>, <code>keyword_std_fk</code></td>
+<td>Keywords concretas</td>
+</tr>
+<tr class="even">
+<td><code>metages_bodykeyword</code></td>
+<td><code>bodykeyword_id</code>, <code>body_fk</code>, <code>keyword_fk</code></td>
+<td>Relación body↔︎keyword</td>
+</tr>
+<tr class="odd">
+<td><code>metages_version_software_informati</code></td>
+<td><code>version_software_id</code>, <code>version_software</code></td>
+<td>Software informático usado</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="análisis-de-tablascódigo-potencialmente-obsoletos" class="level2">
+<h2 class="anchored" data-anchor-id="análisis-de-tablascódigo-potencialmente-obsoletos">3. Análisis de Tablas/Código Potencialmente Obsoletos</h2>
+<section id="archivos-obsoletos-directorios-admin_old-y-admingbif_old.php" class="level3">
+<h3 class="anchored" data-anchor-id="archivos-obsoletos-directorios-admin_old-y-admingbif_old.php">3.1 Archivos obsoletos (directorios <code>admin_old</code> y <code>admin/gbif_old.php</code>)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Archivo</th>
+<th>Estado</th>
+<th>Notas</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>gbif_old.php</code></td>
+<td>⚠️ <strong>OBSOLETO</strong></td>
+<td>Copia anterior de <code>gbif.php</code>. Solo referencia <code>metages_address</code>. Conserva funciones duplicadas.</td>
+</tr>
+<tr class="even">
+<td><code>admin_old/gbif.php</code></td>
+<td>⚠️ <strong>OBSOLETO</strong></td>
+<td>Directorio entero es backup. Solo referencia <code>metages_address</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>admin_old/gbif - Copia.php</code></td>
+<td>⚠️ <strong>OBSOLETO</strong></td>
+<td>Copia explícita de backup.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="código-comentado-que-referencia-tablascolumnas-ya-no-usadas" class="level3">
+<h3 class="anchored" data-anchor-id="código-comentado-que-referencia-tablascolumnas-ya-no-usadas">3.2 Código comentado que referencia tablas/columnas ya no usadas</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Ubicación</th>
+<th>Tabla/Columna</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>template-talleres.php:318-326</code></td>
+<td><code>categoriadetaller_types_fk</code></td>
+<td>🔴 <strong>Comentado</strong> — filtro de categoría desactivado</td>
+</tr>
+<tr class="even">
+<td><code>template-talleres.php:343-351</code></td>
+<td><code>tematicadetaller_types_fk</code></td>
+<td>🔴 <strong>Comentado</strong> — filtro de temática de taller desactivado</td>
+</tr>
+<tr class="odd">
+<td><code>template-talleres.php:49-80</code></td>
+<td><code>metages_types</code> con <code>types_fk=5</code> (Tipo de taller)</td>
+<td>🔴 <strong>Comentado</strong> — bloque completo del filtro “Tipo”</td>
+</tr>
+<tr class="even">
+<td><code>template-registroinstituciones.php:172</code></td>
+<td><code>metages_disciplina</code></td>
+<td>🔴 <strong>Comentado</strong> — join alternativo desactivado</td>
+</tr>
+<tr class="odd">
+<td><code>template-talleres.php:415,417</code></td>
+<td>SQL con <code>//</code> inline comments</td>
+<td>🟡 <strong>Bug potencial</strong> — <code>//LEFT JOIN</code> dentro de string SQL</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="columnas-con-uso-cuestionable" class="level3">
+<h3 class="anchored" data-anchor-id="columnas-con-uso-cuestionable">3.3 Columnas con uso cuestionable</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Columna</th>
+<th>Tabla</th>
+<th>Problema</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>pers_tlf_movil</code>, <code>pers_email_pref</code></td>
+<td><code>metages_address</code></td>
+<td>⚠️ Datos de persona duplicados en tabla de dirección</td>
+</tr>
+<tr class="even">
+<td><code>cuidad_in</code></td>
+<td><code>metages_cursos_gral</code></td>
+<td>⚠️ <strong>Typo</strong> en nombre de columna (debería ser <code>ciudad_in</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>numberOfRecords</code></td>
+<td><code>metages_recurso</code></td>
+<td>Solo se usa en subqueries de conteo</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="mapa-de-flujo-por-archivo" class="level2">
+<h2 class="anchored" data-anchor-id="mapa-de-flujo-por-archivo">4. Mapa de Flujo por Archivo</h2>
+<section id="archivos-de-lectura-templates-de-frontend" class="level3">
+<h3 class="anchored" data-anchor-id="archivos-de-lectura-templates-de-frontend">Archivos de LECTURA (templates de frontend)</h3>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'visNetwork' was built under R version 4.5.2</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="htmlwidget-0401cc3b147a72a5cd88" style="width:100%;height:650px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0401cc3b147a72a5cd88">{"x":{"nodes":{"id":["P","RI","RC","PR","TA","JO","MB","MA","MBE","MRC","MR","MPR","MI","MPE","MPIB","MIP","MD","MCG","MT","MPT","MPY","MBP"],"label":["template-participantes.php","template-registroinstituciones.php","template-registrocolecciones.php","template-proyectos.php","template-talleres.php","template-jornadas.php","metages_body","metages_address","metages_body_ext","metages_recurso_cat","metages_recurso","metages_provision_recurso","metages_institucion","metages_person","metages_personinbody","metages_ispartof","metages_disciplina","metages_cursos_gral","metages_types","metages_proy_tipos","metages_proyectos","metages_body_proy"],"x":[-400,-400,-400,-400,-400,-400,400,400,400,400,400,400,400,400,400,400,400,400,400,400,400,400],"y":[-250,-150,-50,50,150,250,-525,-475,-425,-375,-325,-275,-225,-175,-125,-75,-25,25,75,125,175,225],"fixed":[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],"group":["template","template","template","template","template","template","tabla","tabla","tabla","tabla","tabla","tabla","tabla","tabla","tabla","tabla","tabla","tabla","tabla","tabla","tabla","tabla"],"font.size":[13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13]},"edges":{"from":["P","P","P","P","P","P","P","P","P","RI","RI","RI","RI","RI","RI","RC","RC","RC","RC","RC","RC","RC","PR","PR","PR","PR","PR","PR","TA","TA","JO"],"to":["MB","MA","MBE","MRC","MR","MPR","MI","MPE","MPIB","MB","MA","MR","MPE","MPIB","MIP","MB","MA","MD","MIP","MR","MPE","MPIB","MB","MBE","MT","MPT","MPY","MBP","MCG","MT","MCG"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"groups":{"template":{"color":{"background":"#5DCAA5","border":"#0F6E56"},"shape":"box"},"useDefaultGroups":true,"tabla":{"color":{"background":"#AFA9EC","border":"#534AB7"},"shape":"box"}},"edges":{"width":0.8,"arrows":"to","color":{"color":"#888888","opacity":0.4},"smooth":false},"interaction":{"hover":true,"zoomSpeed":1},"physics":{"enabled":false}},"groups":["template","tabla"],"width":"100%","height":"650px","idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","highlight":{"enabled":true,"hoverNearest":true,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":[{"label":"Template","shape":"box","color":{"background":"#5DCAA5","border":"#0F6E56"}},{"label":"Tabla","shape":"box","color":{"background":"#AFA9EC","border":"#534AB7"}}],"nodesToDataframe":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="archivos-de-escritura-cuestionarios" class="level3">
+<h3 class="anchored" data-anchor-id="archivos-de-escritura-cuestionarios">Archivos de ESCRITURA (cuestionarios)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Archivo</th>
+<th>Tablas que inserta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>forms_callbacks.php</code></td>
+<td><code>metages_body</code>, <code>metages_address</code>, <code>metages_body_ext</code>, <code>metages_person</code>, <code>metages_personinbody</code>, <code>metages_communication</code>, <code>metages_isocountry</code>, <code>metages_types</code>, <code>metages_questionnaire</code>, <code>metages_institucion</code>, <code>metages_keyword_std</code>, <code>metages_keyword</code>, <code>metages_bodykeyword</code>, <code>metages_version_software_informati</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="por-qué-algunas-columnas-no-tienen-variable-php-equivalente" class="level2">
+<h2 class="anchored" data-anchor-id="por-qué-algunas-columnas-no-tienen-variable-php-equivalente">5. Por qué Algunas Columnas no Tienen Variable PHP Equivalente</h2>
+<p>Las columnas sin variable PHP equivalente tienen ese “vacío” por razones técnicas específicas. Se agrupan en <strong>4 categorías</strong>:</p>
+<section id="columnas-usadas-solo-en-cláusulas-where-filtros" class="level3">
+<h3 class="anchored" data-anchor-id="columnas-usadas-solo-en-cláusulas-where-filtros">5.1 Columnas usadas solo en cláusulas <code>WHERE</code> / filtros</h3>
+<p>Aparecen en el SQL pero su valor nunca se guarda en PHP — solo sirven para filtrar:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// body_type_fk nunca se asigna a una variable, solo filtra</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="va">$filter</span> <span class="op">=</span> <span class="st">' body_type_fk=2 AND instituciones.private =0'</span><span class="ot">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">// type_institucion solo aparece en el WHERE</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="va">$sql</span> <span class="op">=</span> <span class="st">'SELECT ... FROM metages_recurso_cat WHERE type_institucion=1'</span><span class="ot">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Tipo solo filtra en el WHERE</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="va">$sql</span> <span class="op">=</span> <span class="st">'SELECT ... FROM metages_disciplina WHERE Tipo=</span><span class="sc">\'</span><span class="st">coleccion</span><span class="sc">\'</span><span class="st">'</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Estas columnas (<code>body_type_fk</code>, <code>private</code>, <code>type_institucion</code>, <code>Tipo</code>, <code>type_curso_type_fk=221</code>) son <strong>constantes de filtrado</strong> hardcodeadas.</p>
+</section>
+<section id="columnas-usadas-solo-como-claves-de-join" class="level3">
+<h3 class="anchored" data-anchor-id="columnas-usadas-solo-como-claves-de-join">5.2 Columnas usadas solo como claves de <code>JOIN</code></h3>
+<p>Son el “pegamento” entre tablas. PHP nunca necesita su valor, solo la base de datos los usa internamente para relacionar filas:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// address_fk, person_fk, body_fk — solo aparecen en ON de JOINs</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">$join</span> <span class="op">=</span> <span class="st">' LEFT JOIN metages_address ON instituciones.address_fk = address_id'</span><span class="ot">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="va">$join</span> <span class="op">=</span> <span class="st">' LEFT JOIN metages_personinbody ON body_id = metages_personinbody.body_fk'</span><span class="ot">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="va">$join</span> <span class="op">=</span> <span class="st">' LEFT JOIN metages_person ON metages_personinbody.person_fk = person_id'</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Las columnas <code>address_fk</code>, <code>person_fk</code>, <code>body_fk</code>, <code>proy_fk</code>, <code>recurso_fk</code>, <code>child_body_fk</code>, <code>parent_body_fk</code>, <code>iso_country_fk</code>, <code>ext_cat_fk</code>, <code>iso_639_1_fk</code> — todas son <strong>foreign keys que solo viven en el SQL</strong>.</p>
+</section>
+<section id="columnas-usadas-solo-en-escritura-insertupdate-desde-forms_callbacks.php" class="level3">
+<h3 class="anchored" data-anchor-id="columnas-usadas-solo-en-escritura-insertupdate-desde-forms_callbacks.php">5.3 Columnas usadas solo en escritura (INSERT/UPDATE) desde <code>forms_callbacks.php</code></h3>
+<p>Los datos del POST van directamente al SQL sin una variable PHP intermedia con nombre propio:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// El valor de cuest_phone se inserta en la columna telephone,</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">// pero "telephone" nunca se lee de vuelta en una variable PHP</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">$sql</span> <span class="op">=</span> <span class="va">$wpdb</span>-&gt;prepare(<span class="st">'INSERT INTO metages_communication SET </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="st">    `telephone`=%s, </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="st">    `email`=%s'</span><span class="ot">,</span> <span class="va">$mid</span>[<span class="st">'cuest_phone'</span>]<span class="ot">,</span> <span class="va">$mid</span>[<span class="st">'cuest_email'</span>])<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Las columnas <code>telephone</code>, <code>email</code>, <code>keyword_standard</code>, <code>keyword_std_def</code>, <code>version_software</code>, <code>url_map</code>, <code>two_char_code</code>, <code>full_country_name</code> — se <strong>escriben</strong> pero <strong>nunca se leen</strong> en ningún template de frontend.</p>
+</section>
+<section id="primary-keys-usadas-en-variables-genéricas-temporales" class="level3">
+<h3 class="anchored" data-anchor-id="primary-keys-usadas-en-variables-genéricas-temporales">5.4 Primary keys usadas en variables genéricas temporales</h3>
+<p>Las PKs sí se usan en PHP, pero en variables genéricas como <code>$body_id</code>, <code>$address_id</code>, <code>$person_id</code> — no se incluyen como “equivalentes” porque son variables de control de flujo, no de presentación:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Se captura el ID solo para usarlo en el siguiente INSERT</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="va">$wpdb</span>-&gt;query(<span class="va">$sql</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">$body_id</span> <span class="op">=</span> <span class="va">$wpdb</span>-&gt;insert_id<span class="ot">;</span>  <span class="co">// variable temporal, no de presentación</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+<p><strong>En resumen</strong>: si una columna no tiene variable PHP equivalente, es porque el código PHP <strong>nunca necesita mostrar o manipular ese valor</strong> — solo lo usa como filtro, pegamento de JOIN, o destino de escritura. El patrón general es:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Rol de la columna</th>
+<th style="text-align: center;">¿Tiene variable PHP?</th>
+<th>¿Por qué?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Se muestra en frontend</td>
+<td style="text-align: center;">✅</td>
+<td>Se asigna a <code>$variable</code> para renderizar en HTML</td>
+</tr>
+<tr class="even">
+<td>Filtra en WHERE con valor fijo</td>
+<td style="text-align: center;">❌</td>
+<td>Está hardcodeada en el string SQL</td>
+</tr>
+<tr class="odd">
+<td>Foreign key en JOIN</td>
+<td style="text-align: center;">❌</td>
+<td>Solo la DB la necesita para relacionar filas</td>
+</tr>
+<tr class="even">
+<td>Se escribe desde formulario</td>
+<td style="text-align: center;">❌</td>
+<td>Va del <code>$_POST</code> directo al <code>INSERT</code>, sin variable intermedia</td>
+</tr>
+<tr class="odd">
+<td>Primary key tras INSERT</td>
+<td style="text-align: center;">⚠️</td>
+<td>Se usa en variable genérica temporal (<code>$body_id</code>)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="origen-del-mapeo-variable-columna" class="level2">
+<h2 class="anchored" data-anchor-id="origen-del-mapeo-variable-columna">6. Origen del Mapeo Variable → Columna</h2>
+<p>El mapeo entre variables PHP y columnas de metages se establece de <strong>tres formas</strong>:</p>
+<ol type="1">
+<li><p><strong>Alias SQL directos</strong> — La consulta SQL define alias: <code>citation AS institucion</code>, <code>address_line_1 AS direccion</code>, <code>extension AS link_web_es</code>, etc. El código PHP luego accede vía <code>$resultado-&gt;institucion</code>.</p></li>
+<li><p><strong>Acceso directo a columna</strong> — Sin alias, se accede directamente: <code>$term-&gt;region</code>, <code>$term-&gt;recurso_cat_id</code>, <code>$taller-&gt;Nombre</code>.</p></li>
+<li><p><strong>Variables POST de cuestionarios</strong> → Columnas de INSERT — En <code>forms_callbacks.php</code>, las variables <code>$mid['cuest_*']</code> se mapean a columnas mediante sentencias <code>INSERT INTO</code> preparadas.</p></li>
+</ol>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>No existe un ORM ni capa de abstracción. Todas las queries son SQL directo concatenado con <code>$wpdb-&gt;prepare()</code> o strings literales. El mapeo es implícito y se define en cada archivo de forma independiente.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="resumen-de-recomendaciones" class="level2">
+<h2 class="anchored" data-anchor-id="resumen-de-recomendaciones">7. Resumen de Recomendaciones</h2>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Archivos a eliminar/ignorar
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><code>admin/gbif_old.php</code> — Duplicado funcional de <code>admin/gbif.php</code></li>
+<li><code>admin_old/</code> — Directorio completo de backup</li>
+<li><code>single - copia.php</code> — Copia de backup de <code>single.php</code></li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Bugs potenciales detectados
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong><code>template-talleres.php</code> líneas 415,417</strong>: Comentarios <code>//</code> dentro de strings SQL que pueden causar errores de sintaxis SQL</li>
+<li><strong><code>template-registrocolecciones.php</code> línea 220</strong>: Referencia hardcodeada a esquema <code>gbif_wp.metages_recurso</code> — fallará si el esquema de DB cambia</li>
+<li><strong><code>metages_address</code></strong> almacena <code>pers_tlf_movil</code> y <code>pers_email_pref</code> — datos que pertenecen a <code>metages_person</code>, duplicación innecesaria</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Columnas/filtros comentados (no activos)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Los filtros de <strong>categoría</strong> y <strong>temática</strong> de talleres están comentados en el PHP y no se aplican, aunque las columnas <code>categoriadetaller_types_fk</code> y <code>tematicadetaller_types_fk</code> probablemente existan en <code>metages_cursos_gral</code>. Si estas columnas ya no se usan en la base de datos, podrían considerarse obsoletas.</p>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

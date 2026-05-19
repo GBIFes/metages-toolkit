@@ -12,8 +12,9 @@ deseada.
 del archivo ya que son necesarios para ser llamados desde informes y dashboards.
 
 
-- esquema_flujo_metages.jpg
-ESTATICA. Original GBIF.ES, puede vivir en metagesToolkit, no es necesario regenerarlo.
+- esquema_flujo_metages.png
+ESTATICA. Original GBIF.ES, puede vivir en metagesToolkit, no es necesario regenerarlo. Extraido de:
+https://app.diagrams.net/#G1HG7xqKLleCn7RWe1t0th0qq71AbWG8Ro#%7B%22pageId%22%3A%22gbif-es-flujo%22%7D
 
 - ranking_occurrences.png
 Se descarga desde los powerpoints de https://www.gbif.org/document/81771/gbif-overview-powerpoint-slides

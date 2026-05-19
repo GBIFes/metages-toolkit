@@ -337,13 +337,13 @@ rec %>% mutate(Sectores = case_when(Sectores == "Académico (univers., institut.
 bd <- readRDS("inst/reports/data/vistas_sql/colecciones_bd_por_disciplina_y_sub.rds")
 
 orden <- c(
-  "Zoológica",  "Invertebrados",  "Vertebrados",  "Invertebrados y vertebrados",
+  "Zoológica",  "Invertebrados",  "Vertebrados",  "Zoológicas mixtas",
   "Botánica",  "Plantas",  "Algas",  "Hongos y líquenes", "Botánicas mixtas",
   "Microbiológica",  "Mixta", "Paleontológica",
   "TOTAL"
 )
 padres <- c("Zoológica", "Botánica")
-hijos <- c("Invertebrados",  "Vertebrados",  "Invertebrados y vertebrados",
+hijos <- c("Invertebrados",  "Vertebrados",  "Zoológicas mixtas",
            "Plantas",  "Algas",  "Hongos y líquenes", "Botánicas mixtas")
 
 bd %>% mutate(disciplina = factor(disciplina, levels = orden)) %>%
@@ -745,12 +745,12 @@ saveRDS(
 )
 
 # ------------------------------------------------------------
-# 10. Mapa colecciones de invertebrados y vertebrados
+# 10. Mapa colecciones de zoológicas mixtas
 # ------------------------------------------------------------
-message(" - Generando mapa de colecciones de invertebrados y vertebrados")
+message(" - Generando mapa de colecciones de zoológicas mixtas")
 res_colecciones <- crear_mapa_simple(
   tipo_coleccion = "coleccion",
-  subdisciplina = "Invertebrados y vertebrados"
+  subdisciplina = "Zoológicas mixtas"
 )
 
 save_map(
@@ -769,12 +769,12 @@ save_plot(plot = crear_barplot_top_colecciones_pub(paste0(dir_data_maps,
           width = 12)
 
 # ------------------------------------------------------------
-# 11. Mapa colecciones de invertebrados y vertebrados publicadoras
+# 11. Mapa colecciones de Zoológicas mixtas publicadoras
 # ------------------------------------------------------------
-message(" - Generando mapa de colecciones de invertebrados y vertebrados publicadoras")
+message(" - Generando mapa de colecciones de zoológicas mixtas publicadoras")
 res_colecciones <- crear_mapa_simple(
   tipo_coleccion = "coleccion",
-  subdisciplina = "Invertebrados y vertebrados",
+  subdisciplina = "Zoológicas mixtas",
   publican = T
 )
 

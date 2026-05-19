@@ -1,0 +1,517 @@
+---
+title: "Análisis de Tablas Metages en el Código PHP de gbifes"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-title: "Contenido"
+    theme: cosmo
+    code-fold: false
+---
+
+```{=html}
+<style>
+body, p, li, td, th { font-size: 0.7rem; }
+h1 { font-size: 1.3rem; }
+h2 { font-size: 0.9rem; }
+h3 { font-size: 0.8rem; }
+code, pre { font-size: 0.6rem; }
+
+/* Tabla inventario */
+.tabla-inventario table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Evita solapes en headers */
+.tabla-inventario th {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-height: 1.2;
+  vertical-align: bottom;
+  padding: 0.45rem 0.35rem;
+}
+
+/* Celdas */
+.tabla-inventario td {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  vertical-align: top;
+  padding: 0.45rem 0.35rem;
+}
+
+/* Anchos de columnas */
+.tabla-inventario th:nth-child(1),
+.tabla-inventario td:nth-child(1) {
+  width: 5%;
+  text-align: center;
+}
+
+.tabla-inventario th:nth-child(2),
+.tabla-inventario td:nth-child(2) {
+  width: 22%;
+}
+
+.tabla-inventario th:nth-child(3),
+.tabla-inventario td:nth-child(3) {
+  width: 12%;
+  text-align: center;
+}
+
+.tabla-inventario th:nth-child(4),
+.tabla-inventario td:nth-child(4) {
+  width: 16%;
+  text-align: center;
+}
+
+.tabla-inventario th:nth-child(5),
+.tabla-inventario td:nth-child(5) {
+  width: 45%;
+}
+</style>
+```
+
+## Resumen
+
+Se identificaron **19 tablas reales de metages** utilizadas en el código PHP del tema `gbifes`. A continuación se presenta el análisis completo.
+
+---
+
+## 1. Inventario de Tablas Metages
+
+::: {.tabla-inventario}
+| # | Tabla | Lectura (SELECT) | Escritura (INSERT/UPDATE) | Archivos que la usan |
+|---|-------|:-:|:-:|---|
+| 1 | `metages_body` | ✅ | ✅ | participantes, proyectos, reg-instituciones, reg-colecciones, forms_callbacks |
+| 2 | `metages_address` | ✅ | ✅ | participantes, reg-instituciones, reg-colecciones, gbif.php, gbif_old.php, forms_callbacks |
+| 3 | `metages_body_ext` | ✅ | ✅ | participantes, proyectos, forms_callbacks |
+| 4 | `metages_person` | ✅ | ✅ | participantes, reg-instituciones, reg-colecciones, forms_callbacks |
+| 5 | `metages_personinbody` | ✅ | ✅ | participantes, reg-instituciones, reg-colecciones, forms_callbacks |
+| 6 | `metages_types` | ✅ | ✅ | proyectos, talleres, forms_callbacks |
+| 7 | `metages_recurso_cat` | ✅ | ❌ | participantes, reg-instituciones |
+| 8 | `metages_recurso` | ✅ | ❌ | participantes, reg-instituciones, reg-colecciones |
+| 9 | `metages_provision_recurso` | ✅ | ❌ | participantes |
+| 10 | `metages_institucion` | ✅ | ✅ | participantes, forms_callbacks |
+| 11 | `metages_ispartof` | ✅ | ❌ | reg-instituciones, reg-colecciones |
+| 12 | `metages_disciplina` | ✅ | ❌ | reg-colecciones |
+| 13 | `metages_cursos_gral` | ✅ | ❌ | talleres, jornadas |
+| 14 | `metages_proy_tipos` | ✅ | ❌ | proyectos |
+| 15 | `metages_proyectos` | ✅ | ❌ | proyectos |
+| 16 | `metages_body_proy` | ✅ | ❌ | proyectos |
+| 17 | `metages_communication` | ✅ | ✅ | forms_callbacks |
+| 18 | `metages_isocountry` | ✅ | ✅ | forms_callbacks |
+| 19 | `metages_questionnaire` | ✅ | ✅ | forms_callbacks |
+| 20 | `metages_keyword_std` | ✅ | ✅ | forms_callbacks |
+| 21 | `metages_keyword` | ✅ | ✅ | forms_callbacks |
+| 22 | `metages_bodykeyword` | ✅ | ✅ | forms_callbacks |
+| 23 | `metages_version_software_informati` | ✅ | ✅ | forms_callbacks |
+:::
+
+---
+
+## 2. Tabla de Equivalencias: Variables PHP → Columnas → Tablas
+
+### 2.1 `metages_body` — Entidad principal (instituciones, colecciones, proyectos, bases de datos)
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| `$institucion` / `$coleccion` | `citation` | `metages_body` | Nombre/cita de la entidad |
+| `$institucionurl` / `$coleccionurl` / `$url` | `url` | `metages_body` | Slug URL de la entidad |
+| `$image` / `$urlimg` | `image` | `metages_body` | URL de imagen |
+| `$fecha` / `$fecha_taller` | `created_when` | `metages_body` | Fecha de creación |
+| `body_id` (PK) | `body_id` | `metages_body` | ID primario |
+| `body_type_fk` | `body_type_fk` | `metages_body` | Tipo: 2=Institución, 3=Colección, 4=Proyecto, 5=BaseDatos |
+| `private` | `private` | `metages_body` | 0=público, filtra registros visibles |
+| `address_fk` | `address_fk` | `metages_body` | FK a metages_address |
+| `communication_fk` | `communication_fk` | `metages_body` | FK a metages_communication |
+| `collection_code` | `collection_code` | `metages_body` | Código de colección |
+| `purpose` | `purpose` | `metages_body` | Objetivos (cuest_goals) |
+| `strength` | `strength` | `metages_body` | Líneas investigación (cuest_lines) |
+| `proy_imagen` | `proy_imagen` | `metages_body` | Imagen de proyecto (alias `image`) |
+
+### 2.2 `metages_address` — Direcciones
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| `$direccion` | `address_line_1` | `metages_address` | Dirección postal |
+| `$region` | `region` | `metages_address` | Comunidad Autónoma / Región |
+| `$town` / `$ciudad` | `town` | `metages_address` | Ciudad |
+| `$cuest_cp` | `zip` | `metages_address` | Código postal |
+| `$cuest_country` | `country` | `metages_address` | País |
+| — | `address_id` (PK) | `metages_address` | ID primario |
+| — | `iso_country_fk` | `metages_address` | FK a metages_isocountry |
+| `$cuest_phone` | `pers_tlf_movil` | `metages_address` | Teléfono (duplicado de person) |
+| `$cuest_email` | `pers_email_pref` | `metages_address` | Email (duplicado de person) |
+| — | `url_map` | `metages_address` | URL de Google Maps |
+
+### 2.3 `metages_body_ext` — Extensiones multilingüe de body
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| `$link_web_es` / `$link_web_en` | `extension` | `metages_body_ext` | Contenido de la extensión (URL, descripción, logo) |
+| `$content_es` / `$content_en` | `extension` | `metages_body_ext` | Descripción del body (ext_cat_fk=1) |
+| — | `body_ext_id` (PK) | `metages_body_ext` | ID primario |
+| — | `body_fk` | `metages_body_ext` | FK a metages_body |
+| — | `iso_639_1_fk` | `metages_body_ext` | Idioma: 'es', 'en' |
+| — | `ext_cat_fk` | `metages_body_ext` | Categoría: 1=Descripción, 2=Web, 8=Logo |
+
+### 2.4 `metages_person` — Personas
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| `$cuest_contact_name` | `family_name` | `metages_person` | Apellido(s) de la persona |
+| `$cuest_contact_app` | `given_name` | `metages_person` | Nombre + segundo apellido |
+| `$cuest_contact_position` | `job_title` | `metages_person` | Cargo en la institución |
+| — | `person_id` (PK) | `metages_person` | ID primario |
+| — | `url` | `metages_person` | Slug URL de la persona |
+| — | `private` | `metages_person` | 0=público |
+| — | `pers_tlf_movil` | `metages_person` | Teléfono |
+| — | `pers_email_pref` | `metages_person` | Email preferido |
+
+### 2.5 `metages_personinbody` — Relación persona↔body
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| — | `person_in_body_id` (PK) | `metages_personinbody` | ID primario |
+| — | `person_fk` | `metages_personinbody` | FK a metages_person |
+| — | `body_fk` | `metages_personinbody` | FK a metages_body |
+| — | `person_role_fk` | `metages_personinbody` | Rol: 9=contacto cuestionario |
+
+### 2.6 `metages_types` — Tipologías jerárquicas genéricas
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| `$catislug` / `$categ` | `types_id` (PK) | `metages_types` | ID del tipo |
+| `$cati` / `$categn` | `name` | `metages_types` | Nombre en español |
+| — | `name_eng` | `metages_types` | Nombre en inglés |
+| — | `types_fk` | `metages_types` | FK padre (jerárquico) |
+
+**Valores de `types_fk` usados:**
+
+- `4` = Nivel de taller
+- `5` = Ámbito de taller / Tipo de taller (comentado)
+- `6` = Estado de taller / Convocatoria proyectos
+- `7` = Categoría de taller
+- `8` = Temática de taller
+- Dinámico via `get_id_type()`: Temática/Estado/Ámbito de proyectos
+
+### 2.7 `metages_recurso_cat` — Categorías de recurso (tipo de institución)
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| `$tipodeinstitucion` | `recurso_cat_id` (PK) | `metages_recurso_cat` | ID de categoría |
+| `$tipoinstitucionparticipantes` | `categoria` | `metages_recurso_cat` | Nombre categoría en español |
+| `$tipoinstitucionparticipantesEng` | `Categoria_Eng` | `metages_recurso_cat` | Nombre categoría en inglés |
+| — | `type_institucion` | `metages_recurso_cat` | Filtro: 1=institución |
+
+### 2.8 `metages_recurso` — Recursos/datasets
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| — | `recurso_id` (PK implícito) | `metages_recurso` | ID del recurso |
+| — | `body_fk` / `institucion_fk` | `metages_recurso` | FK a metages_body |
+| — | `recurso_cat_fk` | `metages_recurso` | FK a metages_recurso_cat |
+| — | `private` | `metages_recurso` | 0=público |
+| `$num_reg` | `numberOfRecords` | `metages_recurso` | Nro de registros del dataset |
+
+### 2.9 `metages_provision_recurso` — Fechas de provisión de recursos
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| `$provision_fecha` | `provision_fecha` | `metages_provision_recurso` | Fecha de última publicación |
+| — | `recurso_fk` | `metages_provision_recurso` | FK a metages_recurso |
+
+### 2.10 `metages_institucion` — Detalles de institución
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| — | `institucion_id` (PK) | `metages_institucion` | ID primario |
+| — | `body_fk` | `metages_institucion` | FK a metages_body |
+| — | `Institucion_nombre` | `metages_institucion` | Nombre de la institución |
+| — | `institucion_img` | `metages_institucion` | Imagen de la institución |
+| — | `publica_en_gbif` | `metages_institucion` | 1=publica en GBIF |
+
+### 2.11 `metages_ispartof` — Relación padre/hijo entre bodies
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| — | `parent_body_fk` | `metages_ispartof` | FK body padre (institución) |
+| — | `child_body_fk` | `metages_ispartof` | FK body hijo (colección) |
+
+### 2.12 `metages_disciplina` — Tipos de colección/base de datos
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| `$tipodedatos` | `disciplina_id` (PK) | `metages_disciplina` | ID de disciplina |
+| `$tipodedatos` | `disciplina_def` | `metages_disciplina` | Definición en español |
+| `$tipodedatosEng` | `disciplina_def_eng` | `metages_disciplina` | Definición en inglés |
+| — | `Tipo` | `metages_disciplina` | Filtro: 'coleccion' |
+| — | `disciplina_fk` | `metages_disciplina` | FK desde metages_body |
+
+### 2.13 `metages_cursos_gral` — Talleres y Jornadas
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| `$titulo` | `Nombre` | `metages_cursos_gral` | Nombre del taller/jornada |
+| `$contenido` | `descripcion` | `metages_cursos_gral` | Descripción |
+| `$urlimg` | `imagen` | `metages_cursos_gral` | URL de imagen |
+| `$url` | `url` | `metages_cursos_gral` | Slug URL |
+| `$fecha_taller` | `fecha_taller` | `metages_cursos_gral` | Fecha de inicio |
+| — | `fechafin_taller` | `metages_cursos_gral` | Fecha de fin |
+| `$fecha_jornadas` | `fecha_jornadas` | `metages_cursos_gral` | Fecha de jornadas |
+| `$lugar_celebracion` | `direccion_taller` | `metages_cursos_gral` | Dirección del evento |
+| `$ciudad_jornada` | `cuidad_in` | `metages_cursos_gral` | Ciudad (¡nota typo en columna!) |
+| — | `cursos_gral_id` (PK) | `metages_cursos_gral` | ID primario |
+| — | `type_curso_type_fk` | `metages_cursos_gral` | Tipo: 221=Jornada |
+| — | `niveldetaller_types_fk` | `metages_cursos_gral` | FK a metages_types (nivel) |
+| — | `estadodetaller_types_fk` | `metages_cursos_gral` | FK a metages_types (estado) |
+| — | `ambitodetaller_types_fk` | `metages_cursos_gral` | FK a metages_types (ámbito) |
+| — | `categoriadetaller_types_fk` | `metages_cursos_gral` | FK a metages_types (comentado) |
+| — | `tematicadetaller_types_fk` | `metages_cursos_gral` | FK a metages_types (comentado) |
+
+### 2.14 `metages_proy_tipos` — Tipos de proyecto (convocatoria)
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| `$catislug` | `proy_tipos_id` (PK) | `metages_proy_tipos` | ID del tipo |
+| `$cati` | `proy_tipos_nombre` | `metages_proy_tipos` | Nombre en español |
+| — | `proy_tipos_nombre_eng` | `metages_proy_tipos` | Nombre en inglés |
+| — | `proy_cat_fk` | `metages_proy_tipos` | Filtro: 6=convocatoria |
+
+### 2.15 `metages_proyectos` — Proyectos
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| — | `proyectos_id` (PK) | `metages_proyectos` | ID del proyecto |
+| — | `proy_tipos_fk` | `metages_proyectos` | FK a metages_proy_tipos |
+| — | `tematicaproyecto_types_fk` | `metages_proyectos` | FK a metages_types |
+| — | `estadoproyecto_types_fk` | `metages_proyectos` | FK a metages_types |
+| — | `ambitoproyecto_types_fk` | `metages_proyectos` | FK a metages_types |
+| — | `proy_imagen` | `metages_proyectos` | Imagen del proyecto |
+
+### 2.16 `metages_body_proy` — Relación body↔proyecto
+
+| Variable PHP | Columna(s) DB | Tabla | Definición / Uso |
+|---|---|---|---|
+| — | `body_fk` | `metages_body_proy` | FK a metages_body |
+| — | `proy_fk` | `metages_body_proy` | FK a metages_proyectos |
+
+### 2.17-2.23 Tablas solo usadas en forms_callbacks.php (escritura cuestionarios)
+
+| Tabla | Columnas principales | Uso |
+|---|---|---|
+| `metages_communication` | `communication_id`, `telephone`, `email` | Datos de contacto de institución |
+| `metages_isocountry` | `iso_country_id`, `full_country_name`, `two_char_code` | Catálogo de países ISO |
+| `metages_questionnaire` | `questionnaire_id`, `type_questionnaire_fk`, `type_sub_questionnaire_fk`, `type_other`, `date`, `name` | Registro de cuestionarios enviados |
+| `metages_keyword_std` | `keyword_std_id`, `keyword_standard`, `keyword_std_def` | Estándares de keywords |
+| `metages_keyword` | `keyword_id`, `keyword`, `keyword_std_fk` | Keywords concretas |
+| `metages_bodykeyword` | `bodykeyword_id`, `body_fk`, `keyword_fk` | Relación body↔keyword |
+| `metages_version_software_informati` | `version_software_id`, `version_software` | Software informático usado |
+
+---
+
+## 3. Análisis de Tablas/Código Potencialmente Obsoletos
+
+### 3.1 Archivos obsoletos (directorios `admin_old` y `admin/gbif_old.php`)
+
+| Archivo | Estado | Notas |
+|---|---|---|
+| `gbif_old.php` | ⚠️ **OBSOLETO** | Copia anterior de `gbif.php`. Solo referencia `metages_address`. Conserva funciones duplicadas. |
+| `admin_old/gbif.php` | ⚠️ **OBSOLETO** | Directorio entero es backup. Solo referencia `metages_address`. |
+| `admin_old/gbif - Copia.php` | ⚠️ **OBSOLETO** | Copia explícita de backup. |
+
+### 3.2 Código comentado que referencia tablas/columnas ya no usadas
+
+| Ubicación | Tabla/Columna | Estado |
+|---|---|---|
+| `template-talleres.php:318-326` | `categoriadetaller_types_fk` | 🔴 **Comentado** — filtro de categoría desactivado |
+| `template-talleres.php:343-351` | `tematicadetaller_types_fk` | 🔴 **Comentado** — filtro de temática de taller desactivado |
+| `template-talleres.php:49-80` | `metages_types` con `types_fk=5` (Tipo de taller) | 🔴 **Comentado** — bloque completo del filtro "Tipo" |
+| `template-registroinstituciones.php:172` | `metages_disciplina` | 🔴 **Comentado** — join alternativo desactivado |
+| `template-talleres.php:415,417` | SQL con `//` inline comments | 🟡 **Bug potencial** — `//LEFT JOIN` dentro de string SQL |
+
+### 3.3 Columnas con uso cuestionable
+
+| Columna | Tabla | Problema |
+|---|---|---|
+| `pers_tlf_movil`, `pers_email_pref` | `metages_address` | ⚠️ Datos de persona duplicados en tabla de dirección |
+| `cuidad_in` | `metages_cursos_gral` | ⚠️ **Typo** en nombre de columna (debería ser `ciudad_in`) |
+| `numberOfRecords` | `metages_recurso` | Solo se usa en subqueries de conteo |
+
+---
+
+## 4. Mapa de Flujo por Archivo
+
+### Archivos de LECTURA (templates de frontend)
+
+```{r, echo=FALSE, message=FALSE}
+library(visNetwork)
+
+nodes <- data.frame(
+  id = c("P","RI","RC","PR","TA","JO",
+         "MB","MA","MBE","MRC","MR","MPR","MI","MPE","MPIB",
+         "MIP","MD","MCG","MT","MPT","MPY","MBP"),
+  label = c("template-participantes.php",
+             "template-registroinstituciones.php",
+             "template-registrocolecciones.php",
+             "template-proyectos.php",
+             "template-talleres.php",
+             "template-jornadas.php",
+             "metages_body","metages_address","metages_body_ext",
+             "metages_recurso_cat","metages_recurso","metages_provision_recurso",
+             "metages_institucion","metages_person","metages_personinbody",
+             "metages_ispartof","metages_disciplina","metages_cursos_gral",
+             "metages_types","metages_proy_tipos","metages_proyectos","metages_body_proy"),
+  x = c(rep(-400, 6), rep(400, 16)),
+  y = c(-250,-150,-50,50,150,250,
+        -525,-475,-425,-375,-325,-275,-225,-175,-125,-75,-25,25,75,125,175,225),
+  fixed = TRUE,
+  group = c(rep("template",6), rep("tabla",16)),
+  font.size = 13
+)
+
+edges <- data.frame(from = c(
+  rep("P",9), rep("RI",6), rep("RC",7), rep("PR",6), rep("TA",2), "JO"
+), to = c(
+  "MB","MA","MBE","MRC","MR","MPR","MI","MPE","MPIB",
+  "MB","MA","MR","MPE","MPIB","MIP",
+  "MB","MA","MD","MIP","MR","MPE","MPIB",
+  "MB","MBE","MT","MPT","MPY","MBP",
+  "MCG","MT",
+  "MCG"
+))
+
+visNetwork(nodes, edges, height = "650px", width = "100%") %>%
+  visGroups(groupname = "template", color = list(background="#5DCAA5", border="#0F6E56"),
+            shape = "box") %>%
+  visGroups(groupname = "tabla", color = list(background="#AFA9EC", border="#534AB7"),
+            shape = "box") %>%
+  visEdges(arrows = "to", smooth = FALSE,
+           color = list(color="#888888", opacity=0.4), width = 0.8) %>%
+  visOptions(highlightNearest = list(enabled=TRUE, degree=1, hover=TRUE)) %>%
+  visPhysics(enabled = FALSE) %>%
+  visLegend(addNodes = list(
+    list(label="Template", shape="box", color=list(background="#5DCAA5", border="#0F6E56")),
+    list(label="Tabla",    shape="box", color=list(background="#AFA9EC", border="#534AB7"))
+  ), useGroups = FALSE)
+```
+
+### Archivos de ESCRITURA (cuestionarios)
+
+| Archivo | Tablas que inserta |
+|---|---|
+| `forms_callbacks.php` | `metages_body`, `metages_address`, `metages_body_ext`, `metages_person`, `metages_personinbody`, `metages_communication`, `metages_isocountry`, `metages_types`, `metages_questionnaire`, `metages_institucion`, `metages_keyword_std`, `metages_keyword`, `metages_bodykeyword`, `metages_version_software_informati` |
+
+---
+
+## 5. Por qué Algunas Columnas no Tienen Variable PHP Equivalente
+
+Las columnas sin variable PHP equivalente tienen ese "vacío" por razones técnicas específicas. Se agrupan en **4 categorías**:
+
+### 5.1 Columnas usadas solo en cláusulas `WHERE` / filtros
+
+Aparecen en el SQL pero su valor nunca se guarda en PHP — solo sirven para filtrar:
+
+```php
+// body_type_fk nunca se asigna a una variable, solo filtra
+$filter = ' body_type_fk=2 AND instituciones.private =0';
+// type_institucion solo aparece en el WHERE
+$sql = 'SELECT ... FROM metages_recurso_cat WHERE type_institucion=1';
+// Tipo solo filtra en el WHERE
+$sql = 'SELECT ... FROM metages_disciplina WHERE Tipo=\'coleccion\'';
+```
+
+Estas columnas (`body_type_fk`, `private`, `type_institucion`, `Tipo`, `type_curso_type_fk=221`) son **constantes de filtrado** hardcodeadas.
+
+### 5.2 Columnas usadas solo como claves de `JOIN`
+
+Son el "pegamento" entre tablas. PHP nunca necesita su valor, solo la base de datos los usa internamente para relacionar filas:
+
+```php
+// address_fk, person_fk, body_fk — solo aparecen en ON de JOINs
+$join = ' LEFT JOIN metages_address ON instituciones.address_fk = address_id';
+$join = ' LEFT JOIN metages_personinbody ON body_id = metages_personinbody.body_fk';
+$join = ' LEFT JOIN metages_person ON metages_personinbody.person_fk = person_id';
+```
+
+Las columnas `address_fk`, `person_fk`, `body_fk`, `proy_fk`, `recurso_fk`, `child_body_fk`, `parent_body_fk`, `iso_country_fk`, `ext_cat_fk`, `iso_639_1_fk` — todas son **foreign keys que solo viven en el SQL**.
+
+### 5.3 Columnas usadas solo en escritura (INSERT/UPDATE) desde `forms_callbacks.php`
+
+Los datos del POST van directamente al SQL sin una variable PHP intermedia con nombre propio:
+
+```php
+// El valor de cuest_phone se inserta en la columna telephone,
+// pero "telephone" nunca se lee de vuelta en una variable PHP
+$sql = $wpdb->prepare('INSERT INTO metages_communication SET 
+    `telephone`=%s, 
+    `email`=%s', $mid['cuest_phone'], $mid['cuest_email']);
+```
+
+Las columnas `telephone`, `email`, `keyword_standard`, `keyword_std_def`, `version_software`, `url_map`, `two_char_code`, `full_country_name` — se **escriben** pero **nunca se leen** en ningún template de frontend.
+
+### 5.4 Primary keys usadas en variables genéricas temporales
+
+Las PKs sí se usan en PHP, pero en variables genéricas como `$body_id`, `$address_id`, `$person_id` — no se incluyen como "equivalentes" porque son variables de control de flujo, no de presentación:
+
+```php
+// Se captura el ID solo para usarlo en el siguiente INSERT
+if ($wpdb->query($sql))
+    $body_id = $wpdb->insert_id;  // variable temporal, no de presentación
+```
+
+---
+
+**En resumen**: si una columna no tiene variable PHP equivalente, es porque el código PHP **nunca necesita mostrar o manipular ese valor** — solo lo usa como filtro, pegamento de JOIN, o destino de escritura. El patrón general es:
+
+| Rol de la columna | ¿Tiene variable PHP? | ¿Por qué? |
+|---|:-:|---|
+| Se muestra en frontend | ✅ | Se asigna a `$variable` para renderizar en HTML |
+| Filtra en WHERE con valor fijo | ❌ | Está hardcodeada en el string SQL |
+| Foreign key en JOIN | ❌ | Solo la DB la necesita para relacionar filas |
+| Se escribe desde formulario | ❌ | Va del `$_POST` directo al `INSERT`, sin variable intermedia |
+| Primary key tras INSERT | ⚠️ | Se usa en variable genérica temporal (`$body_id`) |
+
+---
+
+## 6. Origen del Mapeo Variable → Columna
+
+El mapeo entre variables PHP y columnas de metages se establece de **tres formas**:
+
+1. **Alias SQL directos** — La consulta SQL define alias: `citation AS institucion`, `address_line_1 AS direccion`, `extension AS link_web_es`, etc. El código PHP luego accede vía `$resultado->institucion`.
+
+2. **Acceso directo a columna** — Sin alias, se accede directamente: `$term->region`, `$term->recurso_cat_id`, `$taller->Nombre`.
+
+3. **Variables POST de cuestionarios** → Columnas de INSERT — En `forms_callbacks.php`, las variables `$mid['cuest_*']` se mapean a columnas mediante sentencias `INSERT INTO` preparadas.
+
+::: {.callout-important}
+No existe un ORM ni capa de abstracción. Todas las queries son SQL directo concatenado con `$wpdb->prepare()` o strings literales. El mapeo es implícito y se define en cada archivo de forma independiente.
+:::
+
+---
+
+## 7. Resumen de Recomendaciones
+
+::: {.callout-warning}
+### Archivos a eliminar/ignorar
+
+- `admin/gbif_old.php` — Duplicado funcional de `admin/gbif.php`
+- `admin_old/` — Directorio completo de backup
+- `single - copia.php` — Copia de backup de `single.php`
+:::
+
+::: {.callout-caution}
+### Bugs potenciales detectados
+
+- **`template-talleres.php` líneas 415,417**: Comentarios `//` dentro de strings SQL que pueden causar errores de sintaxis SQL
+- **`template-registrocolecciones.php` línea 220**: Referencia hardcodeada a esquema `gbif_wp.metages_recurso` — fallará si el esquema de DB cambia
+- **`metages_address`** almacena `pers_tlf_movil` y `pers_email_pref` — datos que pertenecen a `metages_person`, duplicación innecesaria
+:::
+
+::: {.callout-note}
+### Columnas/filtros comentados (no activos)
+
+Los filtros de **categoría** y **temática** de talleres están comentados en el PHP y no se aplican, aunque las columnas `categoriadetaller_types_fk` y `tematicadetaller_types_fk` probablemente existan en `metages_cursos_gral`. Si estas columnas ya no se usan en la base de datos, podrían considerarse obsoletas.
+:::

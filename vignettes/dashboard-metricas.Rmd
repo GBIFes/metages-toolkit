@@ -8,6 +8,7 @@ vignette: >
 ---
 
 
+*Fecha de última actualización:* ```r format(Sys.Date(), "%d/%m/%Y")```
 
 ## Introducción
 
@@ -125,7 +126,7 @@ datatable(
 ### Número de ejemplares de las mayores colecciones zoológicas de vertebrados
 ![](figures/barplot-colecciones-vert.png){width="100%"}
 
-### Número de ejemplares de las mayores colecciones zoológicas de invertebrados y vertebrados
+### Número de ejemplares de las mayores colecciones zoológicas mixtas
 ![](figures/barplot-colecciones-invver.png){width="100%"}
 
 ### Número de ejemplares de las mayores colecciones microbiológicas
