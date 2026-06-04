@@ -478,7 +478,7 @@ MetaGES es la base de datos detrás del *Registro* y contiene información sobre
 
 - El **_segundo nivel_** es la *fuente de datos* que agrupa y gestiona los registros de biodiversidad en conjuntos coherentes. Si los registros están basados en ejemplares físicos capturados y conservados a largo plazo, hablamos de una **colección biológica**. Por el contrario, si los registros provienen de métodos de muestreo no invasivos o de técnicas de captura y liberación (o descarte), entonces hablamos de una **base de datos** o colección virtual, ya que no existe un espécimen conservado que actúe como respaldo material de dichos registros. Estos conjuntos se materializan en juegos de datos.
 
-- El **_tercer nivel_** comprende los **juegos de datos**, también conocidos como *recursos*, que se publican en el [Portal de Datos de Biodiversidad del Nodo Nacional GBIF.ES](https://datos.gbif.es/) y en el [Portal Internacional de GBIF](https://www.gbif.org/). Estos juegos de datos contienen registros espaciotemporales de presencia (y en ocasiones de ausencia) de biodiversidad.
+- El **_tercer nivel_** comprende los **juegos de datos** en línea, también conocidos como *recursos*, que se publican en el [Portal de Datos de Biodiversidad del Nodo Nacional GBIF.ES](https://datos.gbif.es/) y en el [Portal Internacional de GBIF](https://www.gbif.org/). Estos juegos de datos contienen registros espaciotemporales de presencia (y en ocasiones de ausencia) de biodiversidad.
 
 
 En la @fig-jerarquiav2 se muestra la estructura jerárquica de los tres niveles descritos, mediante dos ejemplos que ilustran una institución junto con las colecciones biológicas y bases de datos que administra, así como los juegos de datos que estas publican.

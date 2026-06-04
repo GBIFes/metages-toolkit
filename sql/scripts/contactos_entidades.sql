@@ -1,7 +1,7 @@
 -- ===================================================================
 -- Autor: Ruben Perez
 -- Fecha de Creación: 2025-10-14
--- Última actualización: 2025-11-17
+-- Última actualización: 2026-05-11
 -- 
 -- Descripción:
 --   Esta vista muestra los datos de contacto de cada entidad 
@@ -18,6 +18,7 @@
 -- CREATE OR REPLACE VIEW contactos_entidades AS
 
 
+
 -- Vinculamos datos de personas y entidades
 WITH email_personal AS (
 	SELECT mb.body_id,
@@ -28,7 +29,20 @@ WITH email_personal AS (
 	FROM metages_body AS mb 
 	LEFT JOIN metages_personinbody AS mp       ON mb.body_id = mp.body_fk
 	LEFT JOIN metages_person AS mpr           ON mp.person_fk = mpr.person_id
-	LEFT JOIN metages_personas AS mps           ON mpr.person_id = mps.person_fk
+	LEFT JOIN metages_personas AS mps         ON mpr.person_id = mps.person_fk
+),
+
+
+-- Vinculamos emails guardados directamente en metages_person
+email_person AS (
+	SELECT mb.body_id,
+		   mpr.given_name,
+	       mpr.family_name,
+	       mpr.job_title,
+	       mpr.pers_email_pref
+	FROM metages_body AS mb 
+	LEFT JOIN metages_personinbody AS mp       ON mb.body_id = mp.body_fk
+	LEFT JOIN metages_person AS mpr           ON mp.person_fk = mpr.person_id
 ),
 
 
@@ -52,11 +66,19 @@ WITH email_personal AS (
 
     UNION DISTINCT
 
-    -- Emails personales (sin tocar)
+    -- Emails desde metages_personas
     SELECT 
         body_id,
         TRIM(pers_email_pref) AS pers_email_pref
     FROM email_personal
+
+    UNION DISTINCT
+
+    -- Emails desde metages_person
+    SELECT 
+        body_id,
+        TRIM(pers_email_pref) AS pers_email_pref
+    FROM email_person
 ),
 
 
@@ -98,9 +120,9 @@ contactos_entidades AS (
         END AS tipo_entidad,
         
         et.pers_email_pref,
-        ep.given_name,
-	    ep.family_name,
-	    ep.job_title,
+        COALESCE(ep.given_name, epr.given_name) AS given_name,
+	    COALESCE(ep.family_name, epr.family_name) AS family_name,
+	    COALESCE(ep.job_title, epr.job_title) AS job_title,
 
         CASE
             WHEN mb.body_type_fk = 2 THEN CONCAT('https://gbif.es/instituciones/', mb.url, '/')
@@ -119,6 +141,7 @@ contactos_entidades AS (
 	LEFT JOIN numero_recursos AS nr			ON mb.body_id = nr.body_id
 	LEFT JOIN email_todos AS et				ON mb.body_id = et.body_id
 	LEFT JOIN email_personal AS ep			ON et.pers_email_pref = ep.pers_email_pref
+	LEFT JOIN email_person AS epr			ON et.pers_email_pref = epr.pers_email_pref
 
     WHERE mb.body_type_fk IN (2, 3, 4, 5)
       AND mb.private = 0
@@ -160,4 +183,3 @@ GROUP BY body_id,
     urls_ipt,
     ipt_titles
  ORDER BY records_IPT DESC
-     

@@ -17,6 +17,7 @@ SELECT
     mb.body_id,
     parent.institucion_proyecto,
     parent.url_institucion, 
+    parent.collection_code AS collection_code_institucion,
     mb.citation AS coleccion_base,
     CONCAT('https://gbif.es/coleccion/', mb.url, '/') as coleccion_url,
     mb.collection_code,
@@ -72,7 +73,8 @@ LEFT JOIN (SELECT mip.child_body_fk, 							-- Anhadir institucion a cada colecc
 				  CASE
 			          WHEN mb.body_type_fk = 2 THEN CONCAT('https://gbif.es/instituciones/', mb.url, '/')
 			          WHEN mb.body_type_fk = 4 THEN CONCAT('https://gbif.es/proyectos/', mb.url, '/')
-			      END AS url_institucion
+			      END AS url_institucion,
+			      mb.collection_code 
 		   FROM metages_ispartof mip
 		   LEFT JOIN metages_body mb
 		   ON mip.parent_body_fk = mb.body_id
