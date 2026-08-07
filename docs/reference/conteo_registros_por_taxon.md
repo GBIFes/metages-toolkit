@@ -73,11 +73,13 @@ Ejemplos de `basisOfRecord`:
 
 Especimenes:
 
+
     c("PRESERVED_SPECIMEN",
       "MATERIAL_SAMPLE",
       "FOSSIL_SPECIMEN")
 
 Observaciones:
+
 
     c("OBSERVATION",
       "HUMAN_OBSERVATION",
@@ -91,14 +93,14 @@ conteo_registros_por_taxon()
 #> # A tibble: 71 × 2
 #>    Filo           `Nº registros`
 #>    <chr>          <chr>         
-#>  1 Tracheophyta   3.136.429     
-#>  2 Arthropoda     936.644       
-#>  3 Chordata       529.373       
-#>  4 Ascomycota     230.347       
-#>  5 Basidiomycota  157.322       
+#>  1 Tracheophyta   3.159.328     
+#>  2 Arthropoda     938.258       
+#>  3 Chordata       529.524       
+#>  4 Ascomycota     231.120       
+#>  5 Basidiomycota  158.632       
 #>  6 Mollusca       132.115       
 #>  7 Bryophyta      119.498       
-#>  8 Ochrophyta     59.232        
+#>  8 Ochrophyta     59.231        
 #>  9 Rhodophyta     42.740        
 #> 10 Proteobacteria 32.229        
 #> # ℹ 61 more rows
@@ -111,14 +113,14 @@ conteo_registros_por_taxon(
 #> # A tibble: 35 × 2
 #>    Clase             `Nº registros`
 #>    <chr>             <chr>         
-#>  1 Magnoliopsida     2.469.579     
-#>  2 Liliopsida        516.575       
-#>  3 Polypodiopsida    112.730       
+#>  1 Magnoliopsida     2.482.923     
+#>  2 Liliopsida        525.704       
+#>  3 Polypodiopsida    112.946       
 #>  4 Bryopsida         106.826       
 #>  5 Florideophyceae   41.844        
-#>  6 Pinopsida         25.911        
-#>  7 Jungermanniopsida 15.828        
-#>  8 Lycopodiopsida    8.232         
+#>  6 Pinopsida         26.042        
+#>  7 Jungermanniopsida 15.825        
+#>  8 Lycopodiopsida    8.286         
 #>  9 Ulvophyceae       7.498         
 #> 10 Sphagnopsida      6.339         
 #> # ℹ 25 more rows
@@ -130,15 +132,15 @@ conteo_registros_por_taxon(
 #> # A tibble: 99 × 2
 #>    Filo             `Nº registros`
 #>    <chr>            <chr>         
-#>  1 Chordata         48.491.637    
-#>  2 Tracheophyta     15.044.405    
-#>  3 Arthropoda       1.402.202     
+#>  1 Chordata         48.551.391    
+#>  2 Tracheophyta     15.114.385    
+#>  3 Arthropoda       1.428.575     
 #>  4 Actinobacteriota 146.335       
-#>  5 Mollusca         78.446        
-#>  6 Basidiomycota    76.427        
-#>  7 Ascomycota       70.122        
+#>  5 Mollusca         79.921        
+#>  6 Basidiomycota    77.374        
+#>  7 Ascomycota       74.379        
 #>  8 Proteobacteria   68.997        
 #>  9 Acidobacteriota  57.547        
-#> 10 Mycetozoa        53.926        
+#> 10 Mycetozoa        53.941        
 #> # ℹ 89 more rows
 ```

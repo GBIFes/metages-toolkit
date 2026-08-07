@@ -37,6 +37,7 @@ MetaGES. No está pensado como paquete de uso general.
 El paquete se instala directamente desde GitHub:
 
 ``` r
+
 # install.packages("remotes")
 remotes::install_github("GBIFes/metages-toolkit")
 
@@ -80,6 +81,7 @@ de datos MetaGES.
 metagesToolkit](https://gbifes.github.io/metages-toolkit/articles/guia-uso-usr.html#generacion-del-informe-de-colecciones)**
 
 ``` r
+
 render_informe()
 ```
 
@@ -100,6 +102,7 @@ metagesToolkit](https://gbifes.github.io/metages-toolkit/articles/crear-mapas.ht
 - ***Mapa de las colecciones de invertebrados publicadoras***
 
 ``` r
+
 crear_mapa_simple(tipo_coleccion = "coleccion",
                           subdisciplina = "Invertebrados", 
                           publican = TRUE)$plot
@@ -110,6 +113,7 @@ crear_mapa_simple(tipo_coleccion = "coleccion",
 - ***Mapa de las bases de datos publicadoras faceteado por disciplina***
 
 ``` r
+
 crear_mapa_simple(tipo_coleccion = "base de datos",
                           facet = "disciplina_def",
                           publican = TRUE)$plot                       

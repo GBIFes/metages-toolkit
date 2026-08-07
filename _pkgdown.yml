@@ -61,7 +61,7 @@ reference:
   
 - title: Testar la calidad de los datos de MetaGES
   contents:
-  - '`extract_dwca_metadata`'
+  - '`extract_gbif_metadata`'
   - '`compare_recurso_monitor_snapshot`'
   - '`run_recurso_monitor_workflow`'
 

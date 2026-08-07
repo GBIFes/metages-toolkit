@@ -1,7 +1,7 @@
 # Comparar snapshot nuevo con baseline de referencia
 
-Compara un snapshot nuevo extraido desde los DwC-A con el baseline de
-referencia que ya viene incluido en `snapshot_df`.
+Compara un snapshot nuevo extraido desde GBIF, con los fallbacks
+necesarios al DwC-A, contra el baseline incluido en `snapshot_df`.
 
 Se comparan exactamente estos cuatro campos:
 

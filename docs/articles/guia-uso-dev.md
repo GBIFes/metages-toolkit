@@ -80,6 +80,7 @@ credenciales en R es fundamental para usar el paquete tanto como
 ### Configuracion del `.Renviron`
 
 ``` r
+
 # Para extraer datos de MetaGES es necesario tener acceso a la Base de Datos.
 # Las variables de entorno que se muestran a continuacion deben estar definidas
 # en el archivo `.Renviron` antes de usar el paquete y se cargarán automáticamente 
@@ -129,6 +130,7 @@ real.
 ### Flujo recomendado
 
 ``` r
+
 # Correr desde la `root` de metagesToolkit
 
 
@@ -176,6 +178,7 @@ mediante scripts controlados con antelacion para optimizar performance.
 1.  Ejecutar el script de actualización.
 
 ``` r
+
 # Correr desde la `root` de metagesToolkit
 
 
@@ -207,6 +210,7 @@ GitHub Pages.
 1.  Hacer cambios funcionales del repo
 
 ``` r
+
 # Correr desde la `root` de metagesToolkit. Seguir pasos en este orden especifico.
 
 # Abrir proyecto metagesToolkit (para acceder a funciones de desarrollo)
@@ -234,6 +238,7 @@ git commit -m "fix(test): Debug en test..."
 3.  Cambio de version
 
 ``` r
+
 # Cambiar version del paquete, se aceptan: "patch", "minor" y "major"
 usethis::use_version("patch")
 ```
@@ -248,6 +253,7 @@ git commit -m "feat(repo): Publicar version X.Y.Z"
 5.  Actualizar website localmente
 
 ``` r
+
 # Actualizar Analisis estructural de metagesToolkit
 source("inst/scripts/actualizar_pkgnet_arquitectura.R")
 
@@ -281,6 +287,7 @@ metagesToolkit.
 ### Flujo recomendado
 
 ``` r
+
 # Abrir proyecto metagesToolkit (para acceder a funciones de desarrollo)
 rstudioapi::openProject("metagesToolkit.Rproj")
 

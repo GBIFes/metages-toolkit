@@ -48,7 +48,7 @@ testthat::test_that("run_recurso_monitor_workflow() devuelve salida vacía si no
   testthat::expect_gte(ssh_disconnect_calls, 1L)
 })
 
-testthat::test_that("run_recurso_monitor_workflow() transforma url_ipt a dwca_url y llama a extract y compare", {
+testthat::test_that("run_recurso_monitor_workflow() usa fuente priorizada y llama a extract y compare", {
   PKG <- "metagesToolkit"
   
   fake_con_1 <- structure(list(id = "read"), class = "fake_con")
@@ -62,6 +62,7 @@ testthat::test_that("run_recurso_monitor_workflow() transforma url_ipt a dwca_ur
   extract_input <- NULL
   compare_input <- NULL
   executed_sql <- character(0)
+  read_sql <- NULL
   executed_params <- list()
   begin_calls <- 0L
   commit_calls <- 0L
@@ -69,10 +70,15 @@ testthat::test_that("run_recurso_monitor_workflow() transforma url_ipt a dwca_ur
   
   input_df_db <- data.frame(
     recurso_fk = c(1L, 2L),
+    tipo_recurso_id = c(223L, 225L),
     tipo_recurso = c("Dataset", "Checklist"),
     url_ipt = c(
       "https://ipt.org/manage/resource?r=a",
       "https://ipt.org/archive.do?r=b"
+    ),
+    dwca_url = c(
+      "11111111-1111-1111-1111-111111111111",
+      "https://www.gbif.org/dataset/22222222-2222-2222-2222-222222222222"
     ),
     baseline_title = c(" Título A ", ""),
     baseline_reference_date = c(" 2024-01-01 ", ""),
@@ -83,6 +89,7 @@ testthat::test_that("run_recurso_monitor_workflow() transforma url_ipt a dwca_ur
   
   snapshot_fake <- data.frame(
     recurso_fk = c(1L, 2L),
+    tipo_recurso_id = c(223L, 225L),
     tipo_recurso = c("Dataset", "Checklist"),
     url_ipt = c(
       "https://ipt.org/manage/resource?r=a",
@@ -93,8 +100,8 @@ testthat::test_that("run_recurso_monitor_workflow() transforma url_ipt a dwca_ur
     baseline_occurrences = c(10, NA),
     baseline_version = c("v=1.0", NA),
     dwca_url = c(
-      "https://ipt.org/archive?r=a",
-      "https://ipt.org/archive.do?r=b"
+      "11111111-1111-1111-1111-111111111111",
+      "https://www.gbif.org/dataset/22222222-2222-2222-2222-222222222222"
     ),
     eml_title = c("Título A", "B"),
     eml_version = c("1.0", "1.0"),
@@ -157,7 +164,7 @@ testthat::test_that("run_recurso_monitor_workflow() transforma url_ipt a dwca_ur
         list(con = fake_con_2, ssh = fake_ssh_2)
       }
     },
-    extract_dwca_metadata = function(df, progress = TRUE) {
+    extract_gbif_metadata = function(df, progress = TRUE) {
       extract_input <<- df
       snapshot_fake
     },
@@ -170,6 +177,7 @@ testthat::test_that("run_recurso_monitor_workflow() transforma url_ipt a dwca_ur
   
   testthat::local_mocked_bindings(
     dbGetQuery = function(con, statement, ...) {
+      read_sql <<- statement
       input_df_db
     },
     dbDisconnect = function(con, ...) {
@@ -226,12 +234,15 @@ testthat::test_that("run_recurso_monitor_workflow() transforma url_ipt a dwca_ur
   
   testthat::expect_equal(
     extract_input$dwca_url[1],
-    "https://ipt.org/archive?r=a"
+    "11111111-1111-1111-1111-111111111111"
   )
   testthat::expect_equal(
     extract_input$dwca_url[2],
-    "https://ipt.org/archive.do?r=b"
+    "https://www.gbif.org/dataset/22222222-2222-2222-2222-222222222222"
   )
+  testthat::expect_equal(extract_input$tipo_recurso_id, c(223L, 225L))
+  testthat::expect_match(read_sql, "r.Tipo_recurso AS tipo_recurso_id", fixed = TRUE)
+  testthat::expect_match(read_sql, "NULLIF(TRIM(r.url_gbiforg), '')", fixed = TRUE)
   
   testthat::expect_identical(compare_input$snapshot_df, snapshot_fake)
   testthat::expect_equal(compare_input$checked_at, checked_at)
@@ -268,8 +279,10 @@ testthat::test_that("run_recurso_monitor_workflow() hace rollback si falla una e
   
   input_df_db <- data.frame(
     recurso_fk = 1L,
+    tipo_recurso_id = 223L,
     tipo_recurso = "Dataset",
     url_ipt = "https://ipt.org/resource?r=x",
+    dwca_url = "33333333-3333-3333-3333-333333333333",
     baseline_title = "A",
     baseline_reference_date = "2024-01-01",
     baseline_occurrences = "10",
@@ -279,13 +292,14 @@ testthat::test_that("run_recurso_monitor_workflow() hace rollback si falla una e
   
   snapshot_fake <- data.frame(
     recurso_fk = 1L,
+    tipo_recurso_id = 223L,
     tipo_recurso = "Dataset",
     url_ipt = "https://ipt.org/resource?r=x",
     baseline_title = "A",
     baseline_reference_date = "2024-01-01",
     baseline_occurrences = 10,
     baseline_version = "1.0",
-    dwca_url = "https://ipt.org/archive?r=x",
+    dwca_url = "33333333-3333-3333-3333-333333333333",
     eml_title = "B",
     eml_version = "1.0",
     eml_pub_date = "2024-01-01",
@@ -347,7 +361,7 @@ testthat::test_that("run_recurso_monitor_workflow() hace rollback si falla una e
         list(con = fake_con_2, ssh = fake_ssh_2)
       }
     },
-    extract_dwca_metadata = function(df, progress = TRUE) snapshot_fake,
+    extract_gbif_metadata = function(df, progress = TRUE) snapshot_fake,
     compare_recurso_monitor_snapshot = function(snapshot_df, checked_at = Sys.time()) cmp_fake,
     .package = PKG
   )

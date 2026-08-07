@@ -9,9 +9,8 @@
 
 ## Testar la calidad de los datos de MetaGES
 
-- [`extract_dwca_metadata()`](https://gbifes.github.io/metages-toolkit/reference/extract_dwca_metadata.md)
-  : Anhadir metadatos EML y numero de occurrences a una tabla con
-  columna dwca_url
+- [`extract_gbif_metadata()`](https://gbifes.github.io/metages-toolkit/reference/extract_gbif_metadata.md)
+  : Extraer metadatos de recursos MetaGES mediante GBIF
 - [`compare_recurso_monitor_snapshot()`](https://gbifes.github.io/metages-toolkit/reference/compare_recurso_monitor_snapshot.md)
   : Comparar snapshot nuevo con baseline de referencia
 - [`run_recurso_monitor_workflow()`](https://gbifes.github.io/metages-toolkit/reference/run_recurso_monitor_workflow.md)

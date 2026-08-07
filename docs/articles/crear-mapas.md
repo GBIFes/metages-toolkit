@@ -8,6 +8,7 @@ función
 del paquete **metagesToolkit**.
 
 ``` r
+
 # Función para la exploración y visualización de datos de colecciones y bases de datos.
 mapa <- crear_mapa_simple()     # Genera una lista de R con 2 elementos
 
@@ -268,6 +269,7 @@ generar el mapa, lo que permite reutilizarlos en tablas o análisis
 posteriores.
 
 ``` r
+
 res <- crear_mapa_simple(disciplina = "Zoo")
 head(res$data)
 ```

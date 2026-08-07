@@ -12,13 +12,13 @@ Ejecuta el flujo completo de monitorizacion:
 
 4.  cierra la conexion antes del procesamiento largo
 
-5.  construye `dwca_url` a partir de `url_ipt`
+5.  selecciona la fuente con prioridad `url_gbiforg`, `uuid`, `url_ipt`
 
-6.  transforma `resource` en `archive` solo cuando `archive` no exista
-    ya
+6.  llama a
+    [`extract_gbif_metadata()`](https://gbifes.github.io/metages-toolkit/reference/extract_gbif_metadata.md)
 
-7.  llama a
-    [`extract_dwca_metadata()`](https://gbifes.github.io/metages-toolkit/reference/extract_dwca_metadata.md)
+7.  resuelve dentro del extractor los fallbacks al DwC-A antes de
+    comparar
 
 8.  reabre conexion
 
