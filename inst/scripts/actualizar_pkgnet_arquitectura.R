@@ -21,7 +21,7 @@ stopifnot(requireNamespace("devtools", quietly = TRUE))
 # ------------------------------------------------------------
 message(" - Instalando repo local")
 src <- "."  # repo local
-devtools::install(".", upgrade = "never", dependencies = FALSE, quiet = TRUE)
+devtools::install(".", upgrade = FALSE, dependencies = FALSE, quiet = TRUE)
 
 
 # ------------------------------------------------------------
