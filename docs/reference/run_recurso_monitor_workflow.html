@@ -5,9 +5,9 @@ lee recursos publicos desde metages_recurso
 construye un baseline por recurso usando metages_provision_recurso
 y metages_recurso
 cierra la conexion antes del procesamiento largo
-construye dwca_url a partir de url_ipt
-transforma resource en archive solo cuando archive no exista ya
-llama a extract_dwca_metadata()
+selecciona la fuente con prioridad url_gbiforg, uuid, url_ipt
+llama a extract_gbif_metadata()
+resuelve dentro del extractor los fallbacks al DwC-A antes de comparar
 reabre conexion
 actualiza metages_recurso_monitor
 inserta eventos en metages_recurso_monitor_log
@@ -18,9 +18,9 @@ lee recursos publicos desde metages_recurso
 construye un baseline por recurso usando metages_provision_recurso
 y metages_recurso
 cierra la conexion antes del procesamiento largo
-construye dwca_url a partir de url_ipt
-transforma resource en archive solo cuando archive no exista ya
-llama a extract_dwca_metadata()
+selecciona la fuente con prioridad url_gbiforg, uuid, url_ipt
+llama a extract_gbif_metadata()
+resuelve dentro del extractor los fallbacks al DwC-A antes de comparar
 reabre conexion
 actualiza metages_recurso_monitor
 inserta eventos en metages_recurso_monitor_log
@@ -33,7 +33,7 @@ inserta eventos en metages_recurso_monitor_log
 
     <a class="navbar-brand me-2" href="../index.html">metagesToolkit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,9 +76,9 @@ inserta eventos en metages_recurso_monitor_log
 <li><p>construye un baseline por recurso usando <code>metages_provision_recurso</code>
 y <code>metages_recurso</code></p></li>
 <li><p>cierra la conexion antes del procesamiento largo</p></li>
-<li><p>construye <code>dwca_url</code> a partir de <code>url_ipt</code></p></li>
-<li><p>transforma <code>resource</code> en <code>archive</code> solo cuando <code>archive</code> no exista ya</p></li>
-<li><p>llama a <code><a href="extract_dwca_metadata.html">extract_dwca_metadata()</a></code></p></li>
+<li><p>selecciona la fuente con prioridad <code>url_gbiforg</code>, <code>uuid</code>, <code>url_ipt</code></p></li>
+<li><p>llama a <code><a href="extract_gbif_metadata.html">extract_gbif_metadata()</a></code></p></li>
+<li><p>resuelve dentro del extractor los fallbacks al DwC-A antes de comparar</p></li>
 <li><p>reabre conexion</p></li>
 <li><p>actualiza <code>metages_recurso_monitor</code></p></li>
 <li><p>inserta eventos en <code>metages_recurso_monitor_log</code></p></li>

@@ -37,6 +37,7 @@ MetaGES. No está pensado como paquete de uso general.
 El paquete se instala directamente desde GitHub:
 
 ``` r
+
 # install.packages("remotes")
 remotes::install_github("GBIFes/metages-toolkit")
 
@@ -80,6 +81,7 @@ de datos MetaGES.
 metagesToolkit](https://gbifes.github.io/metages-toolkit/articles/guia-uso-usr.html#generacion-del-informe-de-colecciones)**
 
 ``` r
+
 render_informe()
 ```
 
@@ -100,6 +102,7 @@ metagesToolkit](https://gbifes.github.io/metages-toolkit/articles/crear-mapas.ht
 - ***Mapa de las colecciones de invertebrados publicadoras***
 
 ``` r
+
 crear_mapa_simple(tipo_coleccion = "coleccion",
                           subdisciplina = "Invertebrados", 
                           publican = TRUE)$plot
@@ -110,6 +113,7 @@ crear_mapa_simple(tipo_coleccion = "coleccion",
 - ***Mapa de las bases de datos publicadoras faceteado por disciplina***
 
 ``` r
+
 crear_mapa_simple(tipo_coleccion = "base de datos",
                           facet = "disciplina_def",
                           publican = TRUE)$plot                       
@@ -200,9 +204,8 @@ informe.
 
 ## Testar la calidad de los datos de MetaGES
 
-- [`extract_dwca_metadata()`](https://gbifes.github.io/metages-toolkit/reference/extract_dwca_metadata.md)
-  : Anhadir metadatos EML y numero de occurrences a una tabla con
-  columna dwca_url
+- [`extract_gbif_metadata()`](https://gbifes.github.io/metages-toolkit/reference/extract_gbif_metadata.md)
+  : Extraer metadatos de recursos MetaGES mediante GBIF
 - [`compare_recurso_monitor_snapshot()`](https://gbifes.github.io/metages-toolkit/reference/compare_recurso_monitor_snapshot.md)
   : Comparar snapshot nuevo con baseline de referencia
 - [`run_recurso_monitor_workflow()`](https://gbifes.github.io/metages-toolkit/reference/run_recurso_monitor_workflow.md)

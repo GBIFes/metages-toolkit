@@ -23,6 +23,7 @@ si aun no has configurado la credenciales y drivers para tu sesion.
 El paquete de R metagesToolkit se instala directamente desde GitHub:
 
 ``` r
+
 # install.packages("remotes")
 remotes::install_github("GBIFes/metages-toolkit")
 
@@ -48,6 +49,7 @@ MetaGES](https://gbifes.github.io/metages-toolkit/articles/guia-uso-dev.html#con
 > MetaGES](https://gbifes.github.io/metages-toolkit/articles/guia-uso-usr.html#mediante-llamadas-sql-a-metages)
 
 ``` r
+
 # Cargar el paquete instalado para poder usarlo
 library(metagesToolkit)
 
@@ -63,6 +65,7 @@ View(datos$data)
 ### Mediante llamadas SQL a MetaGES
 
 ``` r
+
 # Cargar DBI para conexiones a bases de datos
 library(DBI)
 
@@ -101,6 +104,7 @@ Permite facetar usando:
 - `facet` (cualquier columna del dataset)
 
 ``` r
+
 # Funcion con los argumentos disponibles sin usar
 crear_mapa_simple(tipo_coleccion,
                    disciplina,
@@ -218,6 +222,7 @@ Para actualizarlos, los datos deben cambiarse manualmente y se debe
 correr el siguiente codigo en R:
 
 ``` r
+
 # Guarda las metricas en metages-toolkit como lista de R.
 source("inst/scripts/extraer_metricas_manuales.R")
 ```
@@ -225,6 +230,7 @@ source("inst/scripts/extraer_metricas_manuales.R")
 ### Renderizar informe
 
 ``` r
+
 # RENDERIZAR INFORME
 # Crea una carpeta `informe_output` en el `directorio raiz` con todos los 
 # recursos usados para generar el informe.
@@ -300,6 +306,7 @@ el siguiente codigo:
 ### Acceso a datasets
 
 ``` r
+
 # Ruta a los recursos del paquete
 ruta_mapas <- system.file("reports", "data", "mapas",
                           package = "metagesToolkit"
@@ -329,6 +336,7 @@ Imágenes disponibles en:
 - `inst/reports/assets/images/generated/`
 
 ``` r
+
 # Ruta a los recursos del paquete
 ruta_plots <- system.file("reports", "assets", "images", "generated",
                           package = "metagesToolkit"

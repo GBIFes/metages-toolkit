@@ -1,4 +1,4 @@
-pandoc: 3.6.3
+pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
@@ -6,7 +6,7 @@ articles:
   dashboard-metricas: dashboard-metricas.html
   guia-uso-dev: guia-uso-dev.html
   guia-uso-usr: guia-uso-usr.html
-last_built: 2026-05-19T12:25Z
+last_built: 2026-08-07T12:53Z
 urls:
   reference: https://gbifes.github.io/metages-toolkit/reference
   article: https://gbifes.github.io/metages-toolkit/articles

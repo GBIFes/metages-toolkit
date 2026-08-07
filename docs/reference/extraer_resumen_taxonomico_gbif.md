@@ -62,11 +62,13 @@ Ejemplos habituales de valores para `basisOfRecord`:
 
 Especimenes:
 
+
     c("PRESERVED_SPECIMEN",
       "MATERIAL_SAMPLE",
       "FOSSIL_SPECIMEN")
 
 Observaciones:
+
 
     c("OBSERVATION",
       "HUMAN_OBSERVATION",
