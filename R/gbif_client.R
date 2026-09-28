@@ -1,33 +1,54 @@
+# Aplicar una pausa validada entre bloques de peticiones a GBIF.
+.gbif_sleep <- function(seconds) {
+  seconds <- suppressWarnings(as.numeric(seconds[1]))
+  if (!is.na(seconds) && seconds > 0) {
+    Sys.sleep(seconds)
+  }
+}
+
+
 # Devolver un valor por defecto cuando un campo JSON no existe.
 .gbif_or <- function(x, default) {
   if (is.null(x) || length(x) == 0L) default else x
 }
 
 
-# Realizar una peticion GET a la API de GBIF y devolver el JSON como lista.
-.gbif_api_get_json <- function(path, query = list()) {
+# Ejecutar una peticion GET con el protocolo HTTP comun del cliente GBIF.
+.gbif_api_perform <- function(
+    path,
+    query = list(),
+    accept_http_errors = FALSE
+) {
   request <- httr2::request(paste0("https://api.gbif.org/v1", path))
 
   if (length(query) > 0L) {
     request <- do.call(httr2::req_url_query, c(list(request), query))
   }
 
-  request |>
+  request <- request |>
     httr2::req_user_agent("metagesToolkit (https://gbifes.github.io/metages-toolkit)") |>
     httr2::req_timeout(seconds = 30) |>
-    httr2::req_retry(max_tries = 3) |>
-    httr2::req_perform() |>
+    httr2::req_retry(max_tries = 3)
+
+  if (isTRUE(accept_http_errors)) {
+    request <- request |>
+      httr2::req_error(is_error = function(response) FALSE)
+  }
+
+  httr2::req_perform(request)
+}
+
+
+# Realizar una peticion GET a la API de GBIF y devolver el JSON como lista.
+.gbif_api_get_json <- function(path, query = list()) {
+  .gbif_api_perform(path, query = query) |>
     httr2::resp_body_json(simplifyVector = FALSE)
 }
 
 
 # Realizar una peticion GET a la API de GBIF y parsear la respuesta como XML.
 .gbif_api_get_xml <- function(path) {
-  httr2::request(paste0("https://api.gbif.org/v1", path)) |>
-    httr2::req_user_agent("metagesToolkit (https://gbifes.github.io/metages-toolkit)") |>
-    httr2::req_timeout(seconds = 30) |>
-    httr2::req_retry(max_tries = 3) |>
-    httr2::req_perform() |>
+  .gbif_api_perform(path) |>
     httr2::resp_body_raw() |>
     xml2::read_xml()
 }
@@ -351,6 +372,8 @@
 #'   fallback selectivo al DwC-A cuando GBIF devuelve cero occurrences. Las
 #'   demas columnas se conservan sin cambios.
 #' @param progress Si `TRUE`, muestra progreso por consola.
+#' @param request_delay Pausa en segundos entre datasets. No altera la lógica
+#'   de extracción ni de conteo.
 #'
 #' @return
 #' El mismo `df` de entrada, con las columnas adicionales `eml_title`,
@@ -374,11 +397,15 @@
 #' df <- data.frame(
 #'   dwca_url = "https://www.gbif.org/dataset/837381f4-f762-11e1-a439-00145eb45e9a"
 #' )
-#' extract_gbif_metadata(df)
+#' .gbif_extract_dataset_metadata(df)
 #' }
 #'
-#' @export
-extract_gbif_metadata <- function(df, progress = TRUE) {
+.gbif_extract_dataset_metadata <- function(
+    df,
+    progress = TRUE,
+    request_delay = 0.2,
+    dataset_details = NULL
+) {
   if (!"dwca_url" %in% names(df)) {
     stop("La columna 'dwca_url' no existe en `df`.")
   }
@@ -407,6 +434,8 @@ extract_gbif_metadata <- function(df, progress = TRUE) {
           eml_version = NA_character_,
           eml_pub_date = NA_character_,
           eml_occurrences = NA_integer_,
+          detected_dwca_url = NA_character_,
+          detected_eml_url = NA_character_,
           eml_status = NA_character_,
           eml_error_message = NA_character_
         )
@@ -421,6 +450,8 @@ extract_gbif_metadata <- function(df, progress = TRUE) {
       eml_version = NA_character_,
       eml_pub_date = NA_character_,
       eml_occurrences = NA_integer_,
+      detected_dwca_url = NA_character_,
+      detected_eml_url = NA_character_,
       eml_status = "ok",
       eml_error_message = NA_character_,
       stringsAsFactors = FALSE
@@ -433,7 +464,17 @@ extract_gbif_metadata <- function(df, progress = TRUE) {
           dataset_key <- .gbif_dataset_key_from_dwca(input)
         }
 
-        dataset <- .gbif_api_get_json(paste0("/dataset/", dataset_key))
+        dataset <- if (
+          !is.null(dataset_details) &&
+          !is.null(dataset_details[[dataset_key]])
+        ) {
+          dataset_details[[dataset_key]]
+        } else {
+          .gbif_api_get_json(paste0("/dataset/", dataset_key))
+        }
+        endpoint_urls <- .gbif_extract_dataset_endpoints(dataset)
+        out$detected_dwca_url <- endpoint_urls$dwca_url
+        out$detected_eml_url <- endpoint_urls$eml_url
         occurrence <- .gbif_api_get_json(
           "/occurrence/search",
           query = list(dataset_key = dataset_key, limit = 0)
@@ -546,6 +587,7 @@ extract_gbif_metadata <- function(df, progress = TRUE) {
       input = inputs_unique$dwca_url[i],
       tipo_recurso_id = inputs_unique$tipo_recurso_id[i]
     )
+    if (i < nrow(inputs_unique)) .gbif_sleep(request_delay)
   }
 
   metadata_df <- dplyr::bind_rows(results)
@@ -589,8 +631,13 @@ extract_gbif_metadata <- function(df, progress = TRUE) {
 #'   \item `comparison_df`
 #' }
 #'
-#' @export
-compare_recurso_monitor_snapshot <- function(snapshot_df, checked_at = Sys.time()) {
+.gbif_compare_resource_snapshot <- function(snapshot_df, checked_at = Sys.time()) {
+  if (!"detected_dwca_url" %in% names(snapshot_df)) {
+    snapshot_df$detected_dwca_url <- NA_character_
+  }
+  if (!"detected_eml_url" %in% names(snapshot_df)) {
+    snapshot_df$detected_eml_url <- NA_character_
+  }
   required_snapshot_cols <- c(
     "recurso_fk",
     "tipo_recurso",
@@ -717,7 +764,9 @@ compare_recurso_monitor_snapshot <- function(snapshot_df, checked_at = Sys.time(
       monitor_status = eml_status,
       monitor_error_message = eml_error_message,
       change_flag = change_flag,
-      change_type = change_type
+      change_type = change_type,
+      url_ipt_detected = detected_dwca_url,
+      url_eml_detected = detected_eml_url
     )
   
   log_insert_df <- x |>
@@ -745,285 +794,5 @@ compare_recurso_monitor_snapshot <- function(snapshot_df, checked_at = Sys.time(
     current_upsert_df = current_upsert_df,
     log_insert_df = log_insert_df,
     comparison_df = x
-  )
-}
-
-
-
-#' Ejecutar el workflow completo de monitorizacion de recursos
-#'
-#' @description
-#' Ejecuta el flujo completo de monitorizacion:
-#' \enumerate{
-#'   \item abre una conexion con [conectar_metages()]
-#'   \item lee recursos publicos desde `metages_recurso`
-#'   \item construye un baseline por recurso usando `metages_provision_recurso`
-#'         y `metages_recurso`
-#'   \item cierra la conexion antes del procesamiento largo
-#'   \item selecciona la fuente con prioridad `url_gbiforg`, `uuid`, `url_ipt`
-#'   \item llama a [extract_gbif_metadata()]
-#'   \item resuelve dentro del extractor los fallbacks al DwC-A antes de comparar
-#'   \item reabre conexion
-#'   \item actualiza `metages_recurso_monitor`
-#'   \item inserta eventos en `metages_recurso_monitor_log`
-#' }
-#'
-#' @param progress Si `TRUE`, muestra progreso por consola.
-#' @param checked_at Fecha-hora del chequeo. Por defecto `Sys.time()`.
-#'
-#' @return
-#' Una lista invisible con:
-#' \itemize{
-#'   \item `input_df`
-#'   \item `snapshot_df`
-#'   \item `current_upsert_df`
-#'   \item `log_insert_df`
-#'   \item `comparison_df`
-#' }
-#'
-#' @export
-run_recurso_monitor_workflow <- function(progress = TRUE, checked_at = Sys.time()) {
-  # ------------------------------------------------------------------
-  # 1. Abrir conexion solo para leer datos de entrada y baseline.
-  # ------------------------------------------------------------------
-  cx_read <- conectar_metages()
-  con_read <- cx_read$con
-  ssh_read <- cx_read$ssh
-  
-  on.exit({
-    try(DBI::dbDisconnect(con_read), silent = TRUE)
-    if (!is.null(ssh_read)) {
-      try(ssh::ssh_disconnect(ssh_read), silent = TRUE)
-    }
-  }, add = TRUE)
-  
-  # Leer recursos monitorizables junto con baseline resuelto.
-  input_df <- DBI::dbGetQuery(
-    con_read,
-    "
-SELECT
-      r.recurso_id AS recurso_fk,
-      r.Tipo_recurso AS tipo_recurso_id,
-      mt.name AS tipo_recurso,
-      TRIM(r.url_ipt) AS url_ipt,
-      COALESCE(
-          NULLIF(TRIM(r.url_gbiforg), ''),
-          NULLIF(TRIM(r.uuid), ''),
-          NULLIF(TRIM(r.url_ipt), '')
-      ) AS dwca_url,
-      TRIM(r.title) AS baseline_title,
-      COALESCE(
-          NULLIF(TRIM(p.provision_fecha), ''),
-          NULLIF(SUBSTRING(TRIM(r.created_when), 1, 10), '')
-      ) AS baseline_reference_date,
-      COALESCE(
-          NULLIF(TRIM(p.provision_cantidad), ''),
-          NULLIF(TRIM(r.numberOfRecords), '')
-      ) AS baseline_occurrences,
-      COALESCE(
-          NULLIF(TRIM(p.version), ''),
-          NULLIF(REPLACE(TRIM(r.datapaper_version), 'v=', ''), '')
-      ) AS baseline_version
-  FROM metages_recurso r
-  LEFT JOIN metages_types mt
-    ON r.Tipo_recurso = mt.types_id
-  LEFT JOIN (
-      SELECT pr1.*
-      FROM metages_provision_recurso pr1
-      INNER JOIN (
-          SELECT
-              recurso_fk,
-              MAX(provision_fecha) AS max_provision_fecha
-          FROM metages_provision_recurso
-          WHERE NULLIF(TRIM(provision_fecha), '') IS NOT NULL
-          GROUP BY recurso_fk
-      ) pr2
-        ON pr1.recurso_fk = pr2.recurso_fk
-       AND pr1.provision_fecha = pr2.max_provision_fecha
-  ) p
-    ON r.recurso_id = p.recurso_fk
-  WHERE COALESCE(
-      NULLIF(TRIM(r.url_gbiforg), ''),
-      NULLIF(TRIM(r.uuid), ''),
-      NULLIF(TRIM(r.url_ipt), '')
-  ) IS NOT NULL
-    AND r.private = 0
-      --  LIMIT 20 -- Para pruebas
-  "
-  )
-  
-  # Cerrar explicitamente conexion y tunel antes del bloque largo.
-  try(DBI::dbDisconnect(con_read), silent = TRUE)
-  if (!is.null(ssh_read)) {
-    try(ssh::ssh_disconnect(ssh_read), silent = TRUE)
-  }
-  
-  # ------------------------------------------------------------------
-  # 2. Si no hay recursos, devolver salida vacia.
-  # ------------------------------------------------------------------
-  if (nrow(input_df) == 0L) {
-    return(
-      invisible(
-        list(
-          input_df = input_df,
-          snapshot_df = input_df,
-          current_upsert_df = data.frame(),
-          log_insert_df = data.frame(),
-          comparison_df = data.frame()
-        )
-      )
-    )
-  }
-  
-  # ------------------------------------------------------------------
-  # 3. Normalizar baseline. dwca_url ya aplica la prioridad
-  #    url_gbiforg -> uuid -> url_ipt desde la consulta SQL.
-  # ------------------------------------------------------------------
-  input_df <- input_df |>
-    dplyr::mutate(
-      baseline_title = trimws(as.character(baseline_title)),
-      baseline_title = dplyr::na_if(baseline_title, ""),
-      baseline_reference_date = trimws(as.character(baseline_reference_date)),
-      baseline_reference_date = dplyr::na_if(baseline_reference_date, ""),
-      baseline_version = trimws(as.character(baseline_version)),
-      baseline_version = dplyr::na_if(baseline_version, ""),
-      baseline_occurrences = dplyr::case_when(
-        is.na(baseline_occurrences) ~ NA_real_,
-        TRUE ~ suppressWarnings(as.numeric(baseline_occurrences))
-      )
-    )
-  
-  # Extraer snapshot actual desde GBIF y resolver sus fallbacks al DwC-A.
-  snapshot_df <- extract_gbif_metadata(input_df, progress = progress)
-  
-  # Comparar snapshot contra baseline.
-  message("Comparando cambios en recursos IPT...")
-  cmp <- compare_recurso_monitor_snapshot(
-    snapshot_df = snapshot_df,
-    checked_at = checked_at
-  )
-  
-  # ------------------------------------------------------------------
-  # 4. Reabrir conexion solo para escribir resultados.
-  # ------------------------------------------------------------------
-  cx_write <- conectar_metages()
-  con_write <- cx_write$con
-  ssh_write <- cx_write$ssh
-  
-  on.exit({
-    try(DBI::dbDisconnect(con_write), silent = TRUE)
-    if (!is.null(ssh_write)) {
-      try(ssh::ssh_disconnect(ssh_write), silent = TRUE)
-    }
-  }, add = TRUE)
-  
-  # SQL de UPSERT sobre la tabla current.
-  message("Insertando logs en MetaGES...")
-  
-  upsert_sql <- "
-INSERT INTO metages_recurso_monitor (
-    recurso_fk,
-    tipo_recurso,
-    last_checked_at,
-    last_change_at,
-    eml_title_detected,
-    previous_eml_title_detected,
-    eml_version_detected,
-    previous_eml_version_detected,
-    eml_pub_date_detected,
-    previous_eml_pub_date_detected,
-    occurrences_detected,
-    previous_occurrences_detected,
-    occurrences_diff_last_check,
-    monitor_status,
-    monitor_error_message,
-    change_flag,
-    change_type
-) VALUES (
-    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-)
-ON DUPLICATE KEY UPDATE
-    tipo_recurso = VALUES(tipo_recurso),
-    last_checked_at = VALUES(last_checked_at),
-    last_change_at = VALUES(last_change_at),
-    eml_title_detected = VALUES(eml_title_detected),
-    previous_eml_title_detected = VALUES(previous_eml_title_detected),
-    eml_version_detected = VALUES(eml_version_detected),
-    previous_eml_version_detected = VALUES(previous_eml_version_detected),
-    eml_pub_date_detected = VALUES(eml_pub_date_detected),
-    previous_eml_pub_date_detected = VALUES(previous_eml_pub_date_detected),
-    occurrences_detected = VALUES(occurrences_detected),
-    previous_occurrences_detected = VALUES(previous_occurrences_detected),
-    occurrences_diff_last_check = VALUES(occurrences_diff_last_check),
-    monitor_status = VALUES(monitor_status),
-    monitor_error_message = VALUES(monitor_error_message),
-    change_flag = VALUES(change_flag),
-    change_type = VALUES(change_type),
-    updated_when = CURRENT_TIMESTAMP
-"
-  
-  # SQL de INSERT sobre la tabla de log.
-log_insert_sql <- "
-INSERT INTO metages_recurso_monitor_log (
-    recurso_fk,
-    tipo_recurso,
-    event_at,
-    event_type,
-    previous_eml_title_detected,
-    new_eml_title_detected,
-    previous_eml_version_detected,
-    new_eml_version_detected,
-    previous_eml_pub_date_detected,
-    new_eml_pub_date_detected,
-    previous_occurrences_detected,
-    new_occurrences_detected,
-    occurrences_diff,
-    previous_monitor_status,
-    new_monitor_status,
-    monitor_error_message
-) VALUES (
-    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-)
-"
-  
-  # Escribir en DB en transaccion.
-  DBI::dbBegin(con_write)
-  
-  tryCatch(
-    {
-      for (i in seq_len(nrow(cmp$current_upsert_df))) {
-        DBI::dbExecute(
-          con_write,
-          upsert_sql,
-          params = as.list(cmp$current_upsert_df[i, ])
-        )
-      }
-      
-      if (nrow(cmp$log_insert_df) > 0L) {
-        for (i in seq_len(nrow(cmp$log_insert_df))) {
-          DBI::dbExecute(
-            con_write,
-            log_insert_sql,
-            params = as.list(cmp$log_insert_df[i, ])
-          )
-        }
-      }
-      
-      DBI::dbCommit(con_write)
-    },
-    error = function(e) {
-      DBI::dbRollback(con_write)
-      stop(e)
-    }
-  )
-  
-  invisible(
-    list(
-      input_df = input_df,
-      snapshot_df = snapshot_df,
-      current_upsert_df = cmp$current_upsert_df,
-      log_insert_df = cmp$log_insert_df,
-      comparison_df = cmp$comparison_df
-    )
   )
 }

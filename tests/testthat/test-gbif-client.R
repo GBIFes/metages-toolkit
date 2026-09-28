@@ -36,16 +36,16 @@ crear_dwca_prueba <- function(
 }
 
 
-testthat::test_that("extract_gbif_metadata() exige dwca_url", {
+testthat::test_that("metagesToolkit:::.gbif_extract_dataset_metadata() exige dwca_url", {
   testthat::expect_error(
-    extract_gbif_metadata(data.frame(x = 1), progress = FALSE),
+    metagesToolkit:::.gbif_extract_dataset_metadata(data.frame(x = 1), progress = FALSE),
     "La columna 'dwca_url' no existe en `df`."
   )
 })
 
-testthat::test_that("extract_gbif_metadata() conserva el contrato para inputs vacios", {
+testthat::test_that("metagesToolkit:::.gbif_extract_dataset_metadata() conserva el contrato para inputs vacios", {
   input <- data.frame(id = 1:3, dwca_url = c(NA, "", "  "))
-  out <- extract_gbif_metadata(input, progress = FALSE)
+  out <- metagesToolkit:::.gbif_extract_dataset_metadata(input, progress = FALSE)
 
   testthat::expect_equal(nrow(out), 3L)
   testthat::expect_true(all(c(
@@ -55,7 +55,7 @@ testthat::test_that("extract_gbif_metadata() conserva el contrato para inputs va
   testthat::expect_true(all(is.na(out$eml_status)))
 })
 
-testthat::test_that("extract_gbif_metadata() acepta UUID y URL de dataset", {
+testthat::test_that("metagesToolkit:::.gbif_extract_dataset_metadata() acepta UUID y URL de dataset", {
   key <- "837381f4-f762-11e1-a439-00145eb45e9a"
   calls <- character()
   xml_calls <- character()
@@ -86,7 +86,7 @@ testthat::test_that("extract_gbif_metadata() acepta UUID y URL de dataset", {
     id = 1:2,
     dwca_url = c(key, paste0("https://www.gbif.org/dataset/", key))
   )
-  out <- extract_gbif_metadata(input, progress = FALSE)
+  out <- metagesToolkit:::.gbif_extract_dataset_metadata(input, progress = FALSE)
 
   testthat::expect_equal(out$eml_title, c("Mi dataset", "Mi dataset"))
   testthat::expect_equal(out$eml_version, c("V2.3", "V2.3"))
@@ -97,7 +97,7 @@ testthat::test_that("extract_gbif_metadata() acepta UUID y URL de dataset", {
   testthat::expect_length(xml_calls, 0L)
 })
 
-testthat::test_that("extract_gbif_metadata() resuelve una URL DwC-A en GBIF", {
+testthat::test_that("metagesToolkit:::.gbif_extract_dataset_metadata() resuelve una URL DwC-A en GBIF", {
   key <- "837381f4-f762-11e1-a439-00145eb45e9a"
   dwca <- "https://ipt.gbif.es/archive.do?r=emma"
 
@@ -131,7 +131,7 @@ testthat::test_that("extract_gbif_metadata() resuelve una URL DwC-A en GBIF", {
     .package = "metagesToolkit"
   )
 
-  out <- extract_gbif_metadata(
+  out <- metagesToolkit:::.gbif_extract_dataset_metadata(
     data.frame(recurso_fk = 7L, dwca_url = dwca),
     progress = FALSE
   )
@@ -144,7 +144,7 @@ testthat::test_that("extract_gbif_metadata() resuelve una URL DwC-A en GBIF", {
   testthat::expect_equal(out$eml_status, "ok")
 })
 
-testthat::test_that("extract_gbif_metadata() deja version NA sin packageId valido", {
+testthat::test_that("metagesToolkit:::.gbif_extract_dataset_metadata() deja version NA sin packageId valido", {
   keys <- c(
     "11111111-1111-1111-1111-111111111111",
     "22222222-2222-2222-2222-222222222222"
@@ -172,7 +172,7 @@ testthat::test_that("extract_gbif_metadata() deja version NA sin packageId valid
     .package = "metagesToolkit"
   )
 
-  out <- extract_gbif_metadata(
+  out <- metagesToolkit:::.gbif_extract_dataset_metadata(
     data.frame(dwca_url = keys),
     progress = FALSE
   )
@@ -182,7 +182,7 @@ testthat::test_that("extract_gbif_metadata() deja version NA sin packageId valid
   testthat::expect_true(all(is.na(out$eml_error_message)))
 })
 
-testthat::test_that("extract_gbif_metadata() registra errores del documento EML", {
+testthat::test_that("metagesToolkit:::.gbif_extract_dataset_metadata() registra errores del documento EML", {
   key <- "33333333-3333-3333-3333-333333333333"
 
   testthat::local_mocked_bindings(
@@ -199,7 +199,7 @@ testthat::test_that("extract_gbif_metadata() registra errores del documento EML"
     .package = "metagesToolkit"
   )
 
-  out <- extract_gbif_metadata(
+  out <- metagesToolkit:::.gbif_extract_dataset_metadata(
     data.frame(dwca_url = key),
     progress = FALSE
   )
@@ -243,7 +243,7 @@ testthat::test_that("tipo 225 con cero en GBIF cuenta el rowType Taxon", {
     .package = "utils"
   )
 
-  out <- extract_gbif_metadata(
+  out <- metagesToolkit:::.gbif_extract_dataset_metadata(
     data.frame(
       dwca_url = "11111111-1111-1111-1111-111111111111",
       tipo_recurso_id = 225L
@@ -291,7 +291,7 @@ testthat::test_that("tipos 223 y 224 con cero cuentan el rowType Occurrence", {
     .package = "utils"
   )
 
-  out <- extract_gbif_metadata(
+  out <- metagesToolkit:::.gbif_extract_dataset_metadata(
     data.frame(
       dwca_url = rep("22222222-2222-2222-2222-222222222222", 2L),
       tipo_recurso_id = c(223L, 224L)
@@ -328,7 +328,7 @@ testthat::test_that("conteos positivos y tipos sin fallback no descargan DwC-A",
     .package = "utils"
   )
 
-  out <- extract_gbif_metadata(
+  out <- metagesToolkit:::.gbif_extract_dataset_metadata(
     data.frame(
       dwca_url = c(
         "33333333-3333-3333-3333-333333333333",
@@ -360,7 +360,7 @@ testthat::test_that("un fallback imposible devuelve error y occurrences NA", {
     .package = "metagesToolkit"
   )
 
-  out <- extract_gbif_metadata(
+  out <- metagesToolkit:::.gbif_extract_dataset_metadata(
     data.frame(
       dwca_url = "66666666-6666-6666-6666-666666666666",
       tipo_recurso_id = 225L
@@ -373,7 +373,7 @@ testthat::test_that("un fallback imposible devuelve error y occurrences NA", {
   testthat::expect_match(out$eml_error_message, "DWC_ARCHIVE")
 })
 
-testthat::test_that("extract_gbif_metadata() registra errores por fila", {
+testthat::test_that("metagesToolkit:::.gbif_extract_dataset_metadata() registra errores por fila", {
   testthat::local_mocked_bindings(
     .gbif_api_get_json = function(path, query = list()) {
       stop("GBIF no disponible")
@@ -381,7 +381,7 @@ testthat::test_that("extract_gbif_metadata() registra errores por fila", {
     .package = "metagesToolkit"
   )
 
-  out <- extract_gbif_metadata(
+  out <- metagesToolkit:::.gbif_extract_dataset_metadata(
     data.frame(dwca_url = "11111111-1111-1111-1111-111111111111"),
     progress = FALSE
   )
@@ -389,4 +389,45 @@ testthat::test_that("extract_gbif_metadata() registra errores por fila", {
   testthat::expect_equal(out$eml_status, "error")
   testthat::expect_match(out$eml_error_message, "GBIF no disponible")
   testthat::expect_true(is.na(out$eml_title))
+})
+
+
+testthat::test_that("el extractor reutiliza detalles y devuelve endpoints", {
+  key <- "77777777-7777-7777-7777-777777777777"
+  dataset_calls <- 0L
+  details <- list(list(
+    key = key,
+    title = "Dataset",
+    version = "1.0",
+    pubDate = "2026-01-01",
+    endpoints = list(
+      list(type = "DWC_ARCHIVE", url = "https://example.org/archive.zip"),
+      list(type = "EML", url = "https://example.org/eml.xml")
+    )
+  ))
+  names(details) <- key
+
+  testthat::local_mocked_bindings(
+    .gbif_api_get_json = function(path, query = list()) {
+      if (identical(path, paste0("/dataset/", key))) {
+        dataset_calls <<- dataset_calls + 1L
+        stop("No debe repetirse el detalle del dataset")
+      }
+      if (identical(path, "/occurrence/search")) {
+        return(list(count = 5L))
+      }
+      stop("Consulta inesperada")
+    },
+    .package = "metagesToolkit"
+  )
+
+  out <- metagesToolkit:::.gbif_extract_dataset_metadata(
+    data.frame(dwca_url = key, tipo_recurso_id = 223L),
+    progress = FALSE,
+    dataset_details = details
+  )
+
+  testthat::expect_equal(dataset_calls, 0L)
+  testthat::expect_equal(out$detected_dwca_url, "https://example.org/archive.zip")
+  testthat::expect_equal(out$detected_eml_url, "https://example.org/eml.xml")
 })
