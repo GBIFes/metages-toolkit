@@ -63,6 +63,8 @@ reference:
   contents:
   - '`fetch_gbif_spain_inventory`'
   - '`run_gbif_spain_workflow`'
+  - '`.gbif_compare_resource_snapshot`'
+  - '`.gbif_extract_dataset_metadata`'
 
 - title: Crear mapas y graficos desde MetaGES
   contents:
