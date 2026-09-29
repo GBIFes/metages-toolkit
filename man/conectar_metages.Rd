@@ -4,7 +4,7 @@
 \alias{conectar_metages}
 \title{Conectar con la base de datos METAGES}
 \usage{
-conectar_metages(driver = NULL)
+conectar_metages(driver = NULL, entorno = c("prod", "test"))
 }
 \arguments{
 \item{driver}{Nombre del driver ODBC a utilizar. Por defecto se usa
@@ -14,6 +14,10 @@ operativo y la instalacion local.
 Para listar los drivers disponibles desde R: \code{odbc::odbcListDrivers()}.
 En sistemas donde el driver por defecto no funcione, el usuario
 deberá especificar uno alternativo mediante el argumento \code{driver}.}
+
+\item{entorno}{Entorno de MetaGES al que conectarse. Puede ser \code{"prod"}
+(valor por defecto) o \code{"test"}. Cada entorno utiliza sus propias variables
+de ambiente para el host, el túnel SSH y la contraseña de la base de datos.}
 }
 \value{
 Una lista con dos elementos:

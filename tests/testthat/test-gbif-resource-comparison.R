@@ -1,13 +1,13 @@
-testthat::test_that("compare_recurso_monitor_snapshot() falla si faltan columnas obligatorias", {
+testthat::test_that("metagesToolkit:::.gbif_compare_resource_snapshot() falla si faltan columnas obligatorias", {
   df <- data.frame(recurso_fk = 1L)
   
   testthat::expect_error(
-    compare_recurso_monitor_snapshot(df),
+    metagesToolkit:::.gbif_compare_resource_snapshot(df),
     "A `snapshot_df` le faltan estas columnas:"
   )
 })
 
-testthat::test_that("compare_recurso_monitor_snapshot() detecta unchanged cuando no hay cambios reales", {
+testthat::test_that("metagesToolkit:::.gbif_compare_resource_snapshot() detecta unchanged cuando no hay cambios reales", {
   checked_at <- as.POSIXct("2026-04-15 10:00:00", tz = "UTC")
   
   snapshot_df <- data.frame(
@@ -26,7 +26,7 @@ testthat::test_that("compare_recurso_monitor_snapshot() detecta unchanged cuando
     stringsAsFactors = FALSE
   )
   
-  out <- compare_recurso_monitor_snapshot(snapshot_df, checked_at = checked_at)
+  out <- metagesToolkit:::.gbif_compare_resource_snapshot(snapshot_df, checked_at = checked_at)
   
   testthat::expect_true(is.list(out))
   testthat::expect_true(all(c("current_upsert_df", "log_insert_df", "comparison_df") %in% names(out)))
@@ -40,10 +40,49 @@ testthat::test_that("compare_recurso_monitor_snapshot() detecta unchanged cuando
   testthat::expect_true(is.na(cmp$last_change_at))
   testthat::expect_equal(cur$change_type, "unchanged")
   testthat::expect_equal(cur$change_flag, 0L)
+  testthat::expect_true(is.na(cur$url_ipt_detected))
+  testthat::expect_true(is.na(cur$url_eml_detected))
   testthat::expect_equal(nrow(log), 0L)
 })
 
-testthat::test_that("compare_recurso_monitor_snapshot() detecta cambios múltiples y calcula diff de occurrences", {
+testthat::test_that("los endpoints detectados pasan al monitor sin ser cambios de contenido", {
+  checked_at <- as.POSIXct("2026-04-15 10:00:00", tz = "UTC")
+  snapshot_df <- data.frame(
+    recurso_fk = 5L,
+    tipo_recurso = "Dataset",
+    eml_title = "Dataset",
+    eml_version = "1.0",
+    eml_pub_date = "2026-01-01",
+    eml_occurrences = 10L,
+    eml_status = "ok",
+    eml_error_message = NA_character_,
+    baseline_title = "Dataset",
+    baseline_reference_date = "2026-01-01",
+    baseline_version = "1.0",
+    baseline_occurrences = 10L,
+    detected_dwca_url = "https://example.org/archive.zip",
+    detected_eml_url = "https://example.org/eml.xml",
+    stringsAsFactors = FALSE
+  )
+
+  out <- metagesToolkit:::.gbif_compare_resource_snapshot(
+    snapshot_df,
+    checked_at = checked_at
+  )
+
+  testthat::expect_equal(out$comparison_df$change_type, "unchanged")
+  testthat::expect_equal(
+    out$current_upsert_df$url_ipt_detected,
+    "https://example.org/archive.zip"
+  )
+  testthat::expect_equal(
+    out$current_upsert_df$url_eml_detected,
+    "https://example.org/eml.xml"
+  )
+  testthat::expect_equal(nrow(out$log_insert_df), 0L)
+})
+
+testthat::test_that("metagesToolkit:::.gbif_compare_resource_snapshot() detecta cambios múltiples y calcula diff de occurrences", {
   checked_at <- as.POSIXct("2026-04-15 10:00:00", tz = "UTC")
   
   snapshot_df <- data.frame(
@@ -62,7 +101,7 @@ testthat::test_that("compare_recurso_monitor_snapshot() detecta cambios múltipl
     stringsAsFactors = FALSE
   )
   
-  out <- compare_recurso_monitor_snapshot(snapshot_df, checked_at = checked_at)
+  out <- metagesToolkit:::.gbif_compare_resource_snapshot(snapshot_df, checked_at = checked_at)
   
   cmp <- out$comparison_df
   cur <- out$current_upsert_df
@@ -86,7 +125,7 @@ testthat::test_that("compare_recurso_monitor_snapshot() detecta cambios múltipl
   testthat::expect_equal(log$occurrences_diff, 25)
 })
 
-testthat::test_that("compare_recurso_monitor_snapshot() da prioridad a eml_status='error'", {
+testthat::test_that("metagesToolkit:::.gbif_compare_resource_snapshot() da prioridad a eml_status='error'", {
   checked_at <- as.POSIXct("2026-04-15 10:00:00", tz = "UTC")
   
   snapshot_df <- data.frame(
@@ -105,7 +144,7 @@ testthat::test_that("compare_recurso_monitor_snapshot() da prioridad a eml_statu
     stringsAsFactors = FALSE
   )
   
-  out <- compare_recurso_monitor_snapshot(snapshot_df, checked_at = checked_at)
+  out <- metagesToolkit:::.gbif_compare_resource_snapshot(snapshot_df, checked_at = checked_at)
   
   cmp <- out$comparison_df
   cur <- out$current_upsert_df
@@ -120,7 +159,7 @@ testthat::test_that("compare_recurso_monitor_snapshot() da prioridad a eml_statu
   testthat::expect_equal(log$new_monitor_status, "error")
 })
 
-testthat::test_that("compare_recurso_monitor_snapshot() normaliza blancos, NA y versiones con prefijo v=", {
+testthat::test_that("metagesToolkit:::.gbif_compare_resource_snapshot() normaliza blancos, NA y versiones con prefijo v=", {
   checked_at <- as.POSIXct("2026-04-15 10:00:00", tz = "UTC")
   
   snapshot_df <- data.frame(
@@ -139,7 +178,7 @@ testthat::test_that("compare_recurso_monitor_snapshot() normaliza blancos, NA y 
     stringsAsFactors = FALSE
   )
   
-  out <- compare_recurso_monitor_snapshot(snapshot_df, checked_at = checked_at)
+  out <- metagesToolkit:::.gbif_compare_resource_snapshot(snapshot_df, checked_at = checked_at)
   cmp <- out$comparison_df
   
   testthat::expect_equal(cmp$change_type, "unchanged")
@@ -150,7 +189,7 @@ testthat::test_that("compare_recurso_monitor_snapshot() normaliza blancos, NA y 
   testthat::expect_false(cmp$occurrences_changed)
 })
 
-testthat::test_that("compare_recurso_monitor_snapshot() genera log solo para filas con cambio", {
+testthat::test_that("metagesToolkit:::.gbif_compare_resource_snapshot() genera log solo para filas con cambio", {
   checked_at <- as.POSIXct("2026-04-15 10:00:00", tz = "UTC")
   
   snapshot_df <- data.frame(
@@ -169,7 +208,7 @@ testthat::test_that("compare_recurso_monitor_snapshot() genera log solo para fil
     stringsAsFactors = FALSE
   )
   
-  out <- compare_recurso_monitor_snapshot(snapshot_df, checked_at = checked_at)
+  out <- metagesToolkit:::.gbif_compare_resource_snapshot(snapshot_df, checked_at = checked_at)
   
   testthat::expect_equal(nrow(out$current_upsert_df), 2L)
   testthat::expect_equal(nrow(out$log_insert_df), 1L)

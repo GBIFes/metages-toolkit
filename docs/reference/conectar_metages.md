@@ -6,7 +6,7 @@ SSH y una conexión ODBC.
 ## Usage
 
 ``` r
-conectar_metages(driver = NULL)
+conectar_metages(driver = NULL, entorno = c("prod", "test"))
 ```
 
 ## Arguments
@@ -21,6 +21,13 @@ conectar_metages(driver = NULL)
   [`odbc::odbcListDrivers()`](https://odbc.r-dbi.org/reference/odbcListDrivers.html).
   En sistemas donde el driver por defecto no funcione, el usuario deberá
   especificar uno alternativo mediante el argumento `driver`.
+
+- entorno:
+
+  Entorno de MetaGES al que conectarse. Puede ser `"prod"` (valor por
+  defecto) o `"test"`. Cada entorno utiliza sus propias variables de
+  ambiente para el host, el túnel SSH y la contraseña de la base de
+  datos.
 
 ## Value
 

@@ -1,6 +1,6 @@
 # Dashboard estático de métricas de MetaGES
 
-*Fecha de última actualización:* `07/08/2026`
+*Fecha de última actualización:* `29/09/2026`
 
 ## Introducción
 

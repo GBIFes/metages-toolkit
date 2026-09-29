@@ -12,7 +12,12 @@ IPT.
 ## Usage
 
 ``` r
-extract_gbif_metadata(df, progress = TRUE)
+.gbif_extract_dataset_metadata(
+  df,
+  progress = TRUE,
+  request_delay = 0.2,
+  dataset_details = NULL
+)
 ```
 
 ## Arguments
@@ -27,6 +32,17 @@ extract_gbif_metadata(df, progress = TRUE)
 - progress:
 
   Si `TRUE`, muestra progreso por consola.
+
+- request_delay:
+
+  Pausa en segundos entre datasets. No altera la lógica de extracción ni
+  de conteo.
+
+- dataset_details:
+
+  Lista opcional nombrada por UUID con detalles de datasets GBIF ya
+  obtenidos. Si contiene el UUID solicitado, se reutiliza su contenido;
+  en caso contrario, se consulta la API de GBIF.
 
 ## Value
 
@@ -55,6 +71,6 @@ if (FALSE) { # \dontrun{
 df <- data.frame(
   dwca_url = "https://www.gbif.org/dataset/837381f4-f762-11e1-a439-00145eb45e9a"
 )
-extract_gbif_metadata(df)
+.gbif_extract_dataset_metadata(df)
 } # }
 ```

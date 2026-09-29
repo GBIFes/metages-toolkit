@@ -59,11 +59,12 @@ reference:
   - '`conectar_metages`'
   - '`extraer_colecciones_mapa`'
   
-- title: Testar la calidad de los datos de MetaGES
+- title: Consultar GBIF y preparar la sincronización con MetaGES
   contents:
-  - '`extract_gbif_metadata`'
-  - '`compare_recurso_monitor_snapshot`'
-  - '`run_recurso_monitor_workflow`'
+  - '`fetch_gbif_spain_inventory`'
+  - '`run_gbif_spain_workflow`'
+  - '`.gbif_compare_resource_snapshot`'
+  - '`.gbif_extract_dataset_metadata`'
 
 - title: Crear mapas y graficos desde MetaGES
   contents:

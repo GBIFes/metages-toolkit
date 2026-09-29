@@ -16,6 +16,9 @@
 #'   Para listar los drivers disponibles desde R: \code{odbc::odbcListDrivers()}.
 #'   En sistemas donde el driver por defecto no funcione, el usuario 
 #'   deberá especificar uno alternativo mediante el argumento \code{driver}.
+#' @param entorno Entorno de MetaGES al que conectarse. Puede ser `"prod"`
+#'   (valor por defecto) o `"test"`. Cada entorno utiliza sus propias variables
+#'   de ambiente para el host, el túnel SSH y la contraseña de la base de datos.
 #'
 #'
 #' @details
@@ -52,19 +55,32 @@
 #'
 #' @export
 
-conectar_metages <- function(driver = NULL) {
+conectar_metages <- function(driver = NULL, entorno = c("prod", "test")) {
 
+  entorno <- match.arg(entorno)
+
+  env_vars <- switch(
+    entorno,
+    prod = c(
+      host = "host_prod",
+      ssh_bridge = "prod_ssh_bridge_R",
+      password = "gbif_wp_pass"
+    ),
+    test = c(
+      host = "host_test",
+      ssh_bridge = "test_ssh_bridge_R",
+      password = "gbif_wp_pass_test"
+    )
+  )
   
   # ---------------------------------------------------------------
   # Comprobar que las variables de ambiente necesarias existen.
   # ---------------------------------------------------------------
   required_env <- c(
-    "host_prod",
+    unname(env_vars),
     "keyfile",
-    "prod_ssh_bridge_R",
     "Database",
-    "UID",
-    "gbif_wp_pass"
+    "UID"
   )
   
   missing <- required_env[Sys.getenv(required_env) == ""]
@@ -117,8 +133,7 @@ conectar_metages <- function(driver = NULL) {
 
 # Credenciales SSH. Ajusta la ruta a tu clave privada
 session <- ssh::ssh_connect(
-  # host = Sys.getenv("host_test"), #TEST
-  host = Sys.getenv("host_prod"),   #PROD
+  host = Sys.getenv(env_vars[["host"]]),
   keyfile = Sys.getenv("keyfile")
 )
 
@@ -141,7 +156,7 @@ session <- ssh::ssh_connect(
   
   # DESDE R:
       # Desagregar codigo del tunel para su procesado por processx 
-      args <- strsplit(Sys.getenv("prod_ssh_bridge_R"), " ")[[1]]
+      args <- strsplit(Sys.getenv(env_vars[["ssh_bridge"]]), " ")[[1]]
   
       # Apertura del tunel en segundo plano para poder seguir trabajando en R
       tunnel <- process$new(
@@ -170,7 +185,7 @@ con <- dbConnect(odbc(),
                  Port     = 3307,          # el puerto del túnel local
                  Database = Sys.getenv("Database"),
                  UID      = Sys.getenv("UID"),
-                 PWD      = Sys.getenv("gbif_wp_pass"),
+                 PWD      = Sys.getenv(env_vars[["password"]]),
                  encoding = "UTF-8")
 
 

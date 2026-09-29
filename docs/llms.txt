@@ -202,14 +202,16 @@ informe.
 - [`extraer_colecciones_mapa()`](https://gbifes.github.io/metages-toolkit/reference/extraer_colecciones_mapa.md)
   : Extraer colecciones desde METAGES para mapas
 
-## Testar la calidad de los datos de MetaGES
+## Consultar GBIF y preparar la sincronización con MetaGES
 
-- [`extract_gbif_metadata()`](https://gbifes.github.io/metages-toolkit/reference/extract_gbif_metadata.md)
-  : Extraer metadatos de recursos MetaGES mediante GBIF
-- [`compare_recurso_monitor_snapshot()`](https://gbifes.github.io/metages-toolkit/reference/compare_recurso_monitor_snapshot.md)
+- [`fetch_gbif_spain_inventory()`](https://gbifes.github.io/metages-toolkit/reference/fetch_gbif_spain_inventory.md)
+  : Obtener el inventario de datasets publicados desde Espana en GBIF
+- [`run_gbif_spain_workflow()`](https://gbifes.github.io/metages-toolkit/reference/run_gbif_spain_workflow.md)
+  : Sincronizar GBIF con los monitores MetaGES
+- [`.gbif_compare_resource_snapshot()`](https://gbifes.github.io/metages-toolkit/reference/dot-gbif_compare_resource_snapshot.md)
   : Comparar snapshot nuevo con baseline de referencia
-- [`run_recurso_monitor_workflow()`](https://gbifes.github.io/metages-toolkit/reference/run_recurso_monitor_workflow.md)
-  : Ejecutar el workflow completo de monitorizacion de recursos
+- [`.gbif_extract_dataset_metadata()`](https://gbifes.github.io/metages-toolkit/reference/dot-gbif_extract_dataset_metadata.md)
+  : Extraer metadatos de recursos MetaGES mediante GBIF
 
 ## Crear mapas y graficos desde MetaGES
 
