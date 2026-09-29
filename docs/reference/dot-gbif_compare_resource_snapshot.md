@@ -16,7 +16,7 @@ Se comparan exactamente estos cuatro campos:
 ## Usage
 
 ``` r
-compare_recurso_monitor_snapshot(snapshot_df, checked_at = Sys.time())
+.gbif_compare_resource_snapshot(snapshot_df, checked_at = Sys.time())
 ```
 
 ## Arguments
