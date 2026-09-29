@@ -133,7 +133,7 @@
 
   for (i in seq_along(datasets)) {
     if (is.na(keys[i]) || !nzchar(keys[i])) {
-      stop("GBIF devolvió un dataset sin UUID en el inventario español.")
+      stop("GBIF devolvi\u00F3 un dataset sin UUID en el inventario espa\u00F1ol.")
     }
     details[[i]] <- .gbif_api_get_json(paste0("/dataset/", keys[i]))
     if (i < length(datasets)) .gbif_sleep(request_delay)
@@ -245,16 +245,16 @@
 }
 
 
-#' Obtener el inventario de datasets publicados desde España en GBIF
+#' Obtener el inventario de datasets publicados desde Espana en GBIF
 #'
 #' @description
-#' Descarga publishers españoles y datasets con `publishingCountry=ES`.
-#' Consulta además el detalle de cada dataset para incluir sus endpoints
+#' Descarga publishers espanoles y datasets con `publishingCountry=ES`.
+#' Consulta ademas el detalle de cada dataset para incluir sus endpoints
 #' `DWC_ARCHIVE` y `EML`. Devuelve tablas normalizadas y respuestas detalladas
-#' de GBIF, sin realizar escrituras ni requerir una conexión con MetaGES.
+#' de GBIF, sin realizar escrituras ni requerir una conexion con MetaGES.
 #'
-#' @param page_limit Tamaño de página usado en la API de GBIF.
-#' @param request_delay Pausa en segundos entre páginas y bloques de consulta.
+#' @param page_limit Tamano de pagina usado en la API de GBIF.
+#' @param request_delay Pausa en segundos entre paginas y bloques de consulta.
 #'
 #' @return Lista con `publishers`, `datasets`, `raw_publishers` y
 #'   `raw_datasets`.
@@ -616,7 +616,7 @@ ON DUPLICATE KEY UPDATE
             OR NOT (gbif_url <=> VALUES(gbif_url))
             OR NOT (dwca_url <=> VALUES(dwca_url))
             OR NOT (eml_url <=> VALUES(eml_url))
-        ) THEN 'Aprobación revocada: GBIF cambió datos incorporables.'
+        ) THEN 'Aprobaci\u00F3n revocada: GBIF cambi\u00F3 datos incorporables.'
         ELSE review_notes
     END,
     reviewed_at = CASE
@@ -848,41 +848,41 @@ INSERT INTO metages_recurso_monitor_log (
 #' Sincronizar GBIF con los monitores MetaGES
 #'
 #' @description
-#' Descubre datasets publicados desde España, los compara por UUID con MetaGES
-#' y prepara recursos nuevos. También mantiene todos los recursos públicos de
-#' MetaGES vinculados con GBIF, incluidos los publicados fuera de España.
+#' Descubre datasets publicados desde Espana, los compara por UUID con MetaGES
+#' y prepara recursos nuevos. Tambien mantiene todos los recursos publicos de
+#' MetaGES vinculados con GBIF, incluidos los publicados fuera de Espana.
 #'
-#' Reutiliza el extractor detallado interno como única implementación para
-#' título, versión, fecha, conteo y fallback DwC-A. La función nunca incorpora
+#' Reutiliza el extractor detallado interno como unica implementacion para
+#' titulo, version, fecha, conteo y fallback DwC-A. La funcion nunca incorpora
 #' recursos ni aplica cambios definitivos sobre `metages_recurso`; esas
 #' acciones pertenecen a los procedimientos SQL controlados.
 #'
-#' @param con Conexión DBI existente. Si es `NULL`, se abre una conexión con
+#' @param con Conexion DBI existente. Si es `NULL`, se abre una conexion con
 #'   [conectar_metages()] y se cierra al terminar el workflow completo.
 #' @param entorno Entorno usado cuando `con` es `NULL`: `"prod"` o `"test"`.
 #' @param progress Mostrar mensajes de progreso.
-#' @param request_delay Pausa en segundos entre páginas o comprobaciones GBIF.
-#' @param max_stale_days Antigüedad máxima de un chequeo detallado antes de
-#'   forzar una reconciliación.
-#' @param force_full Si es `TRUE`, vuelve a extraer todos los recursos públicos
-#'   resolubles y disponibles, sean o no españoles.
-#' @param write Si es `FALSE`, ejecuta la lectura y comparación sin escribir
-#'   en los monitores. Combinado con `force_full=TRUE` sustituye la comparación
+#' @param request_delay Pausa en segundos entre paginas o comprobaciones GBIF.
+#' @param max_stale_days Antiguedad maxima de un chequeo detallado antes de
+#'   forzar una reconciliacion.
+#' @param force_full Si es `TRUE`, vuelve a extraer todos los recursos publicos
+#'   resolubles y disponibles, sean o no espanoles.
+#' @param write Si es `FALSE`, ejecuta la lectura y comparacion sin escribir
+#'   en los monitores. Combinado con `force_full=TRUE` sustituye la comparacion
 #'   manual completa anterior.
 #' @param checked_at Fecha-hora UTC del run.
 #'
 #' @return Invisiblemente, lista con inventario normalizado y crudo, resumen,
 #'   correspondencias, candidatos, recursos sin identidad GBIF resoluble,
 #'   errores de identidad, comparaciones y disponibilidad. `datasets` parte del
-#'   inventario externo español y separa
-#'   sus coincidencias públicas y privadas en MetaGES. `new_candidates`
+#'   inventario externo espanol y separa
+#'   sus coincidencias publicas y privadas en MetaGES. `new_candidates`
 #'   contiene exclusivamente datasets externos sin ninguna coincidencia
-#'   interna. `identity_errors` parte de UUID usados por dos o más recursos
-#'   públicos de MetaGES y se enriquece con el dataset externo español cuando
+#'   interna. `identity_errors` parte de UUID usados por dos o mas recursos
+#'   publicos de MetaGES y se enriquece con el dataset externo espanol cuando
 #'   existe. `existing_checked` y `existing_skipped` representan recursos
-#'   públicos de MetaGES con una correspondencia externa única.
+#'   publicos de MetaGES con una correspondencia externa unica.
 #'   `endpoint_monitor` contiene los endpoints detectados que se preparan para
-#'   completar campos internos vacíos.
+#'   completar campos internos vacios.
 #'   `unresolved_resources` contiene recursos MetaGES que se excluyeron porque
 #'   no pudo obtenerse un UUID desde `uuid`, `url_gbiforg` ni `url_ipt`.
 #'
@@ -890,9 +890,9 @@ INSERT INTO metages_recurso_monitor_log (
 #' Los recursos que solo coinciden con filas privadas se clasifican como
 #' `existing_private` y nunca se tratan como altas. Los privados manualmente
 #' quedan fuera del seguimiento de disponibilidad; los privatizados por este
-#' workflow sí se conservan en `availability` para detectar su reaparición.
+#' workflow si se conservan en `availability` para detectar su reaparicion.
 #' Los endpoints GBIF detectados se preparan para completar `url_ipt` y
-#' `url_eml` únicamente cuando esos campos están vacíos; nunca se sustituyen ni
+#' `url_eml` unicamente cuando esos campos estan vacios; nunca se sustituyen ni
 #' se borran URLs existentes.
 #' Con `write = TRUE`, antes de escribir nuevos candidatos se retiran del
 #' staging las filas no incorporadas cuyo UUID ya exista en MetaGES.
@@ -934,7 +934,7 @@ run_gbif_spain_workflow <- function(
     }, add = TRUE)
   }
 
-  if (isTRUE(progress)) message("Descargando inventario GBIF España...")
+  if (isTRUE(progress)) message("Descargando inventario GBIF Espa\u00F1a...")
   inventory <- fetch_gbif_spain_inventory(request_delay = request_delay)
   resources <- .gbif_load_metages_resources(con)
 
@@ -943,10 +943,11 @@ run_gbif_spain_workflow <- function(
     request_delay = request_delay
   )
   resources$gbif_dataset_uuid <- as.character(resolved_uuids)
-  resources$gbif_uuid_resolution_error <- attr(
-    resolved_uuids,
-    "resolution_errors"
-  )
+  resolution_errors <- attr(resolved_uuids, "resolution_errors")
+  if (is.null(resolution_errors)) {
+    resolution_errors <- rep(NA_character_, nrow(resources))
+  }
+  resources$gbif_uuid_resolution_error <- resolution_errors
   unresolved_resources <- resources |>
     dplyr::filter(is.na(gbif_dataset_uuid) | !nzchar(gbif_dataset_uuid)) |>
     dplyr::mutate(
@@ -956,8 +957,8 @@ run_gbif_spain_workflow <- function(
           paste0("No se pudo resolver el UUID GBIF: ",
                  gbif_uuid_resolution_error),
         TRUE ~ paste(
-          "No hay un UUID GBIF válido en uuid o url_gbiforg",
-          "y url_ipt no permitió resolverlo."
+          "No hay un UUID GBIF v\u00E1lido en uuid o url_gbiforg",
+          "y url_ipt no permiti\u00F3 resolverlo."
         )
       )
     )
@@ -1065,7 +1066,7 @@ run_gbif_spain_workflow <- function(
   probed_dataset_rows <- vector("list", nrow(missing_resources))
   probed_dataset_details <- vector("list", nrow(missing_resources))
   if (nrow(missing_resources) > 0L && isTRUE(progress)) {
-    message("Comprobando recursos MetaGES ausentes del inventario español...")
+    message("Comprobando recursos MetaGES ausentes del inventario espa\u00F1ol...")
   }
 
   for (i in seq_len(nrow(missing_resources))) {

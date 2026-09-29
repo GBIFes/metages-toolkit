@@ -2,23 +2,22 @@
 % Please edit documentation in R/gbif_spain_workflow.R
 \name{fetch_gbif_spain_inventory}
 \alias{fetch_gbif_spain_inventory}
-\title{Obtener el inventario de datasets publicados desde España en GBIF}
+\title{Obtener el inventario de datasets publicados desde Espana en GBIF}
 \usage{
 fetch_gbif_spain_inventory(page_limit = 300L, request_delay = 0.2)
 }
 \arguments{
-\item{page_limit}{Tamaño de página usado en la API de GBIF.}
+\item{page_limit}{Tamano de pagina usado en la API de GBIF.}
 
-\item{request_delay}{Pausa en segundos entre páginas y bloques de consulta.}
+\item{request_delay}{Pausa en segundos entre paginas y bloques de consulta.}
 }
 \value{
 Lista con \code{publishers}, \code{datasets}, \code{raw_publishers} y
-\code{raw_datasets}. Los datasets normalizados incluyen los endpoints
-\code{DWC_ARCHIVE} y \code{EML} cuando GBIF los registra.
+\code{raw_datasets}.
 }
 \description{
-Descarga publishers españoles y datasets con \code{publishingCountry=ES} y
-consulta el detalle de cada dataset para recuperar sus endpoints. Devuelve
-tablas normalizadas y respuestas detalladas de GBIF, sin realizar escrituras
-ni requerir una conexión con MetaGES.
+Descarga publishers espanoles y datasets con \code{publishingCountry=ES}.
+Consulta ademas el detalle de cada dataset para incluir sus endpoints
+\code{DWC_ARCHIVE} y \code{EML}. Devuelve tablas normalizadas y respuestas detalladas
+de GBIF, sin realizar escrituras ni requerir una conexion con MetaGES.
 }

@@ -388,7 +388,8 @@ testthat::test_that("solo un UUID ausente llega a new_candidates", {
     .gbif_extract_dataset_metadata = function(
         df,
         progress = TRUE,
-        request_delay = 0.2
+        request_delay = 0.2,
+        dataset_details = NULL
     ) {
       dplyr::mutate(
         df,
@@ -774,7 +775,8 @@ testthat::test_that("force_full incluye un recurso disponible fuera de España",
     .gbif_extract_dataset_metadata = function(
         df,
         progress = TRUE,
-        request_delay = 0.2
+        request_delay = 0.2,
+        dataset_details = NULL
     ) {
       extracted <<- df
       dplyr::mutate(

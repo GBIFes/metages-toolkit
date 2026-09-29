@@ -374,6 +374,9 @@
 #' @param progress Si `TRUE`, muestra progreso por consola.
 #' @param request_delay Pausa en segundos entre datasets. No altera la lógica
 #'   de extracción ni de conteo.
+#' @param dataset_details Lista opcional nombrada por UUID con detalles de
+#'   datasets GBIF ya obtenidos. Si contiene el UUID solicitado, se reutiliza
+#'   su contenido; en caso contrario, se consulta la API de GBIF.
 #'
 #' @return
 #' El mismo `df` de entrada, con las columnas adicionales `eml_title`,

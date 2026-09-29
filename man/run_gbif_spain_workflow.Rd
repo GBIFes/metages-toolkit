@@ -16,58 +16,61 @@ run_gbif_spain_workflow(
 )
 }
 \arguments{
-\item{con}{Conexión DBI existente. Si es \code{NULL}, se abre mediante
-\code{conectar_metages()} y se cierra al terminar el workflow.}
+\item{con}{Conexion DBI existente. Si es \code{NULL}, se abre una conexion con
+\code{\link[=conectar_metages]{conectar_metages()}} y se cierra al terminar el workflow completo.}
 
-\item{entorno}{Entorno usado cuando \code{con} es \code{NULL}.}
+\item{entorno}{Entorno usado cuando \code{con} es \code{NULL}: \code{"prod"} o \code{"test"}.}
 
 \item{progress}{Mostrar mensajes de progreso.}
 
-\item{request_delay}{Pausa entre páginas o comprobaciones GBIF.}
+\item{request_delay}{Pausa en segundos entre paginas o comprobaciones GBIF.}
 
-\item{max_stale_days}{Antigüedad máxima antes de forzar una reconciliación.}
+\item{max_stale_days}{Antiguedad maxima de un chequeo detallado antes de
+forzar una reconciliacion.}
 
-\item{force_full}{Volver a extraer todos los recursos públicos resolubles y
-disponibles, sean o no españoles.}
+\item{force_full}{Si es \code{TRUE}, vuelve a extraer todos los recursos publicos
+resolubles y disponibles, sean o no espanoles.}
 
-\item{write}{Si es \code{FALSE}, comparar sin escribir en los monitores.}
+\item{write}{Si es \code{FALSE}, ejecuta la lectura y comparacion sin escribir
+en los monitores. Combinado con \code{force_full=TRUE} sustituye la comparacion
+manual completa anterior.}
 
 \item{checked_at}{Fecha-hora UTC del run.}
 }
 \value{
-Invisiblemente, una lista con inventario normalizado y crudo, resumen,
-correspondencias, candidatos, recursos sin identidad GBIF resoluble, errores
-de identidad, comparaciones y disponibilidad. \code{datasets} parte del
-inventario externo español y separa
-sus coincidencias públicas y privadas en MetaGES. \code{new_candidates}
-contiene exclusivamente datasets externos sin ninguna coincidencia interna.
-\code{identity_errors} parte de UUID usados por dos o más recursos públicos de
-MetaGES y se enriquece con el dataset externo español cuando existe.
-\code{existing_checked} y \code{existing_skipped} representan recursos
-públicos de MetaGES con una correspondencia externa única.
+Invisiblemente, lista con inventario normalizado y crudo, resumen,
+correspondencias, candidatos, recursos sin identidad GBIF resoluble,
+errores de identidad, comparaciones y disponibilidad. \code{datasets} parte del
+inventario externo espanol y separa
+sus coincidencias publicas y privadas en MetaGES. \code{new_candidates}
+contiene exclusivamente datasets externos sin ninguna coincidencia
+interna. \code{identity_errors} parte de UUID usados por dos o mas recursos
+publicos de MetaGES y se enriquece con el dataset externo espanol cuando
+existe. \code{existing_checked} y \code{existing_skipped} representan recursos
+publicos de MetaGES con una correspondencia externa unica.
 \code{endpoint_monitor} contiene los endpoints detectados que se preparan para
-completar campos internos vacíos.
+completar campos internos vacios.
 \code{unresolved_resources} contiene recursos MetaGES que se excluyeron porque
-no pudo obtenerse un UUID desde \code{uuid}, \code{url_gbiforg} ni
-\code{url_ipt}.
+no pudo obtenerse un UUID desde \code{uuid}, \code{url_gbiforg} ni \code{url_ipt}.
 }
 \description{
-Descubre datasets publicados desde España, prepara recursos nuevos y mantiene
-todos los recursos públicos de MetaGES vinculados con GBIF, incluidos los
-publicados fuera de España.
+Descubre datasets publicados desde Espana, los compara por UUID con MetaGES
+y prepara recursos nuevos. Tambien mantiene todos los recursos publicos de
+MetaGES vinculados con GBIF, incluidos los publicados fuera de Espana.
+
+Reutiliza el extractor detallado interno como unica implementacion para
+titulo, version, fecha, conteo y fallback DwC-A. La funcion nunca incorpora
+recursos ni aplica cambios definitivos sobre \code{metages_recurso}; esas
+acciones pertenecen a los procedimientos SQL controlados.
 }
 \details{
-La función no incorpora recursos ni aplica cambios definitivos en
-\code{metages_recurso}. Con \code{write=FALSE, force_full=TRUE} proporciona la
-comparación manual completa sin modificar los monitores.
-
 Los recursos que solo coinciden con filas privadas se clasifican como
 \code{existing_private} y nunca se tratan como altas. Los privados manualmente
 quedan fuera del seguimiento de disponibilidad; los privatizados por este
-workflow sí se conservan en \code{availability} para detectar su reaparición.
+workflow si se conservan en \code{availability} para detectar su reaparicion.
 Los endpoints GBIF detectados se preparan para completar \code{url_ipt} y
-\code{url_eml} únicamente cuando esos campos están vacíos; nunca se sustituyen
-ni se borran URLs existentes.
-Con \code{write=TRUE}, antes de escribir nuevos candidatos se retiran del
+\code{url_eml} unicamente cuando esos campos estan vacios; nunca se sustituyen ni
+se borran URLs existentes.
+Con \code{write = TRUE}, antes de escribir nuevos candidatos se retiran del
 staging las filas no incorporadas cuyo UUID ya exista en MetaGES.
 }
