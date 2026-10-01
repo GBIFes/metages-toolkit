@@ -3,6 +3,7 @@
 export(compare_recurso_monitor_snapshot)
 export(compute_legend_params)
 export(conectar_metages)
+export(ica_metages_workflow)
 export(conteo_registros_por_taxon)
 export(crear_barplot_colecciones_por_anno)
 export(crear_barplot_publicacion)
