@@ -40,12 +40,23 @@ class AdapterTests(unittest.TestCase):
                     self.assertEqual(runner.archive_url(url),
                         f"https://ipt.gbif.es{prefix}/{archive}{suffix}?r=bc-lichen-navas")
 
-    def test_resource_replacement_preserves_suffix_and_parameters(self):
+    def test_resource_endpoint_preserves_parameters(self):
         self.assertEqual(runner.archive_url(
-            "https://resource.example/ipt/resource.custom?r=a%2Fb&token=x#details"),
-            "https://resource.example/ipt/archive.custom?r=a%2Fb&token=x#details")
+            "https://resource.example/ipt/resource.do?r=a%2Fb&token=x#details"),
+            "https://resource.example/ipt/archive.do?r=a%2Fb&token=x#details")
         self.assertEqual(runner.archive_url("https://ipt.example/download?r=resource"),
                          "https://ipt.example/download?r=resource")
+
+    def test_direct_files_under_ipt_are_preserved(self):
+        for url in (
+            "https://ipt.example/ipt/files/my-resource.zip",
+            "https://ipt.example/ipt/resource.zip",
+            "https://ipt.example/ipt/resource.custom",
+            "https://ipt.example/ipt/resource/files/archive.zip",
+            "https://data.example/ipt/files/my-resource.zip?r=resource",
+        ):
+            with self.subTest(url=url):
+                self.assertEqual(runner.archive_url(url), url)
 
     def test_direct_download_reaches_calculator(self):
         url = "https://data.example/download?token=a%2Fb"

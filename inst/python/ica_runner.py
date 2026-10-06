@@ -33,7 +33,14 @@ def archive_url(url):
               "ipt" in parts.path.lower().split("/"))
     if not is_ipt:
         return url
-    return urlunsplit(parts._replace(path=parts.path.replace("resource", "archive")))
+    path = parts.path.rstrip("/")
+    parent, separator, endpoint = path.rpartition("/")
+    if endpoint not in ("resource", "resource.do"):
+        return url
+    trailing_slashes = parts.path[len(path):]
+    archive_endpoint = endpoint.replace("resource", "archive", 1)
+    archive_path = parent + separator + archive_endpoint + trailing_slashes
+    return urlunsplit(parts._replace(path=archive_path))
 
 
 def calculate(module, url):

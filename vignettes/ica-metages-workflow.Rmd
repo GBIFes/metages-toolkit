@@ -11,9 +11,11 @@ El workflow consulta MetaGES con `conectar_metages()`, descarga el Darwin Core
 Archive actual del IPT y llama al calculador Python original. No crea tablas.
 `url_ipt` admite paginas de recurso y endpoints HTTP(S) directos
 que entreguen un DwC-A. Si el dominio tiene una etiqueta `ipt` o la ruta
-contiene un segmento `ipt`, en la ruta se sustituye `resource` por `archive`,
-conservando cualquier sufijo (incluido `.do`) y todos los parametros.
-Las demas URLs y las rutas sin `resource` se conservan, sin exigir
+contiene un segmento `ipt`, solo se convierte el ultimo componente de la ruta
+si es exactamente `resource` o `resource.do`, a `archive` o `archive.do`.
+Se conservan las barras finales, todos los parametros y el fragmento.
+Los archivos como `my-resource.zip` y los directorios intermedios quedan
+intactos. Las demas URLs se conservan, sin exigir
 extension `.zip` ni parametro `r`. Una respuesta que no sea un DwC-A valido
 se registra como error de calculo con las reglas habituales del workflow.
 Solo considera recursos con `private = 0` y su ultima provision, ordenada por

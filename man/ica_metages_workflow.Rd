@@ -13,9 +13,17 @@ ica_metages_workflow(
 }
 \arguments{
 \item{entorno}{Entorno de conexion: test (por defecto) o prod.}
-\item{provision_ids}{IDs opcionales. Las provisiones con valores existentes se calculan para inspeccion, sin escribir.}
+
+\item{provision_ids}{IDs opcionales. Las provisiones con valores existentes
+se calculan para inspeccion, sin escribir.}
+
 \item{write}{Escribir resultados y errores en MetaGES. Por defecto FALSE.}
+
 \item{python_executable}{Ejecutable Python del entorno con el plugin instalado.}
 }
-\value{Data frame de resultados, estados y errores por provision.}
-\description{Usa conectar_metages() y el calculador Python original de GBIF.}
+\value{
+Data frame de resultados, estados y errores por provision.
+}
+\description{
+Usa conectar_metages() y el calculador Python original de GBIF.
+}
