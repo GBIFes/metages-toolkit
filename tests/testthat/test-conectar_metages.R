@@ -25,6 +25,9 @@ test_that("conectar_metages usa produccion por defecto", {
       observed$keyfile <- keyfile
       "dummy-session"
     },
+    ssh_disconnect = function(session) {
+      observed$disconnected <- session
+    },
     .package = "ssh"
   )
   testthat::local_mocked_bindings(
@@ -49,6 +52,7 @@ test_that("conectar_metages usa produccion por defecto", {
   expect_equal(observed$bridge_args, c("-N", "prod-bridge"))
   expect_equal(observed$db_args$PWD, "prod-password")
   expect_equal(result$con, "dummy-connection")
+  expect_equal(observed$disconnected, "dummy-session")
 })
 
 
@@ -78,6 +82,9 @@ test_that("conectar_metages usa las variables del entorno de test", {
       observed$host <- host
       "dummy-session"
     },
+    ssh_disconnect = function(session) {
+      observed$disconnected <- session
+    },
     .package = "ssh"
   )
   testthat::local_mocked_bindings(
@@ -100,6 +107,15 @@ test_that("conectar_metages usa las variables del entorno de test", {
   expect_equal(observed$host, "test.example.org")
   expect_equal(observed$bridge_args, c("-N", "test-bridge"))
   expect_equal(observed$db_args$PWD, "test-password")
+  expect_equal(observed$disconnected, "dummy-session")
+
+  observed$disconnected <- NULL
+  testthat::local_mocked_bindings(
+    dbConnect = function(...) stop("database unavailable"),
+    .package = "metagesToolkit"
+  )
+  expect_error(conectar_metages(entorno = "test"), "database unavailable")
+  expect_equal(observed$disconnected, "dummy-session")
 })
 
 

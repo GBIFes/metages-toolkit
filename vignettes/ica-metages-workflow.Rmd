@@ -1,0 +1,100 @@
+---
+title: "Workflow ICA de MetaGES"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Workflow ICA de MetaGES}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+El workflow consulta MetaGES con `conectar_metages()`, descarga el Darwin Core
+Archive actual del IPT y llama al calculador Python original. No crea tablas.
+`url_ipt` admite paginas de recurso y endpoints HTTP(S) directos
+que entreguen un DwC-A. Si el dominio tiene una etiqueta `ipt` o la ruta
+contiene un segmento `ipt`, solo se convierte el ultimo componente de la ruta
+si es exactamente `resource` o `resource.do`, a `archive` o `archive.do`.
+Se conservan las barras finales, todos los parametros y el fragmento.
+Los archivos como `my-resource.zip` y los directorios intermedios quedan
+intactos. Las demas URLs se conservan, sin exigir
+extension `.zip` ni parametro `r`. Una respuesta que no sea un DwC-A valido
+se registra como error de calculo con las reglas habituales del workflow.
+Solo considera recursos con `private = 0` y su ultima provision, ordenada por
+`provision_fecha` y, en caso de empate, `provision_id`. Las fechas NULL quedan
+antes que las conocidas. Si todas son NULL, gana el mayor ID.
+
+## Preparar Python
+
+Crear un entorno virtual con Python 3.11 o posterior e instalar esta revision:
+
+```sh
+python -m venv .venv-ica
+.venv-ica/bin/python -m pip install --no-deps "fair-eva-plugin-gbif @ git+https://github.com/ferag/fair-eva-plugin-gbif@4b2f8ab2887e51aa5d2568b3fbf19551eb30bc6a"
+.venv-ica/bin/python -m pip install python-dwca-reader geopandas numpy pandas pycountry requests shapely
+```
+
+En Windows el ejecutable es `.venv-ica/Scripts/python.exe`. Configurar su ruta
+absoluta en `METAGES_ICA_PYTHON`, o pasarla en `python_executable`. El paquete
+Python incorpora los mapas necesarios. Se carga solo su modulo de calculo,
+por lo que no hace falta instalar el servidor FAIR EVA. El workflow comprueba las dependencias
+antes de conectar a MetaGES. Cada calculo tiene un limite de una hora.
+
+Configurar tambien las variables SSH y ODBC de `conectar_metages()` para el
+entorno seleccionado. El agente Jenkins necesita R, metagesToolkit, SSH y el
+driver MySQL ODBC Unicode utilizado por esa funcion.
+
+## Probar y ejecutar
+
+```{r, eval=FALSE}
+library(metagesToolkit)
+# Calculo real, sin ninguna escritura, incluidos los errores.
+resultado <- ica_metages_workflow(entorno = "test", provision_ids = c(123, 456))
+resultado
+
+# Todas las ultimas provisiones publicas con los cinco campos NULL.
+resultado <- ica_metages_workflow(entorno = "test", write = TRUE)
+
+# Guardar el resultado local para inspeccion.
+jsonlite::write_json(resultado, "ica-results.json", dataframe = "rows",
+                     pretty = TRUE, na = "null")
+```
+
+La ejecucion automatica omite provisiones con cualquier campo ya relleno.
+Una lista manual permite recalcular la ultima provision con valores existentes,
+pero su estado sera `inspection` y nunca se escribira en esa provision.
+Los IDs historicos, privados o inexistentes reciben `omitted`.
+
+Los componentes se guardan sin normalizar: `Taxonomic` en `Icat`, `Geographic`
+en `Icag`, `Temporal` en `Icad`, y la suma original en `ICA`. El calculador puede
+producir valores negativos por penalizaciones. `fecha_validacion` es la fecha
+del calculo: la funcion original no devuelve una fecha.
+
+Con `write = TRUE`, los resultados completos se guardan juntos, revalidando
+privacidad, ultima provision, URL y campos vacios dentro de una transaccion.
+Si cambiaron, el estado sera `changed`. Un fallo de calculo deja `error` y agrega
+una nota fechada `[ICA]` a `provision_obs` en las provisiones elegibles, preservando
+las observaciones y evitando duplicar el mismo mensaje. Un fallo de conexion o
+escritura detiene la ejecucion. Las notas no se borran tras un reintento correcto.
+Cada escritura efectiva, de resultados o de una nueva nota de error, actualiza
+`updated_when` con la fecha y hora del servidor y `updated_who` con
+`ica_metages_workflow`. Las ejecuciones sin escritura, las provisiones omitidas
+y los errores ya registrados no modifican esos campos.
+
+El plugin conserva su tratamiento original de incidencias internas: algunas
+excepciones producen una puntuacion parcial o cero en vez de un error. El
+adaptador detecta excepciones externas y resultados incompletos o no finitos;
+no modifica ese comportamiento cientifico del calculador.
+
+## Jenkins
+
+Crear un job Pipeline con `jenkins/ica_metages.Jenkinsfile` del repositorio
+`metages-toolkit-jobs`. El agente debe tener un fichero de entorno R protegido,
+cuya ruta se configura en `METAGES_ICA_RENVIRON`. Contendra las variables de
+conexion habituales y `METAGES_ICA_PYTHON`. No guardar credenciales en Git.
+
+El job usa el paquete instalado en el agente; instalar previamente esta rama
+para probarlo. Por defecto usa `test` y `WRITE=false`. Tras validar, configurar
+los parametros del job con `prod` y `WRITE=true` para las ejecuciones diarias.
+`PROVISION_IDS` admite IDs separados por comas o espacios. Jenkins conserva
+`ica-results.json`, registra todos los resultados y marca como inestable una
+ejecucion con errores individuales. Los calculos fallidos se reintentan al dia
+siguiente mientras sigan siendo elegibles.
