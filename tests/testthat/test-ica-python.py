@@ -7,7 +7,7 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 path = Path(__file__).resolve().parents[2] / "inst/python/ica_runner.py"
 spec = importlib.util.spec_from_file_location("ica_runner", path)
@@ -18,9 +18,53 @@ spec.loader.exec_module(runner)
 class AdapterTests(unittest.TestCase):
     def test_ipt_archive(self):
         self.assertEqual(runner.archive_url("https://ipt.example/ipt/resource.do?r=a&v=2"),
-                         "https://ipt.example/ipt/archive.do?r=a")
-        with self.assertRaises(ValueError):
-            runner.archive_url("https://ipt.example/")
+                         "https://ipt.example/ipt/archive.do?r=a&v=2")
+        self.assertEqual(runner.archive_url("https://ipt.example/ipt/resource.do"),
+                         "https://ipt.example/ipt/archive.do")
+
+    def test_direct_endpoints_are_preserved(self):
+        for url in ("https://data.example/archive.zip",
+                    "https://data.example/download?token=a%2Fb&r=resource&v=2",
+                    "https://data.example/resource.zip?r=resource",
+                    "https://ipt.example/ipt/archive.do?r=a&v=2"):
+            self.assertEqual(runner.archive_url(url), url)
+        for url in ("file:///archive.zip", "ftp://data.example/archive.zip", "invalid"):
+            with self.assertRaises(ValueError):
+                runner.archive_url(url)
+
+    def test_extensionless_ipt_resource(self):
+        for page, archive in (("resource", "archive"), ("resource.do", "archive.do")):
+            for prefix in ("", "/ipt"):
+                for suffix in ("", "/"):
+                    url = f"https://ipt.gbif.es{prefix}/{page}{suffix}?r=bc-lichen-navas"
+                    self.assertEqual(runner.archive_url(url),
+                        f"https://ipt.gbif.es{prefix}/{archive}{suffix}?r=bc-lichen-navas")
+
+    def test_resource_replacement_preserves_suffix_and_parameters(self):
+        self.assertEqual(runner.archive_url(
+            "https://resource.example/ipt/resource.custom?r=a%2Fb&token=x#details"),
+            "https://resource.example/ipt/archive.custom?r=a%2Fb&token=x#details")
+        self.assertEqual(runner.archive_url("https://ipt.example/download?r=resource"),
+                         "https://ipt.example/download?r=resource")
+
+    def test_direct_download_reaches_calculator(self):
+        url = "https://data.example/download?token=a%2Fb"
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=False)
+        response.iter_content.return_value = [b"archive payload"]
+        calculator = Mock()
+        def calculate(path):
+            self.assertEqual(Path(path).read_bytes(), b"archive payload")
+            return {"ICA": 70, "Taxonomic": 35, "Geographic": 25, "Temporal": 10}
+        calculator.ICA.side_effect = calculate
+        with patch("requests.get", return_value=response) as download:
+            result = runner.calculate(calculator, url)
+        download.assert_called_once_with(url, stream=True, timeout=(30, 120))
+        response.raise_for_status.assert_called_once()
+        self.assertEqual(result["ICA"], 70)
+        self.assertEqual(result["Icad"], 10)
+        self.assertFalse(Path(calculator.ICA.call_args.args[0]).exists())
 
     def test_original_calculator(self):
         module = runner.load_calculator()

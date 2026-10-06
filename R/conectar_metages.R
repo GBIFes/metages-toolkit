@@ -136,6 +136,7 @@ session <- ssh::ssh_connect(
   host = Sys.getenv(env_vars[["host"]]),
   keyfile = Sys.getenv("keyfile")
 )
+on.exit(ssh::ssh_disconnect(session), add = TRUE)
 
 
 # Abrir túnel SSH local para conectarse a la base de datos

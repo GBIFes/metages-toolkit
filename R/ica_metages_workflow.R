@@ -44,11 +44,11 @@ ica_metages_workflow <- function(entorno = c("test", "prod"),
       if (inherits(computed, "error")) {
         out$status <- "error"
         out$detail <- conditionMessage(computed)
-        if (write && isTRUE(as.logical(row$empty))) .ica_write(con, row, error = out$detail)
+        if (write && isTRUE(as.logical(row$ica_fields_empty))) .ica_write(con, row, error = out$detail)
       } else {
         for (field in c("ICA", "Icat", "Icag", "Icad", "fecha_validacion")) out[[field]] <- computed[[field]]
-        out$status <- if (!isTRUE(as.logical(row$empty))) "inspection" else "preview"
-        if (write && isTRUE(as.logical(row$empty))) {
+        out$status <- if (!isTRUE(as.logical(row$ica_fields_empty))) "inspection" else "preview"
+        if (write && isTRUE(as.logical(row$ica_fields_empty))) {
           out$status <- if (.ica_write(con, row, scores = computed)) "updated" else "changed"
         }
       }
@@ -83,7 +83,7 @@ ica_metages_workflow <- function(entorno = c("test", "prod"),
 .ica_candidates <- function(con, ids = NULL) {
   sql <- paste("SELECT p.provision_id, r.url_ipt,",
                "(r.private = 0 AND", .ica_latest_sql(), ") AS eligible,",
-               "(", .ica_empty_sql(), ") AS empty",
+               "(", .ica_empty_sql(), ") AS ica_fields_empty",
                "FROM metages_provision_recurso p JOIN metages_recurso r ON r.recurso_id = p.recurso_fk")
   if (is.null(ids)) {
     sql <- paste(sql, "WHERE r.private = 0 AND", .ica_latest_sql(), "AND", .ica_empty_sql())
@@ -93,7 +93,7 @@ ica_metages_workflow <- function(entorno = c("test", "prod"),
   rows <- DBI::dbGetQuery(con, sql, params = as.list(ids))
   missing <- setdiff(ids, rows$provision_id)
   if (length(missing)) rows <- rbind(rows, data.frame(provision_id = missing,
-    url_ipt = NA_character_, eligible = FALSE, empty = FALSE))
+    url_ipt = NA_character_, eligible = FALSE, ica_fields_empty = FALSE))
   rows[match(ids, rows$provision_id), , drop = FALSE]
 }
 
@@ -141,12 +141,14 @@ ica_metages_workflow <- function(entorno = c("test", "prod"),
         if (is.na(obs)) obs <- ""
         if (!grepl(marker, obs, fixed = TRUE)) {
           note <- paste(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), marker)
-          DBI::dbExecute(con, "UPDATE metages_provision_recurso SET provision_obs = ? WHERE provision_id = ?",
+          DBI::dbExecute(con, paste("UPDATE metages_provision_recurso SET provision_obs = ?,",
+            "updated_when = CURRENT_TIMESTAMP, updated_who = 'ica_metages_workflow' WHERE provision_id = ?"),
             params = list(paste(c(if (nzchar(obs)) obs, note), collapse = "\n"), row$provision_id))
         }
       } else {
         DBI::dbExecute(con, paste("UPDATE metages_provision_recurso SET ICA = ?, Icat = ?,",
-          "Icag = ?, Icad = ?, fecha_validacion = ? WHERE provision_id = ?"),
+          "Icag = ?, Icad = ?, fecha_validacion = ?, updated_when = CURRENT_TIMESTAMP,",
+          "updated_who = 'ica_metages_workflow' WHERE provision_id = ?"),
           params = c(unname(scores[c("ICA", "Icat", "Icag", "Icad", "fecha_validacion")]), list(row$provision_id)))
       }
       TRUE

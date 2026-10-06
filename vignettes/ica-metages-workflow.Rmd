@@ -9,6 +9,13 @@ vignette: >
 
 El workflow consulta MetaGES con `conectar_metages()`, descarga el Darwin Core
 Archive actual del IPT y llama al calculador Python original. No crea tablas.
+`url_ipt` admite paginas de recurso y endpoints HTTP(S) directos
+que entreguen un DwC-A. Si el dominio tiene una etiqueta `ipt` o la ruta
+contiene un segmento `ipt`, en la ruta se sustituye `resource` por `archive`,
+conservando cualquier sufijo (incluido `.do`) y todos los parametros.
+Las demas URLs y las rutas sin `resource` se conservan, sin exigir
+extension `.zip` ni parametro `r`. Una respuesta que no sea un DwC-A valido
+se registra como error de calculo con las reglas habituales del workflow.
 Solo considera recursos con `private = 0` y su ultima provision, ordenada por
 `provision_fecha` y, en caso de empate, `provision_id`. Las fechas NULL quedan
 antes que las conocidas. Si todas son NULL, gana el mayor ID.
@@ -65,6 +72,10 @@ Si cambiaron, el estado sera `changed`. Un fallo de calculo deja `error` y agreg
 una nota fechada `[ICA]` a `provision_obs` en las provisiones elegibles, preservando
 las observaciones y evitando duplicar el mismo mensaje. Un fallo de conexion o
 escritura detiene la ejecucion. Las notas no se borran tras un reintento correcto.
+Cada escritura efectiva, de resultados o de una nueva nota de error, actualiza
+`updated_when` con la fecha y hora del servidor y `updated_who` con
+`ica_metages_workflow`. Las ejecuciones sin escritura, las provisiones omitidas
+y los errores ya registrados no modifican esos campos.
 
 El plugin conserva su tratamiento original de incidencias internas: algunas
 excepciones producen una puntuacion parcial o cero en vez de un error. El

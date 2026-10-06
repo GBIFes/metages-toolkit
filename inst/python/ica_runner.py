@@ -1,4 +1,4 @@
-"""Download the current IPT archive and invoke the original GBIF ICA code."""
+"""Download a DwC-A endpoint or IPT archive and invoke the original GBIF ICA code."""
 import argparse
 import contextlib
 import datetime
@@ -10,7 +10,7 @@ import sys
 import tempfile
 from importlib.metadata import distribution
 from pathlib import Path
-from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
+from urllib.parse import urlsplit, urlunsplit
 
 
 def load_calculator():
@@ -28,13 +28,12 @@ def load_calculator():
 def archive_url(url):
     parts = urlsplit(url)
     if parts.scheme not in ("http", "https") or not parts.netloc:
-        raise ValueError("url_ipt must be an HTTP(S) IPT URL")
-    resource = parse_qs(parts.query).get("r", [])
-    if not resource or not resource[0]:
-        raise ValueError("url_ipt must contain the IPT resource parameter r")
-    base = parts.path.rsplit("/", 1)[0]
-    return urlunsplit((parts.scheme, parts.netloc, base + "/archive.do",
-                       urlencode({"r": resource[0]}), ""))
+        raise ValueError("url_ipt must be an HTTP(S) URL")
+    is_ipt = ("ipt" in (parts.hostname or "").lower().split(".") or
+              "ipt" in parts.path.lower().split("/"))
+    if not is_ipt:
+        return url
+    return urlunsplit(parts._replace(path=parts.path.replace("resource", "archive")))
 
 
 def calculate(module, url):
