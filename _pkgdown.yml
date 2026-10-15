@@ -25,6 +25,8 @@ navbar:
           href: articles/crear-mapas.html
         - text: "Dashboard de métricas"
           href: articles/dashboard-metricas.html
+        - text: "Workflow ICA de MetaGES"
+          href: articles/ica-metages-workflow.html
           
     architecture:
       text: "Arquitectura"
@@ -50,6 +52,7 @@ articles:
       - guia-uso-dev
       - crear-mapas
       - dashboard-metricas
+      - ica-metages-workflow
 
 
 

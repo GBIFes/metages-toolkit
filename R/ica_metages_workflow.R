@@ -5,7 +5,9 @@
 #' @param provision_ids IDs opcionales. Las provisiones con valores existentes
 #'   se calculan para inspeccion, sin escribir.
 #' @param write Escribir resultados y errores en MetaGES. Por defecto FALSE.
-#' @param python_executable Ejecutable Python del entorno con el plugin instalado.
+#' @param python_executable Python de base o de un venv existente. El workflow
+#'   prepara automaticamente el entorno y las dependencias de calculo.
+#'   En Windows identifica el Python de Linux que se ejecuta mediante WSL.
 #' @return Data frame de resultados, estados y errores por provision.
 #' @export
 ica_metages_workflow <- function(entorno = c("test", "prod"),
@@ -22,7 +24,8 @@ ica_metages_workflow <- function(entorno = c("test", "prod"),
   }
   runner <- .ica_runner_path()
   if (!nzchar(runner)) stop("No se encuentra ica_runner.py; instala el paquete")
-  .ica_python(python_executable, runner, check = TRUE)
+  prepared <- .ica_python(python_executable, runner, check = TRUE, update = TRUE)
+  python_executable <- prepared$python_executable %||ica% python_executable
   connection <- conectar_metages(entorno = entorno)
   on.exit({
     try(DBI::dbDisconnect(connection$con), silent = TRUE)
@@ -35,10 +38,13 @@ ica_metages_workflow <- function(entorno = c("test", "prod"),
     row <- rows[i, , drop = FALSE]
     out <- data.frame(provision_id = row$provision_id, url_ipt = row$url_ipt,
                       ICA = NA_real_, Icat = NA_real_, Icag = NA_real_, Icad = NA_real_,
-                      fecha_validacion = NA_character_, status = "omitted", detail = "",
+                      fecha_validacion = NA_character_,
+                      status = "omitted", detail = "",
                       stringsAsFactors = FALSE)
     if (!isTRUE(as.logical(row$eligible))) {
-      out$detail <- "Provision inexistente, historica o recurso privado"
+      reason <- row$omission_reason
+      out$detail <- if (length(reason) == 1L && !is.na(reason) && nzchar(reason)) reason else
+        "Provision no elegible; comprueba que sea la ultima de un recurso publico"
     } else {
       computed <- tryCatch(.ica_python(python_executable, runner, row$url_ipt), error = identity)
       if (inherits(computed, "error")) {
@@ -53,7 +59,7 @@ ica_metages_workflow <- function(entorno = c("test", "prod"),
         }
       }
     }
-    message(jsonlite::toJSON(out, dataframe = "rows", auto_unbox = TRUE, na = "null"))
+    message(jsonlite::toJSON(out, dataframe = "rows", auto_unbox = TRUE, na = "null", digits = NA))
     results <- rbind(results, out)
   }
   results
@@ -62,7 +68,8 @@ ica_metages_workflow <- function(entorno = c("test", "prod"),
 .ica_empty_result <- function() {
   data.frame(provision_id = integer(), url_ipt = character(), ICA = double(),
              Icat = double(), Icag = double(), Icad = double(),
-             fecha_validacion = character(), status = character(), detail = character())
+             fecha_validacion = character(),
+             status = character(), detail = character())
 }
 
 .ica_runner_path <- function() system.file("python", "ica_runner.py", package = "metagesToolkit")
@@ -83,6 +90,10 @@ ica_metages_workflow <- function(entorno = c("test", "prod"),
 .ica_candidates <- function(con, ids = NULL) {
   sql <- paste("SELECT p.provision_id, r.url_ipt,",
                "(r.private = 0 AND", .ica_latest_sql(), ") AS eligible,",
+               "CASE WHEN r.private IS NULL THEN 'Privacidad del recurso no definida en MetaGES'",
+               "WHEN r.private <> 0 THEN 'Recurso marcado como privado en MetaGES'",
+               "WHEN NOT (", .ica_latest_sql(), ") THEN 'Provision historica: existe otra mas reciente para este recurso'",
+               "ELSE '' END AS omission_reason,",
                "(", .ica_empty_sql(), ") AS ica_fields_empty",
                "FROM metages_provision_recurso p JOIN metages_recurso r ON r.recurso_id = p.recurso_fk")
   if (is.null(ids)) {
@@ -91,24 +102,78 @@ ica_metages_workflow <- function(entorno = c("test", "prod"),
   }
   sql <- paste(sql, "WHERE p.provision_id IN (", paste(rep("?", length(ids)), collapse = ","), ")")
   rows <- DBI::dbGetQuery(con, sql, params = as.list(ids))
+  if (!"omission_reason" %in% names(rows)) rows$omission_reason <- rep("", nrow(rows))
   missing <- setdiff(ids, rows$provision_id)
   if (length(missing)) rows <- rbind(rows, data.frame(provision_id = missing,
-    url_ipt = NA_character_, eligible = FALSE, ica_fields_empty = FALSE))
+    url_ipt = NA_character_, eligible = FALSE,
+    omission_reason = "Provision inexistente o sin recurso asociado en este entorno de MetaGES",
+    ica_fields_empty = FALSE))
   rows[match(ids, rows$provision_id), , drop = FALSE]
 }
 
-.ica_python <- function(executable, runner, url = NULL, check = FALSE) {
+.ica_use_wsl <- function() .Platform$OS.type == "windows"
+
+.ica_wsl_executable <- function() unname(Sys.which("wsl.exe"))
+
+.ica_run_python <- function(executable, runner, args, input_file, timeout) {
+  if (!.ica_use_wsl()) return(processx::run(executable, c(runner, args),
+    stdin = input_file, timeout = timeout, error_on_status = FALSE))
+
+  wsl <- .ica_wsl_executable()
+  if (!nzchar(wsl)) stop("Se necesita WSL con una distribucion Linux y Python 3; no se encuentra wsl.exe")
+  distro <- Sys.getenv("METAGES_ICA_WSL_DISTRO", "")
+  prefix <- if (nzchar(distro)) c("--distribution", distro) else character()
+  windows_path <- function(path) grepl("^[A-Za-z]:[/\\\\]|^[/\\\\]{2}", path)
+  linux_path <- function(path) {
+    converted <- processx::run(wsl, c(prefix, "--exec", "wslpath", "-a", "-u", path),
+      timeout = 30, error_on_status = FALSE)
+    if (converted$status != 0L || !nzchar(trimws(converted$stdout)))
+      stop(paste("No se pudo acceder a WSL. Comprueba su distribucion Linux:",
+                 converted$stderr, converted$stdout), call. = FALSE)
+    trimws(converted$stdout)
+  }
+  if (windows_path(executable) || grepl("\\.exe$", executable, ignore.case = TRUE))
+    stop("En Windows, python_executable debe identificar Python dentro de WSL, por ejemplo python3")
+  if (identical(executable, "python")) executable <- "python3"
+  runner <- linux_path(normalizePath(runner, winslash = "/", mustWork = TRUE))
+  # Pasar solo la configuracion ICA, sin depender de WSLENV ni de una shell.
+  environment <- character()
+  for (key in c("METAGES_ICA_VENV", "METAGES_ICA_CATALOGUE_DIR")) {
+    value <- Sys.getenv(key, "")
+    if (nzchar(value)) {
+      if (windows_path(value)) value <- linux_path(value)
+      environment <- c(environment, paste0(key, "=", value))
+    }
+  }
+  processx::run(wsl, c(prefix, "--exec", "env", environment, executable, runner, args),
+    stdin = input_file, timeout = timeout, error_on_status = FALSE)
+}
+
+.ica_python <- function(executable, runner, url = NULL, check = FALSE, update = FALSE) {
   if (!is.character(executable) || length(executable) != 1L || is.na(executable) || !nzchar(executable))
     stop("python_executable debe identificar un ejecutable")
   input <- if (check) "" else jsonlite::toJSON(list(url_ipt = url), auto_unbox = TRUE, na = "null")
   input_file <- tempfile("ica-input-")
   on.exit(unlink(input_file), add = TRUE)
   writeLines(input, input_file, useBytes = TRUE)
-  process <- processx::run(executable, c(runner, if (check) "--check"),
-                           stdin = input_file, timeout = if (check) 120 else 3600,
-                           error_on_status = FALSE)
-  result <- jsonlite::fromJSON(process$stdout)
-  if (process$status != 0L || !is.null(result$error)) stop(result$error %||ica% process$stderr)
+  process <- .ica_run_python(executable, runner,
+    c(if (check) "--check", if (update) "--prepare"), input_file,
+    timeout = if (check && !update) 120 else 3600)
+  # Un ejecutable ausente o un fallo de arranque puede no producir ningun JSON.
+  failure <- function(reason) {
+    diagnostics <- c(
+      paste0("Python (", executable, "), codigo de salida ", process$status, ": ", reason),
+      if (nzchar(trimws(process$stderr))) paste0("stderr: ", substr(process$stderr, 1L, 4000L)),
+      if (nzchar(trimws(process$stdout))) paste0("stdout: ", substr(process$stdout, 1L, 4000L)))
+    stop(paste(diagnostics, collapse = "\n"), call. = FALSE)
+  }
+  if (!nzchar(trimws(process$stdout))) failure("El proceso no devolvio resultados JSON")
+  result <- tryCatch(jsonlite::fromJSON(process$stdout),
+                     error = function(error) failure("El proceso devolvio una salida que no es JSON valido"))
+  if (!is.list(result) || is.null(names(result))) failure("La respuesta JSON no es un objeto de resultados")
+  if (process$status != 0L || !is.null(result$error))
+    failure(if (is.character(result$error) && length(result$error) == 1L && !is.na(result$error))
+      result$error else "El proceso fallo")
   if (check) {
     if (!isTRUE(result$ready)) stop("Python no esta preparado")
   } else {
@@ -125,7 +190,7 @@ ica_metages_workflow <- function(entorno = c("test", "prod"),
 
 .ica_write <- function(con, row, scores = NULL, error = NULL) {
   DBI::dbWithTransaction(con, {
-    # Lock the resource so concurrent runs serialize; reselect after the calculation.
+    # Bloquear el recurso y revalidar la provision tras el calculo.
     resource <- DBI::dbGetQuery(con, paste("SELECT r.recurso_id FROM metages_recurso r",
       "JOIN metages_provision_recurso p ON p.recurso_fk = r.recurso_id",
       "WHERE p.provision_id = ? FOR UPDATE"), params = list(row$provision_id))

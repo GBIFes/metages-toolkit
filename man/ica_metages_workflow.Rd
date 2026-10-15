@@ -19,7 +19,9 @@ se calculan para inspeccion, sin escribir.}
 
 \item{write}{Escribir resultados y errores en MetaGES. Por defecto FALSE.}
 
-\item{python_executable}{Ejecutable Python del entorno con el plugin instalado.}
+\item{python_executable}{Python de base o de un venv existente. El workflow
+prepara automaticamente el entorno y las dependencias de calculo.
+En Windows identifica el Python de Linux que se ejecuta mediante WSL.}
 }
 \value{
 Data frame de resultados, estados y errores por provision.

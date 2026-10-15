@@ -10,3 +10,5 @@
   mapas](https://gbifes.github.io/metages-toolkit/articles/crear-mapas.md):
 - [Dashboard estático de métricas de
   MetaGES](https://gbifes.github.io/metages-toolkit/articles/dashboard-metricas.md):
+- [Workflow ICA de
+  MetaGES](https://gbifes.github.io/metages-toolkit/articles/ica-metages-workflow.md):

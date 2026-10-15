@@ -7,6 +7,11 @@
 - [`extraer_colecciones_mapa()`](https://gbifes.github.io/metages-toolkit/reference/extraer_colecciones_mapa.md)
   : Extraer colecciones desde METAGES para mapas
 
+## Calcular ICA de provisiones de MetaGES
+
+- [`ica_metages_workflow()`](https://gbifes.github.io/metages-toolkit/reference/ica_metages_workflow.md)
+  : Calcular ICA para las ultimas provisiones publicas de MetaGES
+
 ## Consultar GBIF y preparar la sincronización con MetaGES
 
 - [`fetch_gbif_spain_inventory()`](https://gbifes.github.io/metages-toolkit/reference/fetch_gbif_spain_inventory.md)
