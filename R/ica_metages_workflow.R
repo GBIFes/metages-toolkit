@@ -8,12 +8,18 @@
 #' @param python_executable Python de base o de un venv existente. El workflow
 #'   prepara automaticamente el entorno y las dependencias de calculo.
 #'   En Windows identifica el Python de Linux que se ejecuta mediante WSL.
+#' @param driver Nombre del driver ODBC Unicode instalado. NULL o una cadena
+#'   vacia conserva MySQL ODBC 9.4 Unicode Driver, como conectar_metages().
 #' @return Data frame de resultados, estados y errores por provision.
 #' @export
 ica_metages_workflow <- function(entorno = c("test", "prod"),
                                 provision_ids = NULL, write = FALSE,
-                                python_executable = Sys.getenv("METAGES_ICA_PYTHON", "python")) {
+                                python_executable = Sys.getenv("METAGES_ICA_PYTHON", "python"),
+                                driver = NULL) {
   entorno <- match.arg(entorno)
+  if (!is.null(driver) &&
+      (!is.character(driver) || length(driver) != 1L || is.na(driver)))
+    stop("driver debe ser NULL o una cadena de texto de longitud 1")
   if (!is.logical(write) || length(write) != 1L || is.na(write)) stop("write debe ser TRUE o FALSE")
   if (!is.null(provision_ids)) {
     if (!is.numeric(provision_ids) || anyNA(provision_ids) ||
@@ -26,7 +32,7 @@ ica_metages_workflow <- function(entorno = c("test", "prod"),
   if (!nzchar(runner)) stop("No se encuentra ica_runner.py; instala el paquete")
   prepared <- .ica_python(python_executable, runner, check = TRUE, update = TRUE)
   python_executable <- prepared$python_executable %||ica% python_executable
-  connection <- conectar_metages(entorno = entorno)
+  connection <- conectar_metages(entorno = entorno, driver = driver)
   on.exit({
     try(DBI::dbDisconnect(connection$con), silent = TRUE)
     try(connection$tunnel$kill(), silent = TRUE)

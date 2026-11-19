@@ -1,3 +1,37 @@
+test_that("ICA conserva Python posicional y transmite el driver elegido al conector", {
+  selected <- list()
+  pythons <- character()
+  local_mocked_bindings(
+    .ica_runner_path = function() "runner.py",
+    .ica_python = function(executable, ...) {
+      pythons <<- c(pythons, executable)
+      list(ready = TRUE)
+    },
+    conectar_metages = function(entorno, driver = NULL) {
+      selected[[length(selected) + 1L]] <<- list(entorno = entorno, driver = driver)
+      list(con = NULL, tunnel = list(kill = function() NULL))
+    },
+    .ica_candidates = function(...) data.frame())
+  ica_metages_workflow("test", NULL, FALSE, "python-original")
+  ica_metages_workflow(entorno = "prod", driver = "MariaDB Unicode")
+  ica_metages_workflow(driver = NULL)
+  expect_equal(pythons[[1]], "python-original")
+  expect_identical(selected[[1]], list(entorno = "test", driver = NULL))
+  expect_identical(selected[[2]], list(entorno = "prod", driver = "MariaDB Unicode"))
+  expect_identical(selected[[3]], list(entorno = "test", driver = NULL))
+  expect_identical(names(formals(ica_metages_workflow))[4:5], c("python_executable", "driver"))
+})
+
+test_that("ICA rechaza drivers invalidos antes de Python y de la base de datos", {
+  local_mocked_bindings(
+    .ica_runner_path = function() stop("No debe preparar Python"),
+    .ica_python = function(...) stop("No debe ejecutar Python"),
+    conectar_metages = function(...) stop("No debe conectar a MetaGES"))
+  for (invalid in list(1, TRUE, NA_character_, character(), c("uno", "dos"), list("MariaDB Unicode"))) {
+    expect_error(ica_metages_workflow(driver = invalid), "driver")
+  }
+})
+
 test_that("manual selection reports missing IDs and uses dates and privacy", {
   captured <- NULL
   local_mocked_bindings(dbGetQuery = function(conn, statement, ...) {
