@@ -8,7 +8,8 @@ ica_metages_workflow(
   entorno = c("test", "prod"),
   provision_ids = NULL,
   write = FALSE,
-  python_executable = Sys.getenv("METAGES_ICA_PYTHON", "python")
+  python_executable = Sys.getenv("METAGES_ICA_PYTHON", "python"),
+  driver = NULL
 )
 }
 \arguments{
@@ -22,6 +23,9 @@ se calculan para inspeccion, sin escribir.}
 \item{python_executable}{Python de base o de un venv existente. El workflow
 prepara automaticamente el entorno y las dependencias de calculo.
 En Windows identifica el Python de Linux que se ejecuta mediante WSL.}
+
+\item{driver}{Nombre del driver ODBC Unicode instalado. NULL o una cadena
+vacia conserva MySQL ODBC 9.4 Unicode Driver, como conectar_metages().}
 }
 \value{
 Data frame de resultados, estados y errores por provision.
